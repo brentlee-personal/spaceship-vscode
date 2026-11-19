@@ -43,3 +43,49 @@ test("consumer early return aborts host request signal and closes response reade
   assert.equal(cancelled, true)
   assert.equal(original.signal.aborted, false)
 })
+
+const params = () => ({ system: "s", user: "u", temperature: 0, maxCompletionTokens: 10, signal: new AbortController().signal })
+
+test("DONE terminates without waiting for the transport to close", async () => {
+  let closed = false
+  window.spaceshipEditor.request = async () =>
+    new Response(
+      new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode('data: {"choices":[{"delta":{"content":"prose"}}]}\n\ndata: [DONE]\n\n'))
+        },
+        cancel() {
+          closed = true
+        },
+      }),
+    )
+  assert.deepEqual(await Array.fromAsync(streamCompletion(params())), ["prose"])
+  assert.equal(closed, true)
+})
+
+test("HTTP and bad event errors omit provider data", async () => {
+  const marker = "private manuscript fragment"
+  let closed = false
+  window.spaceshipEditor.request = async (_, __, signal) =>
+    new Response(
+      new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode(marker))
+        },
+        cancel() {
+          closed = signal.aborted
+        },
+      }),
+      { status: 401 },
+    )
+  await assert.rejects(
+    () => Array.fromAsync(streamCompletion(params())),
+    (error) => /^401\b/.test(error.message) && !error.message.includes(marker),
+  )
+  assert.equal(closed, true)
+  window.spaceshipEditor.request = async () => new Response(`data: ${marker}\n\n`)
+  await assert.rejects(
+    () => Array.fromAsync(streamCompletion(params())),
+    (error) => /Invalid event/.test(error.message) && !error.message.includes(marker),
+  )
+})

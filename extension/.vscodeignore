@@ -8,3 +8,5 @@
 !media/**
 !decision-router.cjs
 !decision-schema.mjs
+
+!CHANGELOG.md
