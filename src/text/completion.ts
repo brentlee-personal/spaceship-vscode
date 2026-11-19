@@ -10,23 +10,23 @@ const STEERED_SHARE = 0.25
 const CHUNK_INTERVAL_MS = (WORDS_PER_CHUNK / WORDS_PER_SECOND) * 1000
 
 const SENTENCES = [
-  "风把门廊尽头的铃铛吹响了。",
-  "她停下脚步，听了听楼上的动静。",
-  "桌边的杯子还冒着热气。",
-  "河岸上只剩一排自行车。",
-  "他用铅笔在纸上画了个圈。",
-  "远处传来一声短促的汽笛。",
+  "The wind rang the bell at the end of the porch. ",
+  "She paused to listen to the footsteps upstairs. ",
+  "Steam still rose from the cup on the table. ",
+  "Only a row of bicycles remained by the river. ",
+  "He drew a circle on the paper. ",
+  "A short whistle sounded in the distance. ",
 ]
 
 export const simulatedSource: TextSource = { complete }
 
 async function* complete(_prefix: string, steering: Steering, signal: AbortSignal) {
   const words = steeredWordsOf(steering)
-  if (steering.direction) yield `她在纸上记下：“${steering.direction}”`
+  if (steering.direction) yield `She noted the direction: “${steering.direction}”. `
   for (let sent = 0; sent < WORDS_PER_COMPLETION; sent += WORDS_PER_CHUNK) {
     await delay(sent === 0 ? LATENCY_MS : CHUNK_INTERVAL_MS, signal)
     const lead = Math.random() < STEERED_SHARE && pick(words)?.()
-    yield lead ? `她又想起了${lead}。` : pick(SENTENCES)!
+    yield lead ? `She thought again about ${lead}. ` : pick(SENTENCES)!
   }
 }
 

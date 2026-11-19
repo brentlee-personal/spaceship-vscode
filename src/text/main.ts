@@ -1,3 +1,5 @@
+import { createGenerationCoordinator } from "./generation-coordinator.ts"
+import { createGenerationFailure } from "./generation-failure.ts"
 import { bindWritingDialog, type Manuscript } from "./writing-dialog.ts"
 import { localModel } from "../llm/local-flight.ts"
 import { layoutNextLine, prepareWithSegments, type PreparedTextWithSegments } from "@chenglou/pretext"
@@ -40,9 +42,6 @@ import { countCharacters, firstCharacters } from "./words.ts"
 const DWELL_MS = 100
 /** Generated words kept ready past the knob: whenever fewer remain, the stream continues the text, appending, never rewriting. */
 const BUFFER_WORDS = 300
-/** A top-up that adds no words (the source failed or said nothing) is retried after this long, doubling each time up to `MAX_RETRY_MS`. */
-const RETRY_MS = 1000
-const MAX_RETRY_MS = 16000
 /** Double click and hold: the second press, if it starts within `DOUBLE_PRESS_MS` of the first and is held still, opens the fan menu after 100 ms plus this sweep (500 ms in all). */
 const HOLD_MS = 400
 const DOUBLE_PRESS_MS = 400
@@ -74,12 +73,14 @@ let initialText = session?.text
 function visibleManuscript() {
   return initialText ?? firstCharacters(stream.text, shownCount ?? 0)
 }
-const stream = createTextStream(isLive ? liveSource : simulatedSource, render)
+const coordinator = createGenerationCoordinator()
+const source = isLive ? liveSource : simulatedSource
+const stream = createTextStream({ ...source, complete: coordinator.foreground(source.complete) }, render)
 const rail = createLeftRail(railElement)
-const connections = createConnections({ source: isLive ? liveInfluence : simulatedInfluence, onChange: refreshRail })
-const relevance = createKeywordRelevance(isLive ? liveRelevance : simulatedRelevance, refreshRail)
+const connections = createConnections({ source: coordinator.background(isLive ? liveInfluence : simulatedInfluence), onChange: refreshRail })
+const relevance = createKeywordRelevance(coordinator.background(isLive ? liveRelevance : simulatedRelevance), refreshRail)
 const attention = createAttentionKnobs({
-  source: isLive ? liveAttention : simulatedAttention,
+  source: coordinator.background(isLive ? liveAttention : simulatedAttention),
   textElement: element,
   knob: handle,
   linkPath: $<SVGPathElement>("#attention-links"),
@@ -98,8 +99,8 @@ const futureKnobs = createFutureKnobs({
   linkPath: $<SVGPathElement>("#future-links"),
   tunedLinkPath: $<SVGPathElement>("#future-tuned-link"),
   hud: $<SVGGElement>("#future-hud"),
-  source: isLive ? liveDimension : simulatedDimension,
-  realization: isLive ? liveRealization : simulatedRealization,
+  source: coordinator.background(isLive ? liveDimension : simulatedDimension),
+  realization: coordinator.background(isLive ? liveRealization : simulatedRealization),
   textElement: element,
   context: () => ({ text: shownText, leads: attention.leads() }),
   onChange: invalidateFuture,
@@ -118,8 +119,6 @@ let dwellTimer: number | undefined
 /** Counts dwells, so requests deferred by an older one are dropped. */
 let dwellCount = 0
 let topUpTimer: number | undefined
-let retryAt = 0
-let retryMs = RETRY_MS
 let isFutureStale = false
 let prepared: { text: string; layout: PreparedTextWithSegments } | undefined
 let holdSound: Sound | undefined
@@ -132,17 +131,18 @@ const writingDialog = $<HTMLDialogElement>("#writing-dialog")
 const writingStatus = $("#writing-status")
 let direction = ""
 let following: object | undefined
-let manualError = false
+const generationFailure = createGenerationFailure()
 
 const openWriting = bindWritingDialog(
   $<HTMLButtonElement>("#write-story"),
   writingDialog,
   () => ({ text: visibleManuscript(), direction, controls: futureKnobs.controls() }),
   applyManuscript,
-  isLive ? liveDimension : simulatedDimension,
+  coordinator.foreground(isLive ? liveDimension : simulatedDimension),
+  attention.leads,
 )
 const tensionPreset = new URLSearchParams(location.search).get("preset") === "tension"
-if (session || isLive || tensionPreset) openWriting(tensionPreset ? "紧张感" : undefined)
+if (session || isLive || tensionPreset) openWriting(tensionPreset ? "tension" : undefined)
 writingDialog.addEventListener("close", scheduleTopUp)
 
 function applyManuscript(draft: Manuscript) {
@@ -155,11 +155,10 @@ function applyManuscript(draft: Manuscript) {
   direction = draft.direction
   stream.replace(draft.text)
   const submission = (following = {})
-  manualError = false
+  generationFailure.reset()
   isFutureStale = false
   isRegenerationHeld = false
-  retryAt = 0
-  writingStatus.textContent = "正在续写…"
+  writingStatus.textContent = "Continuing…"
   render()
   futureKnobs.setControls(draft.controls, story)
   isFutureStale = false
@@ -168,21 +167,19 @@ function applyManuscript(draft: Manuscript) {
       if (following !== submission) return
       following = undefined
       if (result === "done" && stream.text === draft.text) {
-        manualError = true
-        writingStatus.textContent = "未收到续写，请打开写作框重试。"
+        writingStatus.textContent = generationFailure.fail()
       } else {
-        writingStatus.textContent = "可拖动旋钮选位置，也可继续改写。"
+        writingStatus.textContent = "Drag the knob to explore, or continue editing."
       }
       restCount = shownCount ?? 0
       render()
       restartDwell()
       scheduleTopUp()
     },
-    () => {
+    (error) => {
       if (following !== submission) return
       following = undefined
-      manualError = true
-      writingStatus.textContent = "续写失败，正文已保留。请打开写作框重试。"
+      writingStatus.textContent = generationFailure.fail(error)
     },
   )
 }
@@ -200,11 +197,11 @@ if (editor && session) {
     )
   }
   editor.onEditor((event) => {
-    if (event.action === "written") writingStatus.textContent = "已写回编辑器，可撤销或保存。"
+    if (event.action === "written") writingStatus.textContent = "Applied to the editor. You can undo or save."
     if (event.action === "source" && event.label) source.textContent = event.label
     if (event.action === "tension") {
       if (writingDialog.open) writingDialog.close()
-      openWriting("紧张感")
+      openWriting("tension")
     }
   })
 }
@@ -239,7 +236,7 @@ onPressAndHold(
 // Dragging scrubs at once, forward or back.
 makeDraggable(handle, {
   onDrag: (point) => {
-    if (following) writingStatus.textContent = ""
+    if (following && !generationFailure.paused) writingStatus.textContent = ""
     following = undefined
     handle.toggleAttribute("data-dragging", true)
     const before = shownCount
@@ -365,7 +362,7 @@ function report() {
 function restartDwell() {
   clearTimeout(dwellTimer)
   const dwell = ++dwellCount
-  if (following || writingDialog.open || initialText !== undefined) return
+  if (following || writingDialog.open || initialText !== undefined || generationFailure.paused) return
   dwellTimer = setTimeout(() => {
     if (isFutureStale) regenerateFuture()
     else topUp()
@@ -382,15 +379,26 @@ function restartDwell() {
  * and the continuation is what the reader waits for, so it is always asked first.
  */
 function afterStreaming(request: () => void) {
-  stream.streaming().then(request)
+  stream.streaming().then(() => {
+    if (!generationFailure.paused) request()
+  })
 }
 
 function regenerateFuture() {
+  if (generationFailure.paused) return
   following = undefined
   writingStatus.textContent = ""
   isFutureStale = false
   restCount = shownCount ?? 0
-  stream.regenerate(shownCount ?? 0, "steering changed", steering())
+  const before = firstCharacters(stream.text, shownCount ?? 0)
+  stream.regenerate(shownCount ?? 0, "steering changed", steering()).then(
+    (outcome) => {
+      if (outcome === "done" && stream.text === before) writingStatus.textContent = generationFailure.fail()
+    },
+    (error) => {
+      writingStatus.textContent = generationFailure.fail(error)
+    },
+  )
 }
 
 function steering(): Steering {
@@ -409,34 +417,21 @@ function scheduleTopUp() {
 }
 
 function topUp() {
-  if (
-    initialText !== undefined ||
-    writingDialog.open ||
-    following ||
-    manualError ||
-    isRegenerationHeld ||
-    stream.activity().isGenerating ||
-    performance.now() < retryAt
-  )
-    return
+  if (initialText !== undefined || writingDialog.open || following || generationFailure.paused || isRegenerationHeld || stream.activity().isGenerating) return
   const words = countCharacters(stream.text)
   if (words - (shownCount ?? 0) >= BUFFER_WORDS) return
-  stream.generate("buffer low", steering()).then(
+  stream.generate("buffer low", steering(), BUFFER_WORDS - (words - (shownCount ?? 0))).then(
     (outcome) => outcome === "done" && settleTopUp(words),
-    (error) => (console.error(error), settleTopUp(words)),
+    (error) => {
+      writingStatus.textContent = generationFailure.fail(error)
+    },
   )
 }
 
-/** A top-up that added words resets the retry delay; one that added none waits before trying again, longer each time. */
+/** Empty successful responses also require explicit retry, rather than an endless refill loop. */
 function settleTopUp(wordsBefore: number) {
-  if (countCharacters(stream.text) > wordsBefore) {
-    retryMs = RETRY_MS
-    retryAt = 0
-    return scheduleTopUp()
-  }
-  retryAt = performance.now() + retryMs
-  setTimeout(scheduleTopUp, retryMs)
-  retryMs = Math.min(retryMs * 2, MAX_RETRY_MS)
+  if (countCharacters(stream.text) > wordsBefore) return scheduleTopUp()
+  writingStatus.textContent = generationFailure.fail()
 }
 
 function prepareWords() {
@@ -449,14 +444,18 @@ function prepareWords() {
 function pointerTargets(): PointerTarget[] {
   const leads = attention.leads()
   return [
-    { rects: [handle.getBoundingClientRect()], pad: 5, wake: handle, label: () => `<b>${shownCount ?? 0}</b> 字` },
+    { rects: [handle.getBoundingClientRect()], pad: 5, wake: handle, label: () => `<b>${shownCount ?? 0}</b> characters` },
     ...[...document.querySelectorAll<HTMLElement>(".future")].map((knob) => ({ rects: [knob.getBoundingClientRect()], pad: 5 })),
     ...attention.spans().map(({ phrase }, i) => ({
       rects: clientRectsOf(phrase),
       pad: 3,
       label: () => {
         const { relevance: value, isMeasuring } = relevance.relevanceOf(leads[i])
-        return isMeasuring ? "关键词 <b>··</b>" : value === undefined ? "关键词" : `关键词 <b>${value >= 1 ? "1.0" : value.toFixed(2).replace(/^0/, "")}</b>`
+        return isMeasuring
+          ? "Keywords <b>··</b>"
+          : value === undefined
+            ? "Keywords"
+            : `Keywords <b>${value >= 1 ? "1.0" : value.toFixed(2).replace(/^0/, "")}</b>`
       },
     })),
     { rects: [modeToggle.getBoundingClientRect()], pad: TRAY_PAD_PX, isHotOnHover: true, wake: modeToggle },
@@ -617,7 +616,7 @@ function soundWordsCrossed(before: number | undefined, point: Point) {
 function showSoundToggle() {
   const isOn = isSoundOn()
   soundToggle.setAttribute("aria-pressed", `${isOn}`)
-  soundToggle.querySelector("b")!.textContent = isOn ? "开" : "关"
+  soundToggle.querySelector("b")!.textContent = isOn ? "On" : "Off"
 }
 
 /** Read on every use, since the centered column moves with the window. */

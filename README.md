@@ -1,20 +1,22 @@
-# Spaceship 中文写作台 · VS Code 扩展
+# Spaceship Writer for VS Code
 
-在资源管理器中选择稿件，或在编辑器里选中一段正文，用多个旋钮引导下一段写作。**写回编辑器** 使用 VS Code 的原生编辑、撤销与保存。界面和 18 个设计样例随扩展一起安装。
+An independent, MIT-licensed adaptation of [Chuanqi Sun’s Spaceship IDE](https://github.com/chuanqisun/spaceship) for writing in VS Code, not a language-specific edition. Open a manuscript or selection, steer a continuation with independent controls, then apply it as a native undoable edit. Chinese remains supported alongside English and other languages.
 
-[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=brentlee-personal.spaceship-writer) · [下载安装包](https://github.com/brentlee-personal/spaceship-vscode/releases/latest) · [使用与连接配置](extension/README.md) · [社区参考与采纳记录](docs/community-intake.md)
+[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=brentlee-personal.spaceship-writer) · [Download VSIX](https://github.com/brentlee-personal/spaceship-vscode/releases/latest) · [Usage and connection setup](extension/README.md) · [Community intake](docs/community-intake.md) · [Upstream issue review](docs/upstream-issues.md)
 
-在 VS Code 中运行 `Extensions: Install from VSIX...` 选择下载的安装包，然后运行 **Spaceship: 打开写作台**。
+Install the VSIX using `Extensions: Install from VSIX...`, then run **Spaceship: Open Writing Desk**. The default interface is English. Live writing follows the manuscript language unless you explicitly request another language in Direction. An empty manuscript follows the direction's language; with neither, it defaults to English. The selected model determines generation quality and language coverage.
 
-本地构建需要 Node.js 24 和 npm。在仓库根目录执行 `npm ci` 和 `npm run package:extension`，VSIX 会生成在 `extension/`。浏览器开发入口为 `npm run dev`。
+Simulation is a canned English interaction demo, not generated writing or a translation service. The 18 bundled design studies include Chinese-language examples and remain historical examples, not the product's language restriction.
 
-## 参与维护 · Maintainers welcome
+## Build and contribute
 
-欢迎一起维护跨平台安装、无障碍操作、文件编辑与多语言写作体验。请在[贡献指南](CONTRIBUTING.md)和 [help wanted 任务](https://github.com/brentlee-personal/spaceship-vscode/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22help%20wanted%22) 中认领工作。
+Requires Node.js 24 and npm. Run `npm ci`, `npm test`, and `npm run package:extension`; the VSIX is created in `extension/`. Use `npm run dev` for browser development. The extension identifier remains `brentlee-personal.spaceship-writer`.
 
-Spaceship is an independent, MIT-licensed VS Code adaptation of Chuanqi Sun’s Spaceship IDE. Open a Markdown file from Explorer, steer a continuation along multiple dimensions, then apply it to the source selection as a native undoable edit. A local model gateway is optional. We welcome writers, extension developers, documentation contributors and co-maintainers.
+We welcome writers, extension developers, accessibility testers and co-maintainers. See [CONTRIBUTING](CONTRIBUTING.md) and [help wanted](https://github.com/brentlee-personal/spaceship-vscode/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22help%20wanted%22). Please test English, Chinese, and other manuscript languages without treating the interface language as the output language.
 
-以下是原作者的项目介绍。
+## Original project
+
+The following is the original author's project introduction. Its hosted browser demo and browser-stored provider keys are separate from this extension's local gateway configuration.
 
 # 🕹️ Spaceship IDE
 

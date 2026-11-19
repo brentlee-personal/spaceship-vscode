@@ -1,3 +1,4 @@
+// Chinese-language sample openings retained as examples, not live-writing defaults.
 export const STORY_OPENINGS = [
   "凌晨两点，停运了十年的车站响起了报站声。",
   "外婆寄来的明信片上，写着明天的日期。",

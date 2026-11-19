@@ -1,4 +1,4 @@
-import type { Dimension, DimensionContext, DimensionSource } from "./dimension.ts"
+import { valueOf, type Dimension, type DimensionContext, type DimensionSource } from "./dimension.ts"
 
 export function bindDimensionSuggestions(
   dialog: HTMLDialogElement,
@@ -25,26 +25,29 @@ export function bindDimensionSuggestions(
     clear()
     const input = context()
     if (!input.text && !input.direction) {
-      list.textContent = "先填正文或续写方向，再获取推荐。"
+      list.textContent = "Enter text or a direction before requesting suggestions."
       return
     }
     const controller = (pending = new AbortController())
     ask.disabled = true
-    list.textContent = "正在推荐…"
+    list.textContent = "Finding suggestions…"
     try {
-      const items = await Array.fromAsync(source(input, controller.signal))
-      if (controller.signal.aborted) return
-      list.textContent = items.length ? "点击添加" : "当前没有更多推荐。"
-      for (const dimension of items) {
+      let offered = 0
+      for await (const dimension of source(input, controller.signal)) {
+        if (controller.signal.aborted) return
+        if (offered++ === 0) list.textContent = "Click to add a direction"
         const button = document.createElement("button")
         button.type = "button"
-        button.textContent = button.value = dimension.name
+        button.value = dimension.name
+        const position = dimension.suggestedPosition
+        button.textContent = position === undefined ? dimension.name : `${dimension.name} → ${valueOf({ dimension, position })}`
         button.addEventListener("click", () => select(dimension))
         list.append(button)
+        updateSelected(new Set(context().taken.map((item) => item.name)))
       }
-      updateSelected(new Set(context().taken.map((item) => item.name)))
+      if (!controller.signal.aborted && !offered) list.textContent = "No more suggestions right now."
     } catch {
-      if (!controller.signal.aborted) list.textContent = "未能取得推荐，可以重试或手动添加维度。"
+      if (!controller.signal.aborted && !list.querySelector("button")) list.textContent = "Suggestions unavailable. Retry or add a dimension manually."
     } finally {
       if (pending === controller) {
         pending = undefined

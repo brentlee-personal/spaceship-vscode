@@ -11,11 +11,11 @@ export function showStatus(element: HTMLElement, { isGenerating, firstChunkMs, w
   element.toggleAttribute("data-streaming", isGenerating)
   element.replaceChildren(
     zone(
-      field("rate", glyph("»", "生成速度"), wordsPerSecond === undefined ? undefined : `${Math.round(wordsPerSecond)}`, "字/秒"),
-      field("latency", glyph("▼", "首段响应时间"), firstChunkMs === undefined ? undefined : `${Math.round(firstChunkMs)}`, "ms"),
+      field("rate", glyph("»", "Generation speed"), wordsPerSecond === undefined ? undefined : `${Math.round(wordsPerSecond)}`, "chars/s"),
+      field("latency", glyph("▼", "Time to first text"), firstChunkMs === undefined ? undefined : `${Math.round(firstChunkMs)}`, "ms"),
     ),
-    zone(field("words", glyph("¶", "已展开字数，+ 表示已生成的后文"), `${words}`, `+${buffer}`)),
-    zone(field("boxes", "关键词", `${boxes}`), field("steering", "引导", `${steering}`), field("pinned", "固定", `${pinned}`)),
+    zone(field("words", glyph("¶", "Visible characters; + indicates generated text ahead"), `${words}`, `+${buffer}`)),
+    zone(field("boxes", "Keywords", `${boxes}`), field("steering", "Steering", `${steering}`), field("pinned", "Pinned", `${pinned}`)),
   )
 }
 

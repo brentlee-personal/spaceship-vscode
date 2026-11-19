@@ -571,20 +571,20 @@ export function createFutureKnobs({
     if (!dimension) {
       element.style.setProperty("--fill", `${knob.progress}`)
       labelWith(knob.label, PENDING_VALUE)
-      element.setAttribute("aria-label", `续写旋钮，选择调节项，双击移除`)
+      element.setAttribute("aria-label", `Writing control: choose a dimension; double-click to remove`)
       if (!knob.menu) return [{ text: PENDING_VALUE, tone: "live" }]
       return knob.candidate === undefined ? [] : [{ text: previewOf(knob.menu[knob.candidate]) }]
     }
     const strength = strengthOf(knob)
     const value = valueOf({ dimension, position: positionOf(knob) })
     const percent = `${Math.round(strength * 100)}%`
-    const realized = knob.confidence === undefined ? "" : `体现 ${Math.round(knob.confidence * 100)}%`
+    const realized = knob.confidence === undefined ? "" : `realized ${Math.round(knob.confidence * 100)}%`
     const isRealizing = knob.tracking !== undefined || knob.pinned !== undefined
     element.style.setProperty("--fill", `${isRealizing ? (knob.confidence ?? 0) : strength}`)
     element.toggleAttribute("data-tracking", knob.tracking !== undefined)
-    labelWith(knob.label, `${dimension.name} → ${value}`, realized ? `强度 ${percent} · ${realized}` : `强度 ${percent}`)
-    const state = knob.pinned ? "已体现在正文中，固定在对应句旁" : `${strengthLevelOf(strength)}影响${realized && `, ${realized}`}`
-    element.setAttribute("aria-label", `续写旋钮，${dimension.name}：${value}，${state}，双击移除`)
+    labelWith(knob.label, `${dimension.name} → ${value}`, realized ? `Strength ${percent} · ${realized}` : `Strength ${percent}`)
+    const state = knob.pinned ? "Realized in the text, pinned beside its sentence" : `${strengthLevelOf(strength)} influence${realized && `, ${realized}`}`
+    element.setAttribute("aria-label", `Writing control, ${dimension.name}: ${value}, ${state}; double-click to remove`)
     return [{ text: `${dimension.name}:`, tone: "dim" }, { text: value, tone: "live" }, { text: realized ? `${percent} · ${realized}` : percent }]
   }
 

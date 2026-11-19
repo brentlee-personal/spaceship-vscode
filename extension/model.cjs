@@ -1,4 +1,5 @@
 const vscode = require("vscode")
+const { routeDecisions } = require("./decision-router.cjs")
 const { readFile } = require("node:fs/promises")
 const { parseEnv } = require("node:util")
 const { spawn } = require("node:child_process")
@@ -8,7 +9,15 @@ function port(value) {
   return value
 }
 
-async function modelResponse(route, body, signal, secrets) {
+async function modelResponse(route, body, signal, secrets, decisionModel = false) {
+  if (route === "decisions") {
+    const config = vscode.workspace.getConfiguration("spaceship")
+    return routeDecisions(body, signal, {
+      provider: decisionProvider(config),
+      llm: (payload, bounded) => modelResponse("chat", payload, bounded, secrets, true),
+      plumb: (bounded) => modelResponse("plumb", body, bounded, secrets),
+    })
+  }
   const config = vscode.workspace.getConfiguration("spaceship")
   const headers = { "Content-Type": "application/json" }
   if (route === "chat") {
@@ -16,7 +25,8 @@ async function modelResponse(route, body, signal, secrets) {
     const key = (await secrets.get("proxy-key")) || process.env.CLIPROXY_API_KEY || (file && parseEnv(await readFile(file, "utf8")).CLIPROXY_API_KEY)
     if (!key) throw new Error("请先执行「Spaceship: 设置 CLIProxyAPI 密钥」，或配置本机凭据文件。")
     headers.Authorization = `Bearer ${key}`
-    body.model = config.get("model")
+    body.model = (decisionModel && config.get("decisionModel")?.trim()) || config.get("model")
+    if (!body.model?.trim()) throw new Error("Configure a Spaceship writing model first.")
     return fetch(`http://127.0.0.1:${port(config.get("proxyPort"))}/v1/chat/completions`, {
       method: "POST",
       headers,
@@ -25,7 +35,7 @@ async function modelResponse(route, body, signal, secrets) {
       redirect: "error",
     })
   }
-  if (route !== "decisions") throw new Error("未知模型接口。")
+  if (route !== "plumb") throw new Error("未知模型接口。")
   const url = `http://127.0.0.1:${port(config.get("decisionsPort"))}/v1/systemone`
   const host = config.get("decisionsSshHost")
   if (!host) return fetch(url, { method: "POST", headers, body: JSON.stringify(body), signal, redirect: "error" })
@@ -62,3 +72,12 @@ async function modelResponse(route, body, signal, secrets) {
   })
 }
 module.exports = { modelResponse }
+
+function decisionProvider(config) {
+  const explicit = (key) => {
+    const value = config.inspect?.(key)
+    return value?.globalValue !== undefined || value?.workspaceValue !== undefined || value?.workspaceFolderValue !== undefined
+  }
+  if (explicit("decisionProvider")) return config.get("decisionProvider", "llm")
+  return explicit("decisionsPort") || Boolean(config.get("decisionsSshHost")) ? "plumb" : "llm"
+}
