@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Long-draft continuation keeps a bounded recent window and retrieves matching earlier passages locally. The writing desk shows the ranges included; the full draft stays intact in the editor.
+
 ## 0.2.0
 
 - Spaceship Writer brings the original writing controls into VS Code without a Chinese-only edition. The default interface is English, and live continuations use the language of the manuscript unless the writer requests another.

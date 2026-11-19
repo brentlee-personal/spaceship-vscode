@@ -18,7 +18,7 @@ import { layoutLines } from "./layout.ts"
 import { createLeftRail } from "./left-rail.ts"
 import { circleOf } from "./links.ts"
 import { liveAttention } from "./live-attention.ts"
-import { liveSource } from "./live-completion.ts"
+import { createLiveSource } from "./live-completion.ts"
 import { liveDimension } from "./live-dimension.ts"
 import { liveInfluence } from "./live-influence.ts"
 import { bindModeToggle } from "./live-mode.ts"
@@ -74,7 +74,18 @@ function visibleManuscript() {
   return initialText ?? firstCharacters(stream.text, shownCount ?? 0)
 }
 const coordinator = createGenerationCoordinator()
-const source = isLive ? liveSource : simulatedSource
+const contextStatus = $("#writing-context")
+const source = isLive
+  ? createLiveSource(({ tail, tailStartLine, tailEndLine, excerpts, omitted }) => {
+      const span = (start: number, end: number) => (start === end ? String(start) : `${start}–${end}`)
+      const earlier = excerpts.map(({ startLine, endLine }) => span(startLine, endLine)).join(", ")
+      contextStatus.textContent = !tail
+        ? "Context: no manuscript text"
+        : !omitted
+          ? "Context: full draft"
+          : `Context: draft lines ${span(tailStartLine, tailEndLine)}${earlier ? ` plus earlier ${earlier}` : ""}; excerpts only`
+    })
+  : simulatedSource
 const stream = createTextStream({ ...source, complete: coordinator.foreground(source.complete) }, render)
 const rail = createLeftRail(railElement)
 const connections = createConnections({ source: coordinator.background(isLive ? liveInfluence : simulatedInfluence), onChange: refreshRail })

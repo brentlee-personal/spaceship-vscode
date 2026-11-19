@@ -2,7 +2,7 @@
   "name": "spaceship-writer",
   "displayName": "Spaceship Writer",
   "description": "Steer your writing in VS Code with independent controls, then apply it to your Markdown file or selection.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "brentlee-personal",
   "license": "MIT",
   "engines": {
