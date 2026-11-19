@@ -2,9 +2,11 @@
 
 This is a local, provider-independent engine seam, **not a shipped UI or a 0.2.0 release change**. No extension commands, transport, file reading, editor writeback or model calls are connected. Block-diffusion annealing is an interaction inspiration, not an implemented diffusion model.
 
-## Lead priority: backbone first (acceptance, not shipped)
+## Product direction: a backbone-refinement tool for authors (acceptance, not shipped)
 
-Before prose, the writer builds an expandable outline with explicit reading order and hierarchy, named stub blocks (purpose and what each changes), and a schema stating what each block needs and produces. Think named stubs that only print their contracts, composed into modules, with a `main` dry run before implementation. Dependency/backbone links are distinct from reading order; optional dependency and conflict annotations belong over the simple outline, not a mandatory graph canvas.
+Spaceship is a tool for authors to refine a work's backbone. A usable, reviewed outline that the author can write from is a successful session even if no prose is generated. Prose generation is optional and downstream, not the purpose or completion condition of backbone work. The outline, stubs and schema serve the author's understanding and revision of the work, not merely preparation for a drafting model.
+
+The writer builds an expandable outline with explicit reading order and hierarchy, named stub blocks (purpose and what each changes), and a schema stating what each block needs and produces. Think named stubs that only print their contracts, composed into modules, with a `main` dry run before implementation. Dependency/backbone links are distinct from reading order; optional dependency and conflict annotations belong over the simple outline, not a mandatory graph canvas.
 
 Acceptance for the next vertical slice:
 
