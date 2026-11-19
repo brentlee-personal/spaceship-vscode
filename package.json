@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "build:extension": "tsc && vite build --base ./ --outDir extension/media --emptyOutDir",
     "package:extension": "npm run build:extension && cd extension && vsce package --no-dependencies",
-    "community:check": "node scripts/community-check.mjs"
+    "community:check": "node scripts/community-check.mjs",
+    "test": "node --test tests/*.test.mjs"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",

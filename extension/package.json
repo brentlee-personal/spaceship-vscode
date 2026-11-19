@@ -1,7 +1,7 @@
 {
   "name": "spaceship-writer",
-  "displayName": "Spaceship 中文写作台",
-  "description": "在 VS Code 中编辑稿件，用多个独立旋钮引导中文续写，并写回原文件或选区。",
+  "displayName": "Spaceship Writer",
+  "description": "Steer your writing in VS Code with independent controls, then apply it to your Markdown file or selection.",
   "version": "0.1.0",
   "publisher": "brentlee-personal",
   "license": "MIT",
@@ -22,41 +22,41 @@
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": true,
-      "description": "连接配置取自用户设置，仅处理通过命令明确打开的稿件。"
+      "description": "Uses user-level connection settings and only manuscripts explicitly opened through a command."
     }
   },
   "contributes": {
     "commands": [
       {
         "command": "spaceship.open",
-        "title": "打开写作台",
+        "title": "Open Writing Desk",
         "category": "Spaceship"
       },
       {
         "command": "spaceship.openFile",
-        "title": "在写作台打开文件",
+        "title": "Open File in Writing Desk",
         "category": "Spaceship",
         "icon": "$(edit)"
       },
       {
         "command": "spaceship.fromSelection",
-        "title": "用选区续写",
+        "title": "Continue from Selection",
         "category": "Spaceship"
       },
       {
         "command": "spaceship.newDraft",
-        "title": "新建 Markdown 稿件",
+        "title": "New Markdown Draft",
         "category": "Spaceship"
       },
       {
         "command": "spaceship.setKey",
-        "title": "设置 CLIProxyAPI 密钥",
+        "title": "Set CLIProxyAPI Key",
         "category": "Spaceship"
       },
       {
         "command": "spaceship.settings",
         "category": "Spaceship",
-        "title": "配置模型连接"
+        "title": "Configure Model Connection"
       }
     ],
     "menus": {
@@ -88,19 +88,19 @@
       ]
     },
     "configuration": {
-      "title": "Spaceship 中文写作台",
+      "title": "Spaceship Writer",
       "properties": {
         "spaceship.model": {
           "type": "string",
           "default": "",
           "scope": "machine",
-          "description": "CLIProxyAPI 上提供的续写模型。"
+          "description": "Continuation model provided by CLIProxyAPI."
         },
         "spaceship.proxyPort": {
           "type": "number",
           "default": 8317,
           "scope": "machine",
-          "description": "本机 CLIProxyAPI 监听端口。",
+          "description": "Local CLIProxyAPI listening port.",
           "minimum": 1,
           "maximum": 65535
         },
@@ -108,19 +108,19 @@
           "type": "string",
           "default": "",
           "scope": "machine",
-          "description": "可选的本机 dotenv 凭据文件路径，读取 CLIPROXY_API_KEY。"
+          "description": "Optional local dotenv file containing CLIPROXY_API_KEY."
         },
         "spaceship.decisionsSshHost": {
           "type": "string",
           "default": "",
           "scope": "machine",
-          "description": "可选的 SSH 配置别名。留空时使用本机 Decisions 服务。"
+          "description": "Optional SSH configuration alias. Leave empty to use the local Decisions service."
         },
         "spaceship.decisionsPort": {
           "type": "number",
           "default": 8102,
           "scope": "machine",
-          "description": "Decisions 服务在目标主机回环地址上的端口。",
+          "description": "Decisions service port on the target host loopback address.",
           "minimum": 1,
           "maximum": 65535
         }
@@ -135,7 +135,7 @@
     "writing",
     "markdown",
     "steering",
-    "中文",
+    "multilingual",
     "creative writing"
   ]
 }

@@ -1,6 +1,6 @@
-const characters = new Intl.Segmenter("zh-CN", { granularity: "grapheme" })
+const characters = new Intl.Segmenter(undefined, { granularity: "grapheme" })
 
-/** Count visible characters so a Chinese sentence can be scrubbed without spaces. */
+/** Count visible graphemes, including scripts without spaces, without splitting emoji. */
 export function countCharacters(text: string) {
   let count = 0
   for (const { segment } of characters.segment(text)) if (segment.trim()) count++

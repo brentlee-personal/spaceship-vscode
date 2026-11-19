@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Spaceship · 中文写作台</title>
+    <title>Spaceship Writer</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>" />
     <style>
       @property --fill {
@@ -981,47 +981,55 @@
   </head>
   <body>
     <header id="writing-bar">
-      <button id="write-story" type="button" aria-haspopup="dialog">编辑正文与方向</button>
-      <button class="editor-only" type="button" data-file-action="write">写回编辑器</button>
-      <button class="editor-only" type="button" data-file-action="copy">另存为…</button>
+      <button id="write-story" type="button" aria-haspopup="dialog">Edit Text & Direction</button>
+      <button class="editor-only" type="button" data-file-action="write">Apply to Editor</button>
+      <button class="editor-only" type="button" data-file-action="copy">Save As…</button>
       <span id="writing-status" role="status"></span>
     </header>
     <dialog id="writing-dialog" aria-labelledby="writing-title">
       <form>
-        <h1 id="writing-title">写下一段</h1>
+        <h1 id="writing-title">Write the next passage</h1>
         <p id="editor-source" class="editor-only"></p>
-        <label for="manuscript">故事正文</label>
-        <textarea id="manuscript" name="manuscript" rows="5" placeholder="写下开头，或粘贴一段想接着写的文字。" autofocus></textarea>
-        <label for="direction">续写方向</label>
-        <textarea id="direction" name="direction" rows="3" placeholder="例如：让修钟师傅认出敲门的暗号。用对话揭开谜底。"></textarea>
+        <label for="manuscript">Manuscript</label>
+        <textarea id="manuscript" name="manuscript" rows="5" placeholder="Write an opening or paste text to continue, in any language." autofocus></textarea>
+        <label for="direction">Direction</label>
+        <textarea
+          id="direction"
+          name="direction"
+          rows="3"
+          placeholder="For example: reveal the secret through dialogue. Or ask for a clear, concise explanation."
+        ></textarea>
         <fieldset id="writing-knobs">
-          <legend>写作旋钮</legend>
+          <legend>Writing controls</legend>
           <div id="knob-rows"></div>
-          <button type="button" id="add-knob">添加维度</button>
-          <button type="button" id="suggest-dimensions">推荐维度</button>
+          <button type="button" id="add-knob">Add Dimension</button>
+          <button type="button" id="suggest-dimensions">Suggest Dimensions</button>
           <div id="dimension-suggestions" aria-live="polite"></div>
         </fieldset>
         <template id="writing-knob-row">
           <div class="knob-row">
             <label
-              >维度
+              >Dimension
               <select name="dimension">
-                <option value="">请选择</option>
+                <option value="">Choose a dimension</option>
               </select></label
             >
             <label
-              >目标
+              >Target
               <select name="target" disabled></select
             ></label>
-            <label>强度 <input type="range" name="strength" aria-label="影响强度" min="0" max="100" value="64" disabled /></label>
-            <output>64%</output><button type="button" data-remove>移除</button>
+            <label>Strength <input type="range" name="strength" aria-label="Influence strength" min="0" max="100" value="64" disabled /></label>
+            <output>64%</output><button type="button" data-remove>Remove</button>
           </div>
         </template>
-        <p>正文和方向可以只写一栏。下次打开时，可以修改已展开的正文，也可以只换方向。</p>
+        <p>
+          Enter text, direction, or both. Live writing follows your manuscript language; explicitly request another language in Direction. Simulation uses
+          canned English examples, not model output.
+        </p>
         <div class="actions">
-          <button class="editor-only" type="button" data-file-action="write">写回编辑器</button
-          ><button class="editor-only" type="button" data-file-action="copy">另存为…</button
-          ><button type="button" command="close" commandfor="writing-dialog">返回画布</button><button type="submit">续写下一段</button>
+          <button class="editor-only" type="button" data-file-action="write">Apply to Editor</button
+          ><button class="editor-only" type="button" data-file-action="copy">Save As…</button
+          ><button type="button" command="close" commandfor="writing-dialog">Back to Canvas</button><button type="submit">Continue Writing</button>
         </div>
       </form>
     </dialog>
@@ -1034,21 +1042,26 @@
       <path id="future-links" />
       <path id="future-tuned-link" />
     </svg>
-    <button id="pointer" class="knob" type="button" aria-label="拖动以展开或收回正文；双击切换关键词；双击并按住打开写作旋钮"></button>
+    <button
+      id="pointer"
+      class="knob"
+      type="button"
+      aria-label="Drag to reveal or retract text; double-click to toggle keywords; double-click and hold for writing controls"
+    ></button>
     <template id="future-knob">
-      <button class="knob future" type="button" aria-label="续写旋钮，双击移除"><span>…</span></button>
+      <button class="knob future" type="button" aria-label="Writing control, double-click to remove"><span>…</span></button>
     </template>
     <div id="cursor" aria-hidden="true"></div>
     <footer id="tray">
-      <button id="mode-toggle" type="button" aria-pressed="false" aria-label="切换写作模式">模式<b>模拟</b></button>
+      <button id="mode-toggle" type="button" aria-pressed="false" aria-label="Toggle writing mode">Mode<b>Simulation</b></button>
       <output id="status" aria-live="off"></output>
-      <button id="sound-toggle" type="button" aria-pressed="true" aria-label="切换音效">音效<b>开</b></button>
-      <a id="extra-link" href="extra/style-1.html">设计样例</a>
+      <button id="sound-toggle" type="button" aria-pressed="true" aria-label="Toggle sound">Sound<b>On</b></button>
+      <a id="extra-link" href="extra/style-1.html">Design demos</a>
     </footer>
     <dialog id="live-keys" aria-labelledby="live-keys-title" aria-describedby="live-keys-note" closedby="closerequest">
       <form method="dialog" autocomplete="off">
-        <h2 id="live-keys-title">启用实时写作</h2>
-        <p id="live-keys-note">输入 Cerebras 和 Gemini 的 API 密钥以启用实时写作。密钥保存在当前浏览器。</p>
+        <h2 id="live-keys-title">Enable Live Writing</h2>
+        <p id="live-keys-note">Enter Cerebras and Gemini API keys for live writing. Keys are stored in this browser.</p>
         <label
           >Cerebras
           <input
@@ -1081,8 +1094,8 @@
             data-form-type="other"
         /></label>
         <p class="actions">
-          <button type="button" command="close" commandfor="live-keys">取消</button>
-          <button value="live">启用</button>
+          <button type="button" command="close" commandfor="live-keys">Cancel</button>
+          <button value="live">Enable</button>
         </p>
       </form>
     </dialog>

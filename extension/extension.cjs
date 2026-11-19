@@ -30,7 +30,7 @@ function activate(context) {
     let seed = binding.doc.getText(binding.range)
     const sourceLabel = () => {
       const relative = workspace.asRelativePath(binding.doc.uri)
-      return (binding.selected ? "选区 · " : "全文 · ") + (path.isAbsolute(relative) ? path.basename(relative) : relative)
+      return (binding.selected ? "Selection · " : "File · ") + (path.isAbsolute(relative) ? path.basename(relative) : relative)
     }
 
     function render(target, page) {
@@ -44,7 +44,7 @@ function activate(context) {
           "<head>",
           `<head><meta http-equiv="Content-Security-Policy" content="${escape(csp)}"><base href="${web.asWebviewUri(assetDir)}/"><meta name="spaceship-render" content="${++revision}"><meta name="spaceship-model" content="${escape(workspace.getConfiguration("spaceship").get("model"))}"><script src="${bridge}"></script>`,
         )
-        .replace("<body>", page.startsWith("extra/") ? '<body><a href="../" style="color:inherit">← 返回写作台</a>' : "<body>")
+        .replace("<body>", page.startsWith("extra/") ? '<body><a href="../" style="color:inherit">← Back to Writing Desk</a>' : "<body>")
     }
 
     function navigate(from, href) {
@@ -59,7 +59,7 @@ function activate(context) {
       }
       if (!pages.has(next)) return
       if (!gallery) {
-        gallery = make("spaceship.gallery", "Spaceship · 设计样例")
+        gallery = make("spaceship.gallery", "Spaceship · Design demos")
         gallery.onDidDispose(() => {
           gallery = undefined
         })
@@ -94,7 +94,8 @@ function activate(context) {
         return
       }
       const doc = binding.doc
-      const conflict = () => ui.showWarningMessage("原文已修改或关闭。请在写作台选择「另存为」保留此稿，或从最新文件重新打开。")
+      const conflict = () =>
+        ui.showWarningMessage("The source changed or was closed. Choose Save As in the writing desk to keep this draft, or reopen the latest file.")
       if (doc.isClosed || doc.version !== binding.version || doc.getText() !== binding.snapshot) return conflict()
       const editor = await ui.showTextDocument(doc, { viewColumn: binding.column, preview: false })
       if (doc.version !== binding.version || doc.isClosed) return conflict()
@@ -192,14 +193,14 @@ function activate(context) {
     const parent = folder ?? workspace.workspaceFolders?.[0]?.uri
     const doc =
       parent?.scheme === "file"
-        ? await workspace.openTextDocument(Uri.joinPath(parent, `稿件-${Date.now()}.md`).with({ scheme: "untitled" }))
+        ? await workspace.openTextDocument(Uri.joinPath(parent, `draft-${Date.now()}.md`).with({ scheme: "untitled" }))
         : await workspace.openTextDocument({ language: "markdown" })
     const editor = await ui.showTextDocument(doc, { preview: false })
     await open(editor.document.uri)
   })
   command("settings", () => vscode.commands.executeCommand("workbench.action.openSettings", "@ext:brentlee-personal.spaceship-writer"))
   command("setKey", async () => {
-    const key = await ui.showInputBox({ title: "CLIProxyAPI 密钥", prompt: "保存到 VS Code SecretStorage", password: true, ignoreFocusOut: true })
+    const key = await ui.showInputBox({ title: "CLIProxyAPI Key", prompt: "Save in VS Code SecretStorage", password: true, ignoreFocusOut: true })
     if (key?.trim()) await context.secrets.store("proxy-key", key.trim())
   })
 }

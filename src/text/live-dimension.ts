@@ -4,10 +4,10 @@ import { writingDimensions, type Dimension, type DimensionContext, type Dimensio
 const MENU_SIZE = 5
 const MAX_WORDS_PER_LABEL = 3
 /** Stands for the options of `focus` in the list of axes; the model replaces it with the story's characters. */
-const CHARACTERS_SLOT = "<人物>"
+const CHARACTERS_SLOT = "<characters>"
 
-const SYSTEM_PROMPT = `依据正文、作者的续写方向和关键词，从候选调节项里选出指定数量，按对后文的重要程度排序。每行照抄一项，保留半角冒号和竖线，仅输出选中的行。
-若选择“视角人物”，用正文出现的人名替换 <人物>，并保留“旁白”。没有人物就跳过这一项。`
+const SYSTEM_PROMPT = `Select the requested number of candidate writing dimensions for the manuscript, direction and key phrases, in order of relevance. Copy each selected candidate exactly on its own line, including colons and pipes. Output only those lines.
+For focus, replace <characters> with names copied exactly from the manuscript in their original language, and retain narrator. Skip focus if there are no characters. Do not translate the manuscript or names.`
 
 /** One call offers the menu: the free catalog axes that matter most here, with the story's characters as the options of `focus`. Axes the model leaves out or garbles are filled in from the catalog. */
 export const liveDimension: DimensionSource = async function* (context, signal) {
@@ -46,14 +46,14 @@ async function* linesOf(deltas: AsyncIterable<string>) {
 }
 
 function userMessageOf({ text, leads, direction }: DimensionContext, free: Dimension[], size: number) {
-  const keyPhrases = leads.length ? `关键词：\n${leads.map(({ before, keyword, after }) => `- ${before}[${keyword}]${after}`).join("\n")}\n` : ""
-  const guidance = direction ? `续写方向：${direction}\n` : ""
-  return `正文： ${text}\n${guidance}${keyPhrases}候选调节项：\n${free.map(axisLine).join("\n")}\n请选择 ${size} 项。`
+  const keyPhrases = leads.length ? `Key phrases:\n${leads.map(({ before, keyword, after }) => `- ${before}[${keyword}]${after}`).join("\n")}\n` : ""
+  const guidance = direction ? `Direction:${direction}\n` : ""
+  return `Manuscript: ${text}\n${guidance}${keyPhrases}Candidates:\n${free.map(axisLine).join("\n")}\nSelect ${size} items.`
 }
 
 function axisLine(axis: Dimension) {
   if (axis.kind === "scale") return `${axis.name}: ${axis.low} | ${axis.high}`
-  return `${axis.name}: ${axis.options.length ? axis.options.join(" | ") : `${CHARACTERS_SLOT} | 旁白`}`
+  return `${axis.name}: ${axis.options.length ? axis.options.join(" | ") : `${CHARACTERS_SLOT} | narrator`}`
 }
 
 /** Reads a "name: label | label" line as one of `axes`, keeping that axis's kind; undefined when it is not one of them or its labels do not fit the kind. */
