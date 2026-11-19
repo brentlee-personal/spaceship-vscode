@@ -51,3 +51,20 @@ test("remove and undo preserve intervening edits and expose dangling references"
   assert.equal(restored.blocks[1].purpose, "Revised")
   assert.deepEqual(checkOutline(restored), [])
 })
+
+test("reader knowledge is not protagonist knowledge: discovery repairs only the missing premise", () => {
+  const opening = block("opening", { name: "Anonymous witness", produces: ["witness appears"] })
+  const clue = block("ring", { name: "Ring clue", needs: ["witness appears"], produces: ["reader knows witness identity"] })
+  const confrontation = block("confrontation", { name: "Protagonist confronts witness", needs: ["protagonist knows witness identity"] })
+  const draft = { title: "Witness mystery", blocks: [opening, clue, confrontation] }
+  const issues = checkOutline(draft)
+  assert.equal(issues.length, 1)
+  assert.equal(issues[0].id, "confrontation")
+  assert.match(issues[0].message, /Missing earlier output: protagonist knows witness identity/)
+  const discovery = block("discovery", { name: "Protagonist discovers identity", needs: ["witness appears"], produces: ["protagonist knows witness identity"] })
+  const repaired = { ...draft, blocks: [opening, clue, discovery, confrontation] }
+  assert.deepEqual(checkOutline(repaired), [])
+  assert.equal(repaired.blocks[0], draft.blocks[0])
+  assert.equal(repaired.blocks[1], draft.blocks[1])
+  assert.equal(repaired.blocks[3], draft.blocks[2])
+})
