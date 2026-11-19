@@ -24,6 +24,10 @@ Run **Spaceship: Configure Model Connection**. Set `spaceship.model` and the loc
 
 The bundled webview sends model requests through the extension host. The upstream hosted browser demo uses a separate direct-provider flow.
 
+## Progressive manuscript context
+
+Long drafts send a bounded recent excerpt, not the whole file. To retrieve an earlier detail, name it in Direction (quotes help, e.g. `Bring back "blue envelope"`) or use a keyword from the draft. Matching earlier lines are read locally and included as reference, without a separate model request. The status area shows the draft-relative ranges. An earlier clue that does not match a name or keyword may be missed. Your entire draft stays in the editor; the original file or selection remains the only writeback target.
+
 ## How the models work together
 
 | Stage                | Model and priority                                                                                                                                                                                                                                                                              |
