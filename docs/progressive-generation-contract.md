@@ -1,6 +1,6 @@
 # 0.3.0 experimental progressive generation contract
 
-This is a local, provider-independent engine seam, **not a shipped UI or a 0.2.0 release change**. No extension commands, transport, file reading, editor writeback or model calls are connected. Block-diffusion annealing is an interaction inspiration, not an implemented diffusion model.
+This is a local, provider-independent engine seam, **not a shipped UI or a 0.2.0 release change**. The engine itself has no transport, file reading, editor writeback or model calls. The separate backbone workbench below now supplies an experimental author-facing outline path. Block-diffusion annealing is an interaction inspiration, not an implemented diffusion model.
 
 ## Product direction: a backbone-refinement tool for authors (acceptance, not shipped)
 
@@ -15,7 +15,7 @@ Acceptance for the next vertical slice:
 - Revise one specific block and see its affected dependents, while retaining unaffected work. Plan changes require a new immutable confirmed revision; a cancelled or failed replacement must preserve committed proposals.
 - Only after explicit confirmation may independent, dependency-ready blocks fill with bounded parallelism. Local refinement stays within confirmed constraints, preserves unrelated blocks, and invalidates dependent proposals only when a valid replacement commits.
 
-These are priority and user-visible acceptance targets for existing draft PR #4, not implemented UI guarantees. The current engine below is only a substrate: it has no outline hierarchy, stub dry-run/schema diagnostics or selective plan-edit preservation yet (its current `edit` resets the draft). Do not treat existing engine tests as acceptance of this full workflow. No 0.2.x changes, editor writeback or release are included.
+These are priority and user-visible acceptance targets for existing draft PR #4, not implemented UI guarantees. The generation engine below is only a substrate (its current `edit` resets its draft). The separate backbone workbench now supports outline levels, named input/output checks and isolated stub edits; it is not wired to that engine or to prose generation. Do not treat existing engine tests as acceptance of this full workflow. No 0.2.x changes, editor writeback or release are included.
 
 ## Current engine contract
 
@@ -36,3 +36,13 @@ Cancellation invalidates all previous callbacks immediately and releases the loc
 ## Deterministic checks
 
 `node --test tests/progressive-engine.test.mjs` covers confirmation/revision guards, defensive snapshots, graph order, parallel limits, failed prerequisites, targeted retry, selective refinement, edit invalidation, late results from an uncooperative source, invalid graphs, and pre-aborted/same-turn cancellation. These are engine checks, not language-model quality, GUI usability, latency or shipped-feature claims.
+
+## Experimental author-facing slice
+
+Run **Spaceship: Open Backbone Workbench** from the VS Code Command Palette. No open manuscript, gateway, key or model is needed. Add named blocks; edit their purpose, what changes for the reader, outline level (1–3), named inputs/outputs, dependency IDs and declared conflicts. Use Move up/down to change reading order; collapse a block to scan the outline.
+
+**Run outline check** walks the entire list without model calls or generated prose. It points to missing/late inputs or dependencies, explicit conflicts, duplicate output ownership, incomplete stubs and skipped hierarchy levels. Click a finding to focus its block; edit it or reorder blocks. Other blocks retain their fields. These are exact-name structural checks, not automatic logical contradiction detection or a proof of meaning. No implicit prose generation follows a passing check.
+
+**Export Markdown copy** opens a new unsaved Markdown document containing the full outline and outstanding checks. Use normal VS Code Save to retain it; the command never applies to an existing manuscript or selection. The panel retains state while hidden; export before closing it. Markdown re-import and cross-session editable project persistence are not part of this slice.
+
+Validation: domain tests cover prose-free diagnostics, order changes, selective edits and export; a mocked VS Code host test covers model-free opening and new-document-only export. `tests/backbone-ui.mjs` exercises the real browser page with a mock VS Code messaging bridge, but this environment blocks Chromium startup (`socket() failed: Operation not permitted`), so its assertions have not run. Actual VS Code Extension Host interaction and visual accessibility remain unverified. This is draft implementation, not shipped UX.

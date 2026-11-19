@@ -28,6 +28,11 @@
   "contributes": {
     "commands": [
       {
+        "command": "spaceship.backbone",
+        "title": "Open Backbone Workbench",
+        "category": "Spaceship"
+      },
+      {
         "command": "spaceship.open",
         "title": "Open Writing Desk",
         "category": "Spaceship"

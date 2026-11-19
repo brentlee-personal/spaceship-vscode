@@ -50,3 +50,7 @@ The browser demo also falls back to its existing writing LLM when no Gemini key 
 Try a disposable manuscript and report reproducible issues, especially Windows, Linux, accessibility and multilingual writing behavior. [Contributing guide](https://github.com/brentlee-personal/spaceship-vscode/blob/main/CONTRIBUTING.md) · [Open issues](https://github.com/brentlee-personal/spaceship-vscode/issues)
 
 MIT licensed. Extension identifier: `brentlee-personal.spaceship-writer`.
+
+## Experimental backbone workbench (0.3.0 draft only)
+
+Use **Spaceship: Open Backbone Workbench** to build a readable outline of named stubs, their purpose and what changes, with explicit inputs, outputs and dependencies. Run the prose-free structural check, revise one block without losing the others, and export a new Markdown copy to save normally. No model configuration is needed. A useful outline is a complete outcome; prose generation is optional and is not connected to this workbench yet. Export before closing the panel. This draft path has unit/host-mock coverage, not a completed VS Code GUI acceptance test.
