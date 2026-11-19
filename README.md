@@ -51,9 +51,9 @@ Requires Node.js 24 and npm. Run `npm ci`, `npm test`, and `npm run package:exte
 
 We welcome writers, extension developers, accessibility testers and co-maintainers. See [CONTRIBUTING](CONTRIBUTING.md) and [help wanted](https://github.com/brentlee-personal/spaceship-vscode/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22help%20wanted%22). Please test English, Chinese, and other manuscript languages without treating the interface language as the output language.
 
-## Original project
+## Original Spaceship IDE (reference)
 
-The following is the original author's project introduction. Its hosted browser demo and browser-stored provider keys are separate from this extension's local gateway configuration.
+The introduction, GIFs, and browser demos below are from the original Spaceship IDE. They don't show the VS Code extension. Its hosted browser demo and browser-stored provider keys are separate from this extension's local gateway configuration.
 
 # 🕹️ Spaceship IDE
 
