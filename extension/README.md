@@ -2,6 +2,14 @@
 
 Write in VS Code with independent steering controls. This is an adaptation of [Chuanqi Sun’s Spaceship IDE](https://github.com/chuanqisun/spaceship), not a Chinese-only edition. The interface defaults to English; live writing supports Chinese and other languages through your chosen model.
 
+## Refine a backbone (0.3.0)
+
+Run **Spaceship: Open Backbone Workbench** to build an outline you can write from, without a model or an open manuscript. Add named blocks with their purpose, what changes for the reader, hierarchy, named inputs/outputs, dependencies and conflicts. Run the local outline check and click a finding to edit its block. Move up/down keeps sibling subtrees intact; parent removal and undo are guarded against unintended reparenting.
+
+**Export Markdown copy** opens a new unsaved Markdown document. Save it normally; your existing manuscript is not overwritten. A usable outline is a complete outcome, with no generated prose required.
+
+**Session-only editing:** export and save before closing the panel. This version does not reopen a saved outline for structured editing, persist a backbone project across sessions, or generate/fill backbone blocks with a model. Markdown export is readable text, not a re-importable project. The existing Writing Desk and progressive context loading below remain separate and unchanged.
+
 ## Start writing
 
 1. Run **Spaceship: Open Writing Desk**. Right-click a Markdown/text file to **Open File in Writing Desk**, or select text and choose **Continue from Selection**. Right-click a folder to create a **New Markdown Draft**.
@@ -23,6 +31,10 @@ Simulation uses canned English samples to demonstrate interaction; it does not f
 Run **Spaceship: Configure Model Connection**. Set `spaceship.model` and the local CLIProxyAPI `spaceship.proxyPort` (default 8317), then switch to Live. Use **Spaceship: Set CLIProxyAPI Key** to store a key in VS Code SecretStorage, or configure `spaceship.keyFile` with a local dotenv path containing `CLIPROXY_API_KEY`.
 
 The bundled webview sends model requests through the extension host. The upstream hosted browser demo uses a separate direct-provider flow.
+
+## Progressive manuscript context
+
+Long drafts send a bounded recent excerpt, not the whole file. To retrieve an earlier detail, name it in Direction (quotes help, e.g. `Bring back "blue envelope"`) or use a keyword from the draft. Matching earlier lines are read locally and included as reference, without a separate model request. The status area shows the draft-relative ranges. An earlier clue that does not match a name or keyword may be missed. Your entire draft stays in the editor; the original file or selection remains the only writeback target.
 
 ## How the models work together
 
@@ -50,7 +62,3 @@ The browser demo also falls back to its existing writing LLM when no Gemini key 
 Try a disposable manuscript and report reproducible issues, especially Windows, Linux, accessibility and multilingual writing behavior. [Contributing guide](https://github.com/brentlee-personal/spaceship-vscode/blob/main/CONTRIBUTING.md) · [Open issues](https://github.com/brentlee-personal/spaceship-vscode/issues)
 
 MIT licensed. Extension identifier: `brentlee-personal.spaceship-writer`.
-
-## Experimental backbone workbench (0.3.0 draft only)
-
-Use **Spaceship: Open Backbone Workbench** to build a readable outline of named stubs, their purpose and what changes, with explicit inputs, outputs and dependencies. Run the prose-free structural check, revise one block without losing the others, and export a new Markdown copy to save normally. No model configuration is needed. A useful outline is a complete outcome; prose generation is optional and is not connected to this workbench yet. Export before closing the panel. This draft path has unit coverage and a passing real Electron Extension Host smoke for production controls and untitled Markdown export. Installed-VSIX and manual visual/keyboard acceptance remain unverified; this is not a released feature.

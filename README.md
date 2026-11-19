@@ -8,6 +8,12 @@ Install the VSIX using `Extensions: Install from VSIX...`, then run **Spaceship:
 
 Simulation is a canned English interaction demo, not generated writing or a translation service. The 18 bundled design studies include Chinese-language examples and remain historical examples, not the product's language restriction.
 
+## Backbone Workbench in 0.3.0
+
+Run **Spaceship: Open Backbone Workbench** to refine a readable outline with named blocks, hierarchy, input/output contracts and local structural checks. No model setup is needed. Export a new Markdown copy to keep and write from; the workbench never applies it to an existing manuscript.
+
+Editing is **session-only**: export and save before closing. Saved-backbone reopening/re-editing and model-generated block filling are not included. Existing Writing Desk continuation and progressive context loading are preserved separately.
+
 ## Build and contribute
 
 Requires Node.js 24 and npm. Run `npm ci`, `npm test`, and `npm run package:extension`; the VSIX is created in `extension/`. Use `npm run dev` for browser development. The extension identifier remains `brentlee-personal.spaceship-writer`.
