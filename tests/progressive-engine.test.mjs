@@ -184,3 +184,109 @@ test("same-turn cancellation launches no provider and refinement pre-abort prese
   await assert.rejects(engine.refine("a", async function* () {}, c.signal))
   assert.deepEqual(engine.snapshot(), before)
 })
+
+async function completedEngine() {
+  const engine = createProgressiveEngine(plan())
+  engine.confirm(1)
+  await engine.run(async function* ({ block }) {
+    yield block.id
+  })
+  return engine
+}
+
+for (const [name, generator] of [
+  [
+    "empty",
+    async function* () {
+      yield "  "
+    },
+  ],
+  [
+    "transport failure after partial output",
+    async function* () {
+      yield "partial"
+      throw Error("private transport detail")
+    },
+  ],
+])
+  test(`refinement ${name} preserves every committed proposal`, async () => {
+    const engine = await completedEngine()
+    const before = engine.snapshot()
+    await assert.rejects(engine.refine("a", generator), (error) => error.message === "Refinement failed; committed proposals preserved.")
+    assert.deepEqual(engine.snapshot(), before)
+    const reruns = []
+    await engine.run(async function* ({ block }) {
+      reruns.push(block.id)
+      yield "unexpected"
+    })
+    assert.deepEqual(reruns, [])
+  })
+
+for (const cancellation of ["engine", "caller"])
+  test(`started refinement ${cancellation} cancellation and late result preserve committed proposals`, async () => {
+    const engine = await completedEngine()
+    const before = engine.snapshot()
+    const held = gate()
+    const controller = new AbortController()
+    let sourceSignal
+    const refining = engine.refine(
+      "a",
+      async function* (_, signal) {
+        sourceSignal = signal
+        yield "partial replacement"
+        await held.promise
+        yield "late replacement"
+      },
+      controller.signal,
+    )
+    await tick()
+    assert.deepEqual(engine.snapshot(), before)
+    if (cancellation === "engine") engine.cancel()
+    else controller.abort()
+    await refining
+    assert.equal(sourceSignal.aborted, true)
+    assert.deepEqual(engine.snapshot(), before)
+    held.resolve()
+    await tick()
+    assert.deepEqual(engine.snapshot(), before)
+    await engine.refine("a", async function* () {
+      yield "fresh replacement"
+    })
+    assert.equal(engine.snapshot().blocks.a.text, "fresh replacement")
+  })
+
+test("refinement commits replacement and descendant invalidation atomically only on success", async () => {
+  const engine = await completedEngine()
+  const before = engine.snapshot()
+  const held = gate()
+  const refining = engine.refine("a", async function* () {
+    yield "new "
+    await held.promise
+    yield "a"
+  })
+  await tick()
+  assert.deepEqual(engine.snapshot(), before)
+  held.resolve()
+  const after = await refining
+  assert.deepEqual(after.blocks.a, { status: "done", text: "new a", mode: "refine" })
+  assert.deepEqual(after.blocks.b, { status: "blocked", text: "", mode: "fill" })
+  assert.deepEqual(after.blocks.c, before.blocks.c)
+  assert.equal(after.revision, before.revision)
+})
+
+test("stale refinement cannot mutate a newly edited plan", async () => {
+  const engine = await completedEngine()
+  const held = gate()
+  const refining = engine.refine("a", async function* () {
+    await held.promise
+    yield "old revision"
+  })
+  await tick()
+  engine.edit(plan([block("fresh")]))
+  await refining
+  const current = engine.snapshot()
+  held.resolve()
+  await tick()
+  assert.deepEqual(engine.snapshot(), current)
+  assert.deepEqual(Object.keys(current.blocks), ["fresh"])
+})
