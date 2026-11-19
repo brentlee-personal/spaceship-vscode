@@ -16,7 +16,8 @@
       </nav>
       <p>
         Inputs and outputs are exact named concepts, separated by commas. Dependencies and conflicts use block IDs. Reading order is the list order; links are
-        separate.
+        separate. Move up/down swaps sibling subtrees intact. Fix invalid outline levels before moving blocks. A block with descendants cannot be removed:
+        remove its children first or explicitly revise their levels.
       </p>
       <p>Session-only draft: export a Markdown copy and save it before closing this panel. Reopening does not restore your outline.</p>
       <p id="status" role="status">Add a block to begin.</p>

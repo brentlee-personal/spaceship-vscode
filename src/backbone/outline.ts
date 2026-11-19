@@ -17,25 +17,62 @@ export function newStub(id: string): Stub {
 export function normalizeLevel(level: number): number {
   return Number.isFinite(level) ? Math.max(1, Math.min(3, Math.trunc(level))) : 1
 }
+export function canRemove(outline: Outline, id: string): boolean {
+  const index = outline.blocks.findIndex((b) => b.id === id)
+  return index >= 0 && (index + 1 === outline.blocks.length || outline.blocks[index + 1].level <= outline.blocks[index].level)
+}
 export function removeBlock(outline: Outline, id: string): Outline {
+  if (!canRemove(outline, id)) return outline
   return { ...outline, blocks: outline.blocks.filter((b) => b.id !== id) }
 }
-export function restoreBlock(outline: Outline, block: Stub, index: number): Outline {
+export function parentId(outline: Outline, id: string): string | null {
+  const index = outline.blocks.findIndex((b) => b.id === id)
+  if (index < 0) return null
+  for (let i = index - 1; i >= 0; i--) if (outline.blocks[i].level < outline.blocks[index].level) return outline.blocks[i].id
+  return null
+}
+export function restoreBlock(outline: Outline, block: Stub, index: number, expectedParent?: string | null): Outline {
   if (outline.blocks.some((b) => b.id === block.id)) return outline
   const blocks = [...outline.blocks]
   blocks.splice(index, 0, block)
-  return { ...outline, blocks }
+  const restored = { ...outline, blocks }
+  if (expectedParent !== undefined && parentId(restored, block.id) !== expectedParent) return outline
+  if (outline.blocks.some((existing) => parentId(restored, existing.id) !== parentId(outline, existing.id))) return outline
+  return restored
 }
 export function revise(outline: Outline, id: string, patch: Partial<Omit<Stub, "id">>): Outline {
   return { ...outline, blocks: outline.blocks.map((b) => (b.id === id ? { ...b, ...patch, id } : b)) }
 }
-export function move(outline: Outline, id: string, offset: number): Outline {
-  const blocks = [...outline.blocks],
-    from = blocks.findIndex((b) => b.id === id),
-    to = from + offset
-  if (from < 0 || to < 0 || to >= blocks.length) return outline
-  ;[blocks[from], blocks[to]] = [blocks[to], blocks[from]]
-  return { ...outline, blocks }
+function moveRange(outline: Outline, id: string, direction: number): [number, number, number] | undefined {
+  const blocks = outline.blocks
+  // Invalid nesting has no unambiguous parent. Repair levels before reordering.
+  if (direction !== -1 && direction !== 1) return
+  if (blocks.some((b, i) => !Number.isInteger(b.level) || b.level < 1 || b.level > 3 || (i === 0 ? b.level !== 1 : b.level > blocks[i - 1].level + 1))) return
+  const from = blocks.findIndex((b) => b.id === id)
+  if (from < 0) return
+  const level = blocks[from].level
+  let end = from + 1
+  while (end < blocks.length && blocks[end].level > level) end++
+  if (direction === 1) {
+    if (end === blocks.length || blocks[end].level !== level) return
+    let nextEnd = end + 1
+    while (nextEnd < blocks.length && blocks[nextEnd].level > level) nextEnd++
+    return [from, end, nextEnd]
+  }
+  let previous = from - 1
+  while (previous >= 0 && blocks[previous].level > level) previous--
+  if (previous < 0 || blocks[previous].level !== level) return
+  return [previous, from, end]
+}
+export function canMove(outline: Outline, id: string, direction: number): boolean {
+  return moveRange(outline, id, direction) !== undefined
+}
+export function move(outline: Outline, id: string, direction: number): Outline {
+  const range = moveRange(outline, id, direction)
+  if (!range) return outline
+  const [start, middle, end] = range
+  const blocks = outline.blocks
+  return { ...outline, blocks: [...blocks.slice(0, start), ...blocks.slice(middle, end), ...blocks.slice(start, middle), ...blocks.slice(end)] }
 }
 export function checkOutline(outline: Outline): Finding[] {
   const findings: Finding[] = [],

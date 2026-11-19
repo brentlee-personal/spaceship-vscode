@@ -1,4 +1,4 @@
-import { checkOutline, exportOutline, move, newStub, revise, normalizeLevel, removeBlock, restoreBlock } from "./outline"
+import { canMove, canRemove, parentId, checkOutline, exportOutline, move, newStub, revise, normalizeLevel, removeBlock, restoreBlock } from "./outline"
 import type { Outline, Stub } from "./outline"
 import "./style.css"
 declare const acquireVsCodeApi: undefined | (() => { postMessage(message: unknown): void; getState(): Outline | undefined; setState(state: Outline): void })
@@ -9,12 +9,19 @@ const title = document.querySelector<HTMLInputElement>("#title")!
 const status = document.querySelector<HTMLElement>("#status")!
 const results = document.querySelector<HTMLElement>("#findings")!
 let checked = false
-const removed: { block: Stub; index: number }[] = []
+const removed: { block: Stub; index: number; parent: string | null }[] = []
 const undo = document.querySelector<HTMLButtonElement>("#undo-remove")!
 undo.onclick = () => {
-  const last = removed.pop()
+  const last = removed.at(-1)
   if (!last) return
-  outline = restoreBlock(outline, last.block, last.index)
+  const restored = restoreBlock(outline, last.block, last.index, last.parent)
+  if (restored === outline) {
+    status.textContent =
+      "Cannot undo here without changing outline parent relationships. Restore the original parent/order first; the removed block is still retained for undo."
+    return
+  }
+  removed.pop()
+  outline = restored
   undo.disabled = !removed.length
   persist()
   render()
@@ -88,6 +95,11 @@ function render() {
         const updated = outline.blocks.find((x) => x.id === b.id)!
         summary.textContent = `${updated.name} · ${b.id}`
         li.style.marginInlineStart = `${(updated.level - 1) * 1.5}rem`
+        if (key === "level") {
+          for (const button of list.querySelectorAll<HTMLButtonElement>("button[data-move]"))
+            button.disabled = !canMove(outline, button.dataset.block!, Number(button.dataset.move))
+          for (const button of list.querySelectorAll<HTMLButtonElement>("button[data-remove]")) button.disabled = !canRemove(outline, button.dataset.remove!)
+        }
       }
       wrapper.append(input)
       details.append(wrapper)
@@ -106,7 +118,9 @@ function render() {
     ] as const) {
       const button = document.createElement("button")
       button.textContent = label
-      button.disabled = delta === -1 ? outline.blocks[0].id === b.id : outline.blocks.at(-1)!.id === b.id
+      button.dataset.block = b.id
+      button.dataset.move = String(delta)
+      button.disabled = !canMove(outline, b.id, delta)
       button.onclick = () => {
         outline = move(outline, b.id, delta)
         persist()
@@ -117,8 +131,16 @@ function render() {
     }
     const remove = document.createElement("button")
     remove.textContent = "Remove block"
+    remove.dataset.remove = b.id
+    remove.disabled = !canRemove(outline, b.id)
+    remove.title = "Blocks with descendants cannot be removed. Remove children first or explicitly revise their levels."
     remove.onclick = () => {
-      removed.push({ block: outline.blocks.find((x) => x.id === b.id)!, index: outline.blocks.findIndex((x) => x.id === b.id) })
+      if (!canRemove(outline, b.id)) return
+      removed.push({
+        parent: parentId(outline, b.id),
+        block: outline.blocks.find((x) => x.id === b.id)!,
+        index: outline.blocks.findIndex((x) => x.id === b.id),
+      })
       outline = removeBlock(outline, b.id)
       undo.disabled = false
       checked = true
