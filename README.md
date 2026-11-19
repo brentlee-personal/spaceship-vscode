@@ -2,13 +2,15 @@
 
 An independent, MIT-licensed adaptation of [Chuanqi Sun’s Spaceship IDE](https://github.com/chuanqisun/spaceship) for writing in VS Code, not a language-specific edition. Open a manuscript or selection, steer a continuation with independent controls, then apply it as a native undoable edit. Chinese remains supported alongside English and other languages.
 
-[Install from Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=brentlee-personal.spaceship-writer) · [Download the 0.3.0 VSIX](https://github.com/brentlee-personal/spaceship-vscode/releases/download/v0.3.0/spaceship-writer-0.3.0.vsix) · [Watch the 30-second Linux demo (MP4)](https://github.com/brentlee-personal/spaceship-vscode/releases/download/v0.3.0/spaceship-writer-0.3.0-linux.mp4)
+[Install from Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=brentlee-personal.spaceship-writer) · [Download the 0.3.0 VSIX](https://github.com/brentlee-personal/spaceship-vscode/releases/download/v0.3.0/spaceship-writer-0.3.0.vsix)
 
 For a manual install, download the VSIX, then run **Extensions: Install from VSIX…** in VS Code and select the file. See the [extension guide](extension/README.md) for model setup and [community intake](docs/community-intake.md) for feedback.
 
 ## Quick start: build a backbone
 
 Open the Command Palette and run **Spaceship: Open Backbone Workbench**. You don't need a manuscript, model, or API key.
+
+**[Watch the 38-second narrated demo (MP4)](https://github.com/brentlee-personal/spaceship-vscode/releases/download/v0.3.0/spaceship-writer-0.3.0-linux-narrated.mp4)** · English captions · Recorded in VS Code on Linux. [30-second silent capture](https://github.com/brentlee-personal/spaceship-vscode/releases/download/v0.3.0/spaceship-writer-0.3.0-linux.mp4).
 
 ### 1. Build the outline
 
