@@ -35,3 +35,6 @@ token-usage.log
 # Packaged VS Code extension
 extension/media/
 *.vsix
+
+.vscode-test/
+extension/media/host-smoke-driver.js
