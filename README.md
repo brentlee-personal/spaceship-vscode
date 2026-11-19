@@ -2,17 +2,48 @@
 
 An independent, MIT-licensed adaptation of [Chuanqi Sun’s Spaceship IDE](https://github.com/chuanqisun/spaceship) for writing in VS Code, not a language-specific edition. Open a manuscript or selection, steer a continuation with independent controls, then apply it as a native undoable edit. Chinese remains supported alongside English and other languages.
 
-[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=brentlee-personal.spaceship-writer) · [Download VSIX](https://github.com/brentlee-personal/spaceship-vscode/releases/latest) · [Usage and connection setup](extension/README.md) · [Community intake](docs/community-intake.md) · [Upstream issue review](docs/upstream-issues.md)
+[Install from Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=brentlee-personal.spaceship-writer) · [Download the 0.3.0 VSIX](https://github.com/brentlee-personal/spaceship-vscode/releases/download/v0.3.0/spaceship-writer-0.3.0.vsix) · [Watch the 30-second Linux demo (MP4)](https://github.com/brentlee-personal/spaceship-vscode/releases/download/v0.3.0/spaceship-writer-0.3.0-linux.mp4)
 
-Install the VSIX using `Extensions: Install from VSIX...`, then run **Spaceship: Open Writing Desk**. The default interface is English. Live writing follows the manuscript language unless you explicitly request another language in Direction. An empty manuscript follows the direction's language; with neither, it defaults to English. The selected model determines generation quality and language coverage.
+For a manual install, download the VSIX, then run **Extensions: Install from VSIX…** in VS Code and select the file. See the [extension guide](extension/README.md) for model setup and [community intake](docs/community-intake.md) for feedback.
 
-Simulation is a canned English interaction demo, not generated writing or a translation service. The 18 bundled design studies include Chinese-language examples and remain historical examples, not the product's language restriction.
+## Quick start: build a backbone
 
-## Backbone Workbench in 0.3.0
+Open the Command Palette and run **Spaceship: Open Backbone Workbench**. You don't need a manuscript, model, or API key.
 
-Run **Spaceship: Open Backbone Workbench** to refine a readable outline with named blocks, hierarchy, input/output contracts and local structural checks. No model setup is needed. Export a new Markdown copy to keep and write from; the workbench never applies it to an existing manuscript.
+### 1. Build the outline
 
-Editing is **session-only**: export and save before closing. Saved-backbone reopening/re-editing and model-generated block filling are not included. Existing Writing Desk continuation and progressive context loading are preserved separately.
+Select **Add block** for each chapter or section. Give it a name, purpose, and what changes for the reader. Set its outline level; **Move up** and **Move down** reorder sibling blocks with their children intact.
+
+### 2. Dry-run the structure
+
+Declare what each block **Needs** and **Produces** in matching terms, or set an explicit prerequisite with **Dependency block IDs**. Select **Run outline check**. In the demo, Chapter 2 needs `harbor log`, but no earlier block produces it.
+
+![Linux VS Code: the Backbone Workbench flags that Chapter 2 needs an earlier harbor log](docs/images/backbone-check-linux.webp)
+
+### 3. Fix it and rerun
+
+Click the finding to jump to its block. Add `harbor log` to Chapter 1’s **Produces** field, then run **Run outline check** again. The check catches structural issues, not the quality of the writing.
+
+### 4. Export a separate copy
+
+Select **Export Markdown copy** to open a **new, unsaved Markdown document**. Your original manuscript stays unchanged. Save the Markdown copy before closing the Workbench.
+
+![Linux VS Code: the corrected outline opens in a separate unsaved Markdown tab](docs/images/backbone-export-linux.webp)
+
+The Workbench makes no model calls and doesn't generate prose. Editing is **session-only** in 0.3.0: a saved Markdown copy is readable, but cannot be reopened in the Workbench for structured editing. Screenshots and video show a synthetic example in VS Code on Linux.
+
+## Continue a manuscript: Writing Desk
+
+Run **Spaceship: Open Writing Desk** to steer a continuation using independent dimensions, targets, and strengths. **Simulation** shows canned English text, not live generation. In **Live** mode, continuation follows your manuscript's language unless you request another in **Direction**. [See Writing Desk usage and model setup](extension/README.md).
+
+<details>
+<summary>Show the Writing Desk controls in Simulation mode (Linux)</summary>
+
+![Writing Desk in Simulation mode showing Dimension, Target and Strength controls](docs/images/writing-steering-linux.webp)
+
+</details>
+
+Spaceship Writer adapts Chuanqi Sun’s original **Future Vector Steering** design for VS Code. Thanks to Chuanqi for suggesting a demo and an upstream contribution in [the original project’s issue #6](https://github.com/chuanqisun/spaceship/issues/6). This is an independent adaptation, not an upstream release or endorsement. See the [upstream issue review](docs/upstream-issues.md).
 
 ## Build and contribute
 
@@ -20,9 +51,9 @@ Requires Node.js 24 and npm. Run `npm ci`, `npm test`, and `npm run package:exte
 
 We welcome writers, extension developers, accessibility testers and co-maintainers. See [CONTRIBUTING](CONTRIBUTING.md) and [help wanted](https://github.com/brentlee-personal/spaceship-vscode/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22help%20wanted%22). Please test English, Chinese, and other manuscript languages without treating the interface language as the output language.
 
-## Original project
+## Original Spaceship IDE (reference)
 
-The following is the original author's project introduction. Its hosted browser demo and browser-stored provider keys are separate from this extension's local gateway configuration.
+The introduction, GIFs, and browser demos below are from the original Spaceship IDE. They don't show the VS Code extension. Its hosted browser demo and browser-stored provider keys are separate from this extension's local gateway configuration.
 
 # 🕹️ Spaceship IDE
 
