@@ -38,3 +38,5 @@ extension/media/
 
 .vscode-test/
 extension/media/host-smoke-driver.js
+
+test-evidence/

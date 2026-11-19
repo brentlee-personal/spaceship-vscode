@@ -12,7 +12,8 @@
     "package:extension": "npm run build:extension && cd extension && vsce package --no-dependencies",
     "community:check": "node scripts/community-check.mjs",
     "test": "node --test tests/*.test.mjs",
-    "test:extension-host": "node tests/extension-host/run.mjs"
+    "test:extension-host": "node tests/extension-host/run.mjs",
+    "test:installed-extension": "node tests/extension-host/installed-run.mjs"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
