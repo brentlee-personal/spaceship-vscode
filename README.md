@@ -2,7 +2,7 @@
 
 在资源管理器中选择稿件，或在编辑器里选中一段正文，用多个旋钮引导下一段写作。**写回编辑器** 使用 VS Code 的原生编辑、撤销与保存。界面和 18 个设计样例随扩展一起安装。
 
-[下载安装包](https://github.com/brentlee-personal/spaceship-vscode/releases/latest) · [使用与连接配置](extension/README.md) · [社区参考与采纳记录](docs/community-intake.md)
+[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=brentlee-personal.spaceship-writer) · [下载安装包](https://github.com/brentlee-personal/spaceship-vscode/releases/latest) · [使用与连接配置](extension/README.md) · [社区参考与采纳记录](docs/community-intake.md)
 
 在 VS Code 中运行 `Extensions: Install from VSIX...` 选择下载的安装包，然后运行 **Spaceship: 打开写作台**。
 

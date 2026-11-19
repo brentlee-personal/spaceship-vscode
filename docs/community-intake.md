@@ -10,3 +10,5 @@
 在 macOS 的 Microsoft VS Code 1.147.0 中已用临时 Markdown 文件验证了两个维度的真实续写、选区两侧保持完整、保存后磁盘读回、原生撤销、过期写回保护、改名后显示新文件名和从文件夹新建草稿。其他平台欢迎补充验证。
 
 运行 `npm run community:check` 查询两个来源的最新修订。结果仅表示是否需要复查。候选采纳取决于上表的本地工作流实验。
+
+维护者可运行 `node scripts/community-questions.mjs --initialize`，从当前时间开始观察上游公开 Issue。随后运行同一脚本可预览明确索要 VS Code 版本的提问；加 `--reply` 会使用本机已登录的 GitHub CLI 在匹配的开放讨论回复仓库地址。脚本跳过已贴过链接的讨论、PR、机器人和历史问题。这个工具单独运行，安装 VS Code 扩展不会开启定时任务。
