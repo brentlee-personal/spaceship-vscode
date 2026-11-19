@@ -1,3 +1,5 @@
+import type { Lead } from "./attention.ts"
+import { groundedLeads } from "./direction-recommendation.ts"
 import { valueOf, writingDimensions, type Control, type Dimension, type DimensionSource } from "./dimension.ts"
 
 import { bindDimensionSuggestions } from "./dimension-suggestions.ts"
@@ -10,6 +12,7 @@ export function bindWritingDialog(
   current: () => Manuscript,
   apply: (draft: Manuscript) => void,
   suggest: DimensionSource,
+  leads: () => Lead[] = () => [],
 ) {
   const text = dialog.querySelector<HTMLTextAreaElement>('[name="manuscript"]')!
   const direction = dialog.querySelector<HTMLTextAreaElement>('[name="direction"]')!
@@ -21,7 +24,12 @@ export function bindWritingDialog(
   const suggestions = bindDimensionSuggestions(
     dialog,
     suggest,
-    () => ({ text: text.value.trim(), direction: direction.value.trim(), leads: [], taken: axes().flatMap((axis) => dimensions.get(axis.value) ?? []) }),
+    () => ({
+      text: text.value.trim(),
+      direction: direction.value.trim(),
+      leads: groundedLeads(text.value.trim(), leads()),
+      taken: axes().flatMap((axis) => dimensions.get(axis.value) ?? []),
+    }),
     (dimension) => {
       if (axes().some((axis) => axis.value === dimension.name)) return
       dimensions.set(dimension.name, dimension)
@@ -82,7 +90,7 @@ export function bindWritingDialog(
     }
 
     setTarget(control?.position)
-    axis.addEventListener("change", () => setTarget())
+    axis.addEventListener("change", () => setTarget(dimensions.get(axis.value)?.suggestedPosition))
     strength.addEventListener("input", () => {
       output.value = strength.value + "%"
     })

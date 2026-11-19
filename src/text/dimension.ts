@@ -1,7 +1,7 @@
 import type { Lead } from "./attention.ts"
 
 /** An aspect of the upcoming text that a future knob tunes: a two-pole scale, or a choice among options. */
-export type Dimension = { name: string } & ({ kind: "scale"; low: string; high: string } | { kind: "choice"; options: string[] })
+export type Dimension = { name: string; suggestedPosition?: number } & ({ kind: "scale"; low: string; high: string } | { kind: "choice"; options: string[] })
 
 /** Independent axes of a short passage, most consequential first. `focus` has no generic options: its options are the story's characters. */
 export const writingDimensions: Dimension[] = [

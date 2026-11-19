@@ -75,8 +75,9 @@ export function createTextStream({ expand, complete }: TextSource, onChange: () 
   }
 
   /** Continues the text from its end, appending; never rewrites it. Rejects if the source fails. */
-  async function generate(trigger: GenerationTrigger, steering: Steering): Promise<GenerationOutcome> {
+  async function generate(trigger: GenerationTrigger, steering: Steering, maxCharacters = Infinity): Promise<GenerationOutcome> {
     if (active) return "busy"
+    if (maxCharacters <= 0) return "done"
 
     const controller = (active = new AbortController())
     const { signal } = controller
@@ -92,17 +93,25 @@ export function createTextStream({ expand, complete }: TextSource, onChange: () 
     timing = started
     console.log(`generation ${generationId} start by ${trigger} after ${countCharacters(prefix)} words`)
 
+    let generated = 0
     try {
       for await (const chunk of complete(prefix, steering, signal)) {
         if (signal.aborted) return "aborted"
+        const visible = firstCharacters(chunk, maxCharacters - generated)
+        if (!visible) continue
+        generated += countCharacters(visible)
         const now = performance.now()
         if (started.firstChunkAt === undefined) {
           started.firstChunkAt = now
           release()
-        } else started.words += countCharacters(chunk)
+        } else started.words += countCharacters(visible)
         started.lastChunkAt = now
-        text += chunk
+        text += visible
         onChange()
+        if (generated >= maxCharacters) {
+          controller.abort()
+          return "done"
+        }
       }
       if (signal.aborted) return "aborted"
       console.log(`generation ${generationId} done with ${countCharacters(text) - countCharacters(prefix)} words`)

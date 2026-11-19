@@ -14,6 +14,8 @@ export type CompletionRequest = {
 }
 
 export async function* streamCompletion({ system, user, temperature, maxCompletionTokens, signal }: CompletionRequest) {
+  const requestController = new AbortController()
+  signal = AbortSignal.any([signal, requestController.signal])
   const headers: Record<string, string> = { "Content-Type": "application/json" }
   if (!localModel) {
     const key = localStorage.getItem(KEY_STORAGE)?.trim()
@@ -41,19 +43,25 @@ export async function* streamCompletion({ system, user, temperature, maxCompleti
   const reader = response.body.pipeThrough(new TextDecoderStream()).getReader()
   let buffer = ""
 
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) return
-    buffer += value
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) return
+      buffer += value
 
-    const events = buffer.split("\n")
-    buffer = events.pop() ?? ""
+      const events = buffer.split("\n")
+      buffer = events.pop() ?? ""
 
-    for (const line of events) {
-      const data = line.startsWith("data:") ? line.slice(5).trim() : ""
-      if (!data || data === "[DONE]") continue
-      const content = JSON.parse(data).choices?.[0]?.delta?.content
-      if (content) yield content as string
+      for (const line of events) {
+        const data = line.startsWith("data:") ? line.slice(5).trim() : ""
+        if (!data || data === "[DONE]") continue
+        const content = JSON.parse(data).choices?.[0]?.delta?.content
+        if (content) yield content as string
+      }
     }
+  } finally {
+    requestController.abort()
+    await reader.cancel().catch(() => {})
+    reader.releaseLock()
   }
 }

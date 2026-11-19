@@ -1,4 +1,4 @@
-import type { Dimension, DimensionContext, DimensionSource } from "./dimension.ts"
+import { valueOf, type Dimension, type DimensionContext, type DimensionSource } from "./dimension.ts"
 
 export function bindDimensionSuggestions(
   dialog: HTMLDialogElement,
@@ -32,19 +32,22 @@ export function bindDimensionSuggestions(
     ask.disabled = true
     list.textContent = "Finding suggestions…"
     try {
-      const items = await Array.fromAsync(source(input, controller.signal))
-      if (controller.signal.aborted) return
-      list.textContent = items.length ? "Click to add" : "No more suggestions right now."
-      for (const dimension of items) {
+      let offered = 0
+      for await (const dimension of source(input, controller.signal)) {
+        if (controller.signal.aborted) return
+        if (offered++ === 0) list.textContent = "Click to add a direction"
         const button = document.createElement("button")
         button.type = "button"
-        button.textContent = button.value = dimension.name
+        button.value = dimension.name
+        const position = dimension.suggestedPosition
+        button.textContent = position === undefined ? dimension.name : `${dimension.name} → ${valueOf({ dimension, position })}`
         button.addEventListener("click", () => select(dimension))
         list.append(button)
+        updateSelected(new Set(context().taken.map((item) => item.name)))
       }
-      updateSelected(new Set(context().taken.map((item) => item.name)))
+      if (!controller.signal.aborted && !offered) list.textContent = "No more suggestions right now."
     } catch {
-      if (!controller.signal.aborted) list.textContent = "Suggestions unavailable. Retry or add a dimension manually."
+      if (!controller.signal.aborted && !list.querySelector("button")) list.textContent = "Suggestions unavailable. Retry or add a dimension manually."
     } finally {
       if (pending === controller) {
         pending = undefined

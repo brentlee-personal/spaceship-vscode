@@ -7,7 +7,7 @@ const KEY_FIELDS = { cerebras: CEREBRAS_KEY_STORAGE, gemini: GEMINI_KEY_STORAGE 
 
 /**
  * Sim plays simulated sources; flight calls the models. The sources are chosen when the page loads, so switching reloads it in the other mode.
- * Launching always asks for both API keys first, prefilled with the ones kept from last time; the dialog's submit button returns "live".
+ * Launching asks for the writing API key and an optional decision key, prefilled from last time; the dialog's submit button returns "live".
  */
 export function bindModeToggle(toggle: HTMLButtonElement, dialog: HTMLDialogElement, isLive: boolean, manuscript: () => string) {
   const form = dialog.querySelector("form")!

@@ -44,6 +44,7 @@ export function localFlight(env: Record<string, string>): Plugin {
       }
     },
     configureServer(server) {
+      if (!host) return
       let closing = false
       let reconnect: ReturnType<typeof setTimeout>
       let child: ReturnType<typeof spawn>

@@ -1061,7 +1061,10 @@
     <dialog id="live-keys" aria-labelledby="live-keys-title" aria-describedby="live-keys-note" closedby="closerequest">
       <form method="dialog" autocomplete="off">
         <h2 id="live-keys-title">Enable Live Writing</h2>
-        <p id="live-keys-note">Enter Cerebras and Gemini API keys for live writing. Keys are stored in this browser.</p>
+        <p id="live-keys-note">
+          Enter a Cerebras key for live writing. Gemini is optional for decision feedback; without it, feedback uses the writing model. Keys are stored in this
+          browser.
+        </p>
         <label
           >Cerebras
           <input
@@ -1079,11 +1082,10 @@
             autofocus
         /></label>
         <label
-          >Gemini
+          >Gemini (optional)
           <input
             name="gemini"
             type="text"
-            required
             autocomplete="off"
             autocapitalize="off"
             autocorrect="off"

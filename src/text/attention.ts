@@ -20,13 +20,18 @@ export function startAttention(source: AttentionSource, text: string): Attention
 
   return {
     text,
-    abort: () => controller.abort(),
+    abort: () => {
+      controller.abort()
+      isDone = true
+      notify()
+    },
     async *[Symbol.asyncIterator]() {
       for (let i = 0; ; i++) {
         while (i >= boxes.length) {
           if (isDone) return
           await new Promise<void>((resolve) => waiters.add(resolve))
         }
+        if (controller.signal.aborted) return
         yield boxes[i]
       }
     },

@@ -1,3 +1,4 @@
+import { createGenerationCoordinator } from "./generation-coordinator.ts"
 import { createGenerationFailure } from "./generation-failure.ts"
 import { bindWritingDialog, type Manuscript } from "./writing-dialog.ts"
 import { localModel } from "../llm/local-flight.ts"
@@ -72,12 +73,14 @@ let initialText = session?.text
 function visibleManuscript() {
   return initialText ?? firstCharacters(stream.text, shownCount ?? 0)
 }
-const stream = createTextStream(isLive ? liveSource : simulatedSource, render)
+const coordinator = createGenerationCoordinator()
+const source = isLive ? liveSource : simulatedSource
+const stream = createTextStream({ ...source, complete: coordinator.foreground(source.complete) }, render)
 const rail = createLeftRail(railElement)
-const connections = createConnections({ source: isLive ? liveInfluence : simulatedInfluence, onChange: refreshRail })
-const relevance = createKeywordRelevance(isLive ? liveRelevance : simulatedRelevance, refreshRail)
+const connections = createConnections({ source: coordinator.background(isLive ? liveInfluence : simulatedInfluence), onChange: refreshRail })
+const relevance = createKeywordRelevance(coordinator.background(isLive ? liveRelevance : simulatedRelevance), refreshRail)
 const attention = createAttentionKnobs({
-  source: isLive ? liveAttention : simulatedAttention,
+  source: coordinator.background(isLive ? liveAttention : simulatedAttention),
   textElement: element,
   knob: handle,
   linkPath: $<SVGPathElement>("#attention-links"),
@@ -96,8 +99,8 @@ const futureKnobs = createFutureKnobs({
   linkPath: $<SVGPathElement>("#future-links"),
   tunedLinkPath: $<SVGPathElement>("#future-tuned-link"),
   hud: $<SVGGElement>("#future-hud"),
-  source: isLive ? liveDimension : simulatedDimension,
-  realization: isLive ? liveRealization : simulatedRealization,
+  source: coordinator.background(isLive ? liveDimension : simulatedDimension),
+  realization: coordinator.background(isLive ? liveRealization : simulatedRealization),
   textElement: element,
   context: () => ({ text: shownText, leads: attention.leads() }),
   onChange: invalidateFuture,
@@ -135,7 +138,8 @@ const openWriting = bindWritingDialog(
   writingDialog,
   () => ({ text: visibleManuscript(), direction, controls: futureKnobs.controls() }),
   applyManuscript,
-  isLive ? liveDimension : simulatedDimension,
+  coordinator.foreground(isLive ? liveDimension : simulatedDimension),
+  attention.leads,
 )
 const tensionPreset = new URLSearchParams(location.search).get("preset") === "tension"
 if (session || isLive || tensionPreset) openWriting(tensionPreset ? "tension" : undefined)
@@ -416,7 +420,7 @@ function topUp() {
   if (initialText !== undefined || writingDialog.open || following || generationFailure.paused || isRegenerationHeld || stream.activity().isGenerating) return
   const words = countCharacters(stream.text)
   if (words - (shownCount ?? 0) >= BUFFER_WORDS) return
-  stream.generate("buffer low", steering()).then(
+  stream.generate("buffer low", steering(), BUFFER_WORDS - (words - (shownCount ?? 0))).then(
     (outcome) => outcome === "done" && settleTopUp(words),
     (error) => {
       writingStatus.textContent = generationFailure.fail(error)

@@ -123,6 +123,22 @@
           "description": "Decisions service port on the target host loopback address.",
           "minimum": 1,
           "maximum": 65535
+        },
+        "spaceship.decisionProvider": {
+          "type": "string",
+          "enum": [
+            "llm",
+            "plumb"
+          ],
+          "default": "llm",
+          "scope": "machine",
+          "description": "Use the writing LLM for decisions (default), or try the configured Plumb service with automatic LLM fallback."
+        },
+        "spaceship.decisionModel": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "description": "Optional decision model available through the same local CLIProxyAPI gateway. Empty uses spaceship.model. Never changes the writing model."
         }
       }
     }

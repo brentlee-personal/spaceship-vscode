@@ -6,3 +6,5 @@
 !model.cjs
 !web/**
 !media/**
+!decision-router.cjs
+!decision-schema.mjs
