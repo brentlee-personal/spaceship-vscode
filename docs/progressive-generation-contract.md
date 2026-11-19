@@ -2,7 +2,20 @@
 
 This is a local, provider-independent engine seam, **not a shipped UI or a 0.2.0 release change**. No extension commands, transport, file reading, editor writeback or model calls are connected. Block-diffusion annealing is an interaction inspiration, not an implemented diffusion model.
 
-## Intended interaction
+## Lead priority: backbone first (acceptance, not shipped)
+
+Before prose, the writer builds an expandable outline with explicit reading order and hierarchy, named stub blocks (purpose and what each changes), and a schema stating what each block needs and produces. Think named stubs that only print their contracts, composed into modules, with a `main` dry run before implementation. Dependency/backbone links are distinct from reading order; optional dependency and conflict annotations belong over the simple outline, not a mandatory graph canvas.
+
+Acceptance for the next vertical slice:
+
+- Run the complete outline without writing prose or starting prose-generation calls; inspect every stub's contract in reading order.
+- See missing prerequisites, incompatible inputs/outputs and declared conflicts at the relevant outline positions, including prerequisites introduced too late for the reader. Surface unresolved questions rather than claiming automatic semantic proof.
+- Revise one specific block and see its affected dependents, while retaining unaffected work. Plan changes require a new immutable confirmed revision; a cancelled or failed replacement must preserve committed proposals.
+- Only after explicit confirmation may independent, dependency-ready blocks fill with bounded parallelism. Local refinement stays within confirmed constraints, preserves unrelated blocks, and invalidates dependent proposals only when a valid replacement commits.
+
+These are priority and user-visible acceptance targets for existing draft PR #4, not implemented UI guarantees. The current engine below is only a substrate: it has no outline hierarchy, stub dry-run/schema diagnostics or selective plan-edit preservation yet (its current `edit` resets the draft). Do not treat existing engine tests as acceptance of this full workflow. No 0.2.x changes, editor writeback or release are included.
+
+## Current engine contract
 
 1. A writer edits a visible plan: goal, global constraints, typed blocks, each block's intent, local constraints, dependency IDs and context references.
 2. `confirm(revision)` freezes a deep copy of the exact reviewed plan. No provider is called before confirmation. An edited plan creates a new draft revision, cancels old work and requires a new confirmation.
