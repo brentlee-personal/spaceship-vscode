@@ -7,25 +7,26 @@ const WORDS_PER_CHUNK = 8
 const WORDS_PER_COMPLETION = 400
 /** Share of words drawn from the steering instead of the dictionary, so its effect is visible. */
 const STEERED_SHARE = 0.25
-/** Share of words that end a sentence, so sentences run about as long as a story's. */
-const SENTENCE_END_SHARE = 1 / 15
 const CHUNK_INTERVAL_MS = (WORDS_PER_CHUNK / WORDS_PER_SECOND) * 1000
 
-const DICTIONARY =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.".split(
-    " ",
-  )
+const SENTENCES = [
+  "风把门廊尽头的铃铛吹响了。",
+  "她停下脚步，听了听楼上的动静。",
+  "桌边的杯子还冒着热气。",
+  "河岸上只剩一排自行车。",
+  "他用铅笔在纸上画了个圈。",
+  "远处传来一声短促的汽笛。",
+]
 
 export const simulatedSource: TextSource = { complete }
 
-async function* complete(prefix: string, steering: Steering, signal: AbortSignal) {
-  const steeredWords = steeredWordsOf(steering)
-  const randomWord = () => (Math.random() < STEERED_SHARE && pick(steeredWords)?.()) || pick(DICTIONARY)!
-  let previous = prefix.trimEnd().split(" ").at(-1) ?? ""
+async function* complete(_prefix: string, steering: Steering, signal: AbortSignal) {
+  const words = steeredWordsOf(steering)
+  if (steering.direction) yield `她在纸上记下：“${steering.direction}”`
   for (let sent = 0; sent < WORDS_PER_COMPLETION; sent += WORDS_PER_CHUNK) {
     await delay(sent === 0 ? LATENCY_MS : CHUNK_INTERVAL_MS, signal)
-    const words = Array.from({ length: WORDS_PER_CHUNK }, () => (previous = sentenceCased(withSentenceEnd(randomWord()), previous)))
-    yield sent === 0 && !prefix ? words.join(" ") : ` ${words.join(" ")}`
+    const lead = Math.random() < STEERED_SHARE && pick(words)?.()
+    yield lead ? `她又想起了${lead}。` : pick(SENTENCES)!
   }
 }
 
@@ -43,15 +44,6 @@ function steeredWordsOf({ leads, controls }: Steering): (() => string | undefine
       return Math.random() < position ? dimension.high : dimension.low
     }),
   ]
-}
-
-function withSentenceEnd(word: string) {
-  return Math.random() < SENTENCE_END_SHARE ? word.replace(/[.,]?$/, ".") : word
-}
-
-/** Capitalizes `word` after a sentence end, so the text segments into sentences. */
-function sentenceCased(word: string, previous: string) {
-  return previous.endsWith(".") ? word[0].toUpperCase() + word.slice(1) : word
 }
 
 function pick<T>(items: T[]): T | undefined {

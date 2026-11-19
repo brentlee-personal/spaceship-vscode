@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <title>text · tray 3 · corner gauges</title>
+    <title>写作设计 · 状态栏 03 · 角落仪表</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>" />
     <style>
       @font-face {
@@ -272,83 +272,77 @@
   </head>
   <body>
     <main>
-      <nav class="experiments" aria-label="experiments">
+      <nav class="experiments" aria-label="实验">
         <p>
-          <b>style</b>
-          <a href="style-1.html">instrument</a>
-          <a href="style-2.html">signal</a>
-          <a href="style-3.html">telemetry</a>
-          <a href="style-4.html">merged</a>
+          <b>样式</b>
+          <a href="style-1.html">仪表</a>
+          <a href="style-2.html">信号</a>
+          <a href="style-3.html">遥测</a>
+          <a href="style-4.html">融合</a>
         </p>
         <p>
-          <b>sound</b>
-          <a href="soundboard.html">soundboard</a>
+          <b>音效</b>
+          <a href="soundboard.html">音效面板</a>
         </p>
         <p>
-          <b>knob</b>
-          <a href="knob-states.html">buffer states</a>
+          <b>旋钮</b>
+          <a href="knob-states.html">缓冲区状态</a>
         </p>
         <p>
-          <b>rail</b>
-          <a href="bar-1.html">histogram</a>
-          <a href="bar-2.html">profile</a>
-          <a href="bar-3.html">meters</a>
+          <b>侧栏</b>
+          <a href="bar-1.html">直方图</a>
+          <a href="bar-2.html">强度曲线</a>
+          <a href="bar-3.html">强度表</a>
         </p>
         <p>
-          <b>pointer</b>
-          <a href="pointer-1.html">crosshair</a>
-          <a href="pointer-2.html">ring</a>
-          <a href="pointer-3.html">field</a>
-          <a href="pointer-4.html">steering</a>
-          <a href="pointer-5.html">combined</a>
+          <b>指针</b>
+          <a href="pointer-1.html">十字准星</a>
+          <a href="pointer-2.html">圆环</a>
+          <a href="pointer-3.html">感应区</a>
+          <a href="pointer-4.html">引导</a>
+          <a href="pointer-5.html">组合</a>
         </p>
         <p>
-          <b>tray</b>
-          <a href="tray-1.html">modules</a>
-          <a href="tray-2.html">tmux</a>
-          <a href="tray-3.html" aria-current="page">gauges</a>
+          <b>状态栏</b>
+          <a href="tray-1.html">模块</a>
+          <a href="tray-2.html">tmux 状态行</a>
+          <a href="tray-3.html" aria-current="page">表盘</a>
         </p>
       </nav>
       <header>
-        <h1>text / tray 3 — corner gauges</h1>
+        <h1>状态栏 03 · 角落仪表</h1>
         <p>
-          Borrowed from btop and conky desktops: replace the full-width footer with a 12px cluster in the bottom-right corner, so the page gets its whole bottom
-          row back. Words are cut almost entirely. A braille sparkline of the rate replaces the state word, since orange and moving means streaming. A 32px
-          gauge replaces the buffer count. Pips replace the small counts: □ per box, ◇ per steering knob, filled ◆ when pinned. First chunk moves into a
-          tooltip. Hovering the cluster raises a short label above each part.
+          借鉴 btop 和 Conky 的桌面界面：用右下角高 12px
+          的仪表组取代通栏页脚，把底部整行还给页面。几乎去掉所有文字。用盲文字符绘制的速率迷你图取代状态文字：图形变橙且持续变化，就表示正在生成。用 32px
+          的仪表取代缓冲词数。用符号取代小计数：每个关键词框用 □，每个引导旋钮用 ◇，已固定时用实心
+          ◆。首段信息移入工具提示。悬停在仪表组上时，各项上方会浮现简短标签。
         </p>
       </header>
 
       <section>
-        <h2><b>01</b>live</h2>
+        <h2><b>01</b>实时</h2>
         <div class="stack">
           <figure>
-            <figcaption>proposal <small>· 9px / 12px cluster, simulated stream; hover it for the legend</small></figcaption>
+            <figcaption>提案 <small>· 9px / 12px 仪表组，模拟生成；悬停查看图例</small></figcaption>
             <div class="screen">
-              <p>
-                She leaned on the rail and listened for oars, for voices, for anything at all. Gulls had gone quiet hours ago; even the bell buoy hung still in
-                the slack tide.
-              </p>
+              <p>她倚着栏杆，侧耳听着，想听见划桨声、人声，什么声音都好。海鸥几小时前就不叫了，潮水也静了，连带铃的浮标都一动不动。</p>
               <footer class="tray" id="live"></footer>
             </div>
           </figure>
           <figure>
-            <figcaption>current <small>· 10px / 31px strip</small></figcaption>
+            <figcaption>当前 <small>· 10px 字号 / 31px 高状态栏</small></figcaption>
             <div class="screen">
-              <p>
-                She leaned on the rail and listened for oars, for voices, for anything at all. Gulls had gone quiet hours ago; even the bell buoy hung still in
-                the slack tide.
-              </p>
+              <p>她倚着栏杆，侧耳听着，想听见划桨声、人声，什么声音都好。海鸥几小时前就不叫了，潮水也静了，连带铃的浮标都一动不动。</p>
               <footer class="current">
-                <span class="state">streaming</span>
-                <span>rate<b>12 w/s</b></span>
-                <span>first chunk<b>340ms</b></span>
-                <span>words<b>182</b></span>
-                <span>buffer<b>24</b></span>
-                <span>boxes<b>3</b></span>
-                <span>steering<b>2</b></span>
-                <span>pinned<b>1</b></span>
-                <span>sound<b>on</b></span>
+                <span class="state">输出中</span>
+                <span>速率<b>12 词/秒</b></span>
+                <span>首段<b>340ms</b></span>
+                <span>词数<b>182</b></span>
+                <span>缓冲区<b>24</b></span>
+                <span>关键词框<b>3</b></span>
+                <span>引导<b>2</b></span>
+                <span>已固定<b>1</b></span>
+                <span>音效<b>开</b></span>
               </footer>
             </div>
           </figure>
@@ -356,82 +350,79 @@
       </section>
 
       <section>
-        <h2><b>02</b>states</h2>
+        <h2><b>02</b>状态</h2>
         <div class="stack static">
           <figure>
-            <figcaption>idle, fresh <small>· flat dotted baseline, empty gauge, no pips</small></figcaption>
+            <figcaption>初始空闲 <small>· 水平点状基线、空仪表、无符号</small></figcaption>
             <footer class="tray">
-              <span data-label="w/s" title="no stream yet"><span class="spark">⣀⣀⣀⣀⣀⣀⣀⣀</span>—</span>
-              <span data-label="words"
+              <span data-label="词/秒" title="尚未生成"><span class="spark">⣀⣀⣀⣀⣀⣀⣀⣀</span>—</span>
+              <span data-label="词数"
                 ><span>0</span><span class="gauge" style="--ahead: 0"><i></i></span
               ></span>
-              <span data-label="boxes" class="pips">·</span>
-              <span data-label="knobs" class="pips">·</span>
-              <button type="button" aria-pressed="true" title="sound">♪</button>
+              <span data-label="词框" class="pips">·</span>
+              <span data-label="旋钮" class="pips">·</span>
+              <button type="button" aria-pressed="true" title="音效">♪</button>
             </footer>
           </figure>
           <figure>
-            <figcaption>streaming <small>· sparkline and gauge turn orange</small></figcaption>
+            <figcaption>输出中 <small>· 迷你图和仪表变为橙色</small></figcaption>
             <footer class="tray" data-streaming>
-              <span data-label="w/s" title="first chunk 340ms"><span class="spark">⣀⣀⣠⣴⣶⣾⣷⣿</span>12</span>
-              <span data-label="words"
+              <span data-label="词/秒" title="首段 340ms"><span class="spark">⣀⣀⣠⣴⣶⣾⣷⣿</span>12</span>
+              <span data-label="词数"
                 ><span>182</span><span class="gauge" style="--ahead: 0.5"><i></i></span
               ></span>
-              <span data-label="boxes" class="pips">□□□</span>
-              <span data-label="knobs" class="pips">◆◇</span>
-              <button type="button" aria-pressed="true" title="sound">♪</button>
+              <span data-label="词框" class="pips">□□□</span>
+              <span data-label="旋钮" class="pips">◆◇</span>
+              <button type="button" aria-pressed="true" title="音效">♪</button>
             </footer>
           </figure>
           <figure>
-            <figcaption>idle after a stream <small>· the history decays to the baseline in gray</small></figcaption>
+            <figcaption>生成后空闲 <small>· 历史曲线变为灰色，逐渐回落到基线</small></figcaption>
             <footer class="tray">
-              <span data-label="w/s" title="first chunk 340ms"><span class="spark">⣶⣿⣷⣶⣦⣄⣀⣀</span>14</span>
-              <span data-label="words"
+              <span data-label="词/秒" title="首段 340ms"><span class="spark">⣶⣿⣷⣶⣦⣄⣀⣀</span>14</span>
+              <span data-label="词数"
                 ><span>206</span><span class="gauge" style="--ahead: 0.1"><i></i></span
               ></span>
-              <span data-label="boxes" class="pips">□□□</span>
-              <span data-label="knobs" class="pips">◆◇</span>
-              <button type="button" aria-pressed="false" title="sound">♪</button>
+              <span data-label="词框" class="pips">□□□</span>
+              <span data-label="旋钮" class="pips">◆◇</span>
+              <button type="button" aria-pressed="false" title="音效">♪</button>
             </footer>
           </figure>
           <figure>
-            <figcaption>many <small>· more than five pips collapse to glyph×n</small></figcaption>
+            <figcaption>数量较多 <small>· 超过 5 个符号时缩写为「符号×n」</small></figcaption>
             <footer class="tray">
-              <span data-label="w/s" title="first chunk 310ms"><span class="spark">⣀⣀⣀⣀⣀⣠⣤⣤</span>11</span>
-              <span data-label="words"
+              <span data-label="词/秒" title="首段 310ms"><span class="spark">⣀⣀⣀⣀⣀⣠⣤⣤</span>11</span>
+              <span data-label="词数"
                 ><span>1204</span><span class="gauge" style="--ahead: 1"><i></i></span
               ></span>
-              <span data-label="boxes" class="pips">□×8</span>
-              <span data-label="knobs" class="pips">◆◆◇◇</span>
-              <button type="button" aria-pressed="true" title="sound">♪</button>
+              <span data-label="词框" class="pips">□×8</span>
+              <span data-label="旋钮" class="pips">◆◆◇◇</span>
+              <button type="button" aria-pressed="true" title="音效">♪</button>
             </footer>
           </figure>
         </div>
       </section>
 
       <section>
-        <h2><b>03</b>encoding</h2>
+        <h2><b>03</b>视觉编码</h2>
         <dl class="spec">
-          <dt>placement</dt>
+          <dt>位置</dt>
+          <dd>绝对定位在右下角，距右侧 12px、底部 6px，黑色底衬与内容等宽。无边框、无通栏横条，body 去掉 31px 的底部内边距。</dd>
+          <dt>⣀⣠⣴⣿ 速率</dt>
           <dd>
-            absolute in the bottom-right corner, 12px from the right and 6px from the bottom, on a black backing only as wide as its content. No border and no
-            full-width band; the body loses its 31px bottom padding.
+            用 8 个盲文字符显示 16 个速率采样值，最新值在最右侧，每个采样值高 1 至 4 个点，末尾显示当前速率数值（w/s）。生成中用橙色，空闲时用
+            ink-3。取代状态文字和脉动圆点。
           </dd>
-          <dt>⣀⣠⣴⣿ rate</dt>
-          <dd>
-            8 braille cells hold 16 rate samples, newest on the right, each 1 to 4 dots tall, with the current w/s numeral after them. Orange while streaming,
-            ink-3 when idle. This replaces the state word and the pulsing dot.
-          </dd>
-          <dt>removed</dt>
-          <dd>the "streaming / idle" word, every label, units. First chunk moves to the sparkline's tooltip.</dd>
-          <dt>words ▬</dt>
-          <dd>words shown as a numeral; buffer as a 32×4px gauge filling to 48 words waiting past the knob. Orange while it grows.</dd>
-          <dt>□ pips</dt>
-          <dd>one per attention box, · when none, □×n past five.</dd>
-          <dt>◆◇ pips</dt>
-          <dd>one per future knob: ◆ pinned, ◇ steering only. Two fields become one row of glyphs.</dd>
-          <dt>legend</dt>
-          <dd>hovering the cluster fades in a short ink-3 label above each part (CSS <code>attr(data-label)</code>).</dd>
+          <dt>已移除</dt>
+          <dd>移除「生成中 / 空闲」状态文字、所有标签和单位。首段信息移入迷你图的工具提示。</dd>
+          <dt>词数 ▬</dt>
+          <dd>词数用数字显示；缓冲量用 32×4px 的仪表显示，旋钮位置之后有 48 个词等待时填满。增长时显示为橙色。</dd>
+          <dt>□ 计数符号</dt>
+          <dd>每个关键词框显示一个 □，没有时显示 ·，超过 5 个时显示 □×n。</dd>
+          <dt>◆◇ 计数符号</dt>
+          <dd>每个续写旋钮显示一个符号：◆ 表示已固定，◇ 表示仅引导。两个字段合并为一排符号。</dd>
+          <dt>图例</dt>
+          <dd>悬停在仪表组上时，各项上方会淡入简短的 ink-3 标签（CSS <code>attr(data-label)</code>).</dd>
         </dl>
       </section>
     </main>
@@ -486,13 +477,13 @@
       }
 
       function trayHtml({ wordsPerSecond, firstChunkMs, words, buffer, boxes, steering, pinned, isSoundOn }, rates) {
-        const firstChunk = firstChunkMs === undefined ? "no stream yet" : `first chunk ${firstChunkMs}ms`
+        const firstChunk = firstChunkMs === undefined ? "尚未生成" : `首段延迟 ${firstChunkMs}ms`
         return `
-          <span data-label="w/s" title="${firstChunk}"><span class="spark">${sparkline(rates, 16)}</span>${wordsPerSecond === undefined ? "—" : Math.round(wordsPerSecond)}</span>
-          <span data-label="words"><span>${words}</span><span class="gauge" style="--ahead: ${Math.min(1, buffer / GAUGE_WORDS)}"><i></i></span></span>
-          <span data-label="boxes" class="pips">${pips("□", boxes)}</span>
-          <span data-label="knobs" class="pips">${steering === 0 ? "·" : "◆".repeat(pinned) + "◇".repeat(steering - pinned)}</span>
-          <button type="button" aria-pressed="${isSoundOn}" title="sound">♪</button>`
+          <span data-label="词/秒" title="${firstChunk}"><span class="spark">${sparkline(rates, 16)}</span>${wordsPerSecond === undefined ? "—" : Math.round(wordsPerSecond)}</span>
+          <span data-label="词数"><span>${words}</span><span class="gauge" style="--ahead: ${Math.min(1, buffer / GAUGE_WORDS)}"><i></i></span></span>
+          <span data-label="词框" class="pips">${pips("□", boxes)}</span>
+          <span data-label="旋钮" class="pips">${steering === 0 ? "·" : "◆".repeat(pinned) + "◇".repeat(steering - pinned)}</span>
+          <button type="button" aria-pressed="${isSoundOn}" title="音效">♪</button>`
       }
 
       function pips(glyph, count) {

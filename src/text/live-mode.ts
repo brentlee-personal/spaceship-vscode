@@ -1,3 +1,4 @@
+import { localModel } from "../llm/local-flight.ts"
 import { KEY_STORAGE as CEREBRAS_KEY_STORAGE } from "../llm/cerebras.ts"
 import { KEY_STORAGE as GEMINI_KEY_STORAGE } from "../llm/decisions.ts"
 
@@ -8,14 +9,16 @@ const KEY_FIELDS = { cerebras: CEREBRAS_KEY_STORAGE, gemini: GEMINI_KEY_STORAGE 
  * Sim plays simulated sources; flight calls the models. The sources are chosen when the page loads, so switching reloads it in the other mode.
  * Launching always asks for both API keys first, prefilled with the ones kept from last time; the dialog's submit button returns "live".
  */
-export function bindModeToggle(toggle: HTMLButtonElement, dialog: HTMLDialogElement, isLive: boolean) {
+export function bindModeToggle(toggle: HTMLButtonElement, dialog: HTMLDialogElement, isLive: boolean, manuscript: () => string) {
   const form = dialog.querySelector("form")!
   const inputOf = (name: string) => form.elements.namedItem(name) as HTMLInputElement
   toggle.setAttribute("aria-pressed", `${isLive}`)
-  toggle.querySelector("b")!.textContent = isLive ? "flight" : "sim"
+  toggle.querySelector("b")!.textContent = isLive ? "实时" : "模拟"
 
   toggle.addEventListener("click", () => {
+    if (window.spaceshipEditor) return window.spaceshipEditor.post({ type: "mode", live: !isLive, text: manuscript() })
     if (isLive) return reloadAs(false)
+    if (localModel) return reloadAs(true)
     for (const [name, storageKey] of Object.entries(KEY_FIELDS)) inputOf(name).value = localStorage.getItem(storageKey) ?? ""
     dialog.showModal()
   })
@@ -31,6 +34,7 @@ export function bindModeToggle(toggle: HTMLButtonElement, dialog: HTMLDialogElem
 function reloadAs(isLive: boolean) {
   const url = new URL(location.href)
   if (isLive) url.searchParams.set("live", "true")
+  else if (localModel) url.searchParams.set("live", "false")
   else url.searchParams.delete("live")
   location.assign(url)
 }

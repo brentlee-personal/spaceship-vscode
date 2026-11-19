@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <title>text · left rail 3 · meters</title>
+    <title>写作设计 · 侧栏 03 · 强度表</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>" />
     <style>
       @font-face {
@@ -426,157 +426,130 @@
   </head>
   <body>
     <main>
-      <nav class="experiments" aria-label="experiments">
+      <nav class="experiments" aria-label="实验">
         <p>
-          <b>style</b>
-          <a href="style-1.html">instrument</a>
-          <a href="style-2.html">signal</a>
-          <a href="style-3.html">telemetry</a>
-          <a href="style-4.html">merged</a>
+          <b>样式</b>
+          <a href="style-1.html">仪表</a>
+          <a href="style-2.html">信号</a>
+          <a href="style-3.html">遥测</a>
+          <a href="style-4.html">融合</a>
         </p>
         <p>
-          <b>sound</b>
-          <a href="soundboard.html">soundboard</a>
+          <b>音效</b>
+          <a href="soundboard.html">音效面板</a>
         </p>
         <p>
-          <b>knob</b>
-          <a href="knob-states.html">buffer states</a>
+          <b>旋钮</b>
+          <a href="knob-states.html">缓冲区状态</a>
         </p>
         <p>
-          <b>rail</b>
-          <a href="bar-1.html">histogram</a>
-          <a href="bar-2.html">profile</a>
-          <a href="bar-3.html" aria-current="page">meters</a>
+          <b>侧栏</b>
+          <a href="bar-1.html">直方图</a>
+          <a href="bar-2.html">强度曲线</a>
+          <a href="bar-3.html" aria-current="page">强度表</a>
         </p>
         <p>
-          <b>pointer</b>
-          <a href="pointer-1.html">crosshair</a>
-          <a href="pointer-2.html">ring</a>
-          <a href="pointer-3.html">field</a>
-          <a href="pointer-4.html">steering</a>
-          <a href="pointer-5.html">combined</a>
+          <b>指针</b>
+          <a href="pointer-1.html">十字准星</a>
+          <a href="pointer-2.html">圆环</a>
+          <a href="pointer-3.html">感应区</a>
+          <a href="pointer-4.html">引导</a>
+          <a href="pointer-5.html">组合</a>
         </p>
         <p>
-          <b>tray</b>
-          <a href="tray-1.html">modules</a>
-          <a href="tray-2.html">tmux</a>
-          <a href="tray-3.html">gauges</a>
+          <b>状态栏</b>
+          <a href="tray-1.html">模块</a>
+          <a href="tray-2.html">tmux 状态行</a>
+          <a href="tray-3.html">表盘</a>
         </p>
       </nav>
       <header>
-        <h1>text / left rail 3 — meters</h1>
+        <h1>侧栏 03 · 强度表</h1>
         <p>
-          An instrument version. Each line carries a 10-step meter, the same 10% steps as the link ruler on the future knob, lit from the text outward, segment
-          by segment, in a ripple that starts at the focus. A bracket beside the lines shows each attention box's extent, with a notch at its keyword's line,
-          and the keyword lane prints the box's rank and relevance to the tip.
+          仪表版。每行都有一条 10 格强度表，和续写旋钮上的关联标尺一样，每格代表
+          10%。亮格从靠近文本的一端向外逐格点亮，动效从焦点行向外扩散。行旁的括线标出各关键词框覆盖的范围，在关键词所在行加一道缺口；关键词列显示该框的排名及其关键词与续写点的相关度。
         </p>
       </header>
 
       <section>
-        <h2><b>01</b>live</h2>
+        <h2><b>01</b>实时</h2>
         <div style="display: grid; gap: 12px">
           <div id="live"></div>
           <div class="controls">
-            <button class="text" id="tip" type="button">focus tip</button>
-            <button class="text" id="remeasure" type="button">re-measure relevance</button>
+            <button class="text" id="tip" type="button">聚焦末端</button>
+            <button class="text" id="remeasure" type="button">重新测量相关性</button>
             <p class="note">
-              Hover the main knob, or press <b>focus tip</b>, to see each line's connection to the sentence under it. Hover a shaded box to see connection to
-              its phrase. <b>re-measure</b> simulates the knob moving: the decision API scores every keyword against the new tip.
+              将指针悬停在主旋钮上，或按下 <b>聚焦末端</b>，即可查看各行与旋钮下方句子的关联度。将指针悬停在带底色的框上，即可查看各行与框内短语的关联度。
+              <b>重新测量</b> 模拟旋钮移动：决策 API 根据新的文本末端为每个关键词评估相关性。
             </p>
           </div>
         </div>
       </section>
 
       <section>
-        <h2><b>02</b>states</h2>
+        <h2><b>02</b>状态</h2>
         <div class="states" id="states"></div>
       </section>
 
       <section>
-        <h2><b>03</b>encoding</h2>
+        <h2><b>03</b>视觉编码</h2>
         <dl class="spec">
-          <dt>ruler</dt>
-          <dd>as bar 1: spine against the text, tick per line, numbered every fifth, tip tick 1.5px.</dd>
-          <dt>brackets</dt>
-          <dd>one per attention box, spanning its lines in ink-3, with a 1.5px notch at the keyword's line. Hovered box: orange.</dd>
-          <dt>rel lane</dt>
-          <dd>rank (ink-3) and score (ink) of the box keyword on that line; ranks re-sort when scores arrive.</dd>
-          <dt>meter</dt>
-          <dd>
-            10 segments, 1px apart, ink-5 when off and ink-2 when on; lit count = line strength × 10, rounded. Newly lit segments flash orange, then settle.
-          </dd>
-          <dt>focus</dt>
-          <dd>spine thickens beside the focus sentence; focus-only lines hide their meter and print tip / box.</dd>
+          <dt>标尺</dt>
+          <dd>沿用方案 1 的条形标尺：主线贴着文本，每行一格，每五格标一个数字，续写点刻度为 1.5px。</dd>
+          <dt>括线</dt>
+          <dd>每个关键词框对应一条 ink-3 括线，跨过该框覆盖的所有行，并在关键词所在行留一个 1.5px 的缺口。指针悬停在框上时，对应括线变为橙色。</dd>
+          <dt>相关度列</dt>
+          <dd>显示该行关键词框内关键词的排名（ink-3）和分数（ink）；分数返回后更新排名。</dd>
+          <dt>强度表</dt>
+          <dd>共 10 格，间距 1px；熄灭时用 ink-5，点亮时用 ink-2。亮格数 = 行强度 × 10，四舍五入取整。新点亮的格子先闪一下橙色，再恢复常色。</dd>
+          <dt>焦点</dt>
+          <dd>焦点句旁的竖线加粗；仅显示焦点的行隐藏仪表，改为显示提示或关键词框。</dd>
         </dl>
       </section>
 
       <section>
-        <h2><b>04</b>data</h2>
+        <h2><b>04</b>数据</h2>
         <dl class="spec">
-          <dt>connection</dt>
-          <dd>
-            per sentence, from the influence source, against the focus (sentence under the knob, or the hovered box's phrase); each line averages the sentences
-            it holds, weighted by characters.
-          </dd>
-          <dt>relevance</dt>
-          <dd>
-            per box keyword, from the decision API: how relevant the keyword is to the tip (the sentence under the main knob); re-measured when the knob moves.
-          </dd>
-          <dt>refactor</dt>
-          <dd>
-            one scorer for both focuses, returning raw strengths; the rail, not the text, applies contrast. Lines are the unit of display, sentences the unit of
-            scoring.
-          </dd>
+          <dt>关联</dt>
+          <dd>根据影响来源数据，逐句计算与焦点的关联强度。焦点是旋钮下的句子，或指针悬停的关键词框中的短语。每行对所含句子的强度按字符数加权平均。</dd>
+          <dt>相关度</dt>
+          <dd>由决策 API 逐一计算各框关键词与续写点（主旋钮下的句子）的相关度；旋钮移动时重新测量。</dd>
+          <dt>重构</dt>
+          <dd>两类焦点共用一个评分器，返回原始强度；对比度由侧栏调整，不在正文中调整。按行显示，按句评分。</dd>
         </dl>
       </section>
 
       <section>
-        <h2><b>05</b>motion</h2>
+        <h2><b>05</b>动效</h2>
         <dl class="spec">
           <dt>0ms</dt>
-          <dd>the focus itself: hovering a box or the knob switches focus instantly; keyword and bracket turn orange at once.</dd>
-          <dt>300ms out-expo</dt>
-          <dd>each line's value moving to its new strength, and each score counting to its new value.</dd>
-          <dt>18ms per line</dt>
-          <dd>stagger outward from the focus sentence, so the update ripples from where the pointer is.</dd>
-          <dt>orange while rising</dt>
-          <dd>
-            a line or score turns orange while it grows and settles to white when it lands. Falling and draining (leaving the focus) stay white: the hand
-            stopped asking.
-          </dd>
-          <dt>650ms (simulated)</dt>
-          <dd>decision API latency for keyword relevance; scores pulse orange until they arrive.</dd>
+          <dd>焦点立即切换：指针悬停在关键词框或旋钮上时，关键词和括线立即变为橙色。</dd>
+          <dt>300 毫秒指数缓出</dt>
+          <dd>各行平滑过渡到新的强度，分数逐步变化至新值。</dd>
+          <dt>每行 18ms</dt>
+          <dd>从焦点句向外逐行错开，让更新从指针所在位置向外扩散。</dd>
+          <dt>上升时变为橙色</dt>
+          <dd>行内条形或分数上升时变为橙色，到达新值后恢复白色。数值下降或因离开焦点而归零时保持白色：用户已停止探查。</dd>
+          <dt>650ms（模拟）</dt>
+          <dd>决策 API 返回关键词相关度的延迟；分数返回前，分数位置以橙色脉动。</dd>
         </dl>
       </section>
     </main>
 
     <script type="module">
-      const WRAP = 64
+      const WRAP = 32
       const STAGGER_MS = 18
       const SETTLE_MS = 300
       const MEASURE_MS = 650
-      const STORY = [
-        "The lighthouse keeper counted the ships twice.",
-        "Fog had come in early that evening, and the radio was silent.",
-        "She lit the lamp by hand, the way her father had taught her, and waited for the horn.",
-        "Nothing answered.",
-        "The kettle ticked on the stove behind her, cooling, forgotten.",
-        "Somewhere past the breakwater, an engine idled and then cut out.",
-        "She leaned on the rail and listened for oars, for voices, for anything at all.",
-        "Gulls had gone quiet hours ago; even the bell buoy hung still in the slack tide.",
-        "She wrote the time in the log, then crossed it out, then wrote it again.",
-        "The beam swept the water once, and then again, and on the third pass it found a hull.",
-        "It rode low and dark, without a light, turning slowly toward the rocks.",
-        "It was her father's boat.",
-      ]
+      import { lighthouseSentences } from "./lighthouse.js"
       /** The sentence under the main knob: the tip that keyword relevance and default connection strength are measured against. */
       const TIP_SENTENCE = 11
       const BOXES = [
-        { keyword: "radio", before: 2, after: 2 },
-        { keyword: "father", before: 2, after: 3 },
-        { keyword: "engine", before: 3, after: 2 },
-        { keyword: "oars,", before: 2, after: 3 },
-        { keyword: "hull.", before: 3, after: 0 },
+        { keyword: "无线电", before: 2, after: 2 },
+        { keyword: "父亲", before: 2, after: 3 },
+        { keyword: "引擎", before: 3, after: 2 },
+        { keyword: "船桨", before: 2, after: 3 },
+        { keyword: "船身", before: 3, after: 0 },
       ]
       /** Decision API: how relevant each box's keyword is to the tip, 0–1. */
       const RELEVANCE = [0.23, 0.91, 0.62, 0.41, 0.84]
@@ -600,14 +573,14 @@
       const fmt = (v) => (v >= 1 ? "1.0" : v.toFixed(2).replace(/^0/, ""))
       const el = (tag, className, html) => Object.assign(document.createElement(tag), className ? { className } : {}, html ? { innerHTML: html } : {})
 
-      const WORDS = STORY.flatMap((sentence, s) => sentence.split(" ").map((text) => ({ text, s })))
+      const WORDS = lighthouseSentences.flatMap((sentence, s) => sentence.map((text) => ({ text, s })))
       const LINES = (() => {
         const lines = [[]]
         let length = 0
         WORDS.forEach((word, i) => {
-          const add = (length ? 1 : 0) + word.text.length
+          const add = word.text.length
           if (length + add > WRAP) (lines.push([]), (length = 0))
-          length += (length ? 1 : 0) + word.text.length
+          length += word.text.length
           lines.at(-1).push(i)
         })
         return lines
@@ -633,7 +606,7 @@
         const lineEls = LINES.map((line) => {
           const ln = el("div", "ln")
           line.forEach((i, j) => {
-            if (j) ln.append(wordSpan("sp", " ", i - 1))
+            if (j) ln.append(wordSpan("sp", "", i - 1))
             ln.append(wordSpan("w", WORDS[i].text, i))
           })
           column.append(ln)
@@ -641,7 +614,7 @@
         })
         const words = [...column.querySelectorAll(".w")]
         const spaces = [...column.querySelectorAll(".sp")]
-        const knob = Object.assign(el("button", "knob"), { type: "button", ariaLabel: "main knob" })
+        const knob = Object.assign(el("button", "knob"), { type: "button", ariaLabel: "主旋钮" })
         scene.append(knob)
 
         const api = { scene, rail, column, state, rows: [], lineEls, words, paint, setFocus, remeasure }
@@ -764,7 +737,7 @@
           lines,
           extents,
           rank: (b) => ranks.indexOf(b) + 1,
-          focusLabel: focus === "tip" ? "tip" : "box",
+          focusLabel: focus === "tip" ? "句" : "词",
         }
       }
 
@@ -800,10 +773,10 @@
         document.querySelector("#remeasure").addEventListener("click", () => live.remeasure())
         document.querySelector("#tip").addEventListener("click", () => live.setFocus(live.state.focus === "tip" ? null : "tip"))
         const STATES = [
-          [{ focus: null, kw: "none" }, "ruler only", "no boxes, nothing hovered: one tick per line, every fifth numbered"],
-          [{ focus: null, kw: "measuring" }, "relevance measuring", "the decision API is scoring keywords against the tip: orange, pulsing"],
-          [{ focus: "tip" }, "connection · tip", "hovering the main knob: every line's link to the sentence under it"],
-          [{ focus: 1 }, "connection · box", "hovering the father box: its keyword's score turns orange, lines re-weigh"],
+          [{ focus: null, kw: "none" }, "仅显示刻度", "未选中关键词时，每行一格，每五行标出行号"],
+          [{ focus: null, kw: "measuring" }, "正在评估相关度", "决策模型正在评估关键词与当前句的相关度，橙色读数闪动"],
+          [{ focus: "tip" }, "关联度 · 当前句", "悬停主旋钮，查看各行与当前句的关联度"],
+          [{ focus: 1 }, "关联度 · 关键词框", "悬停“父亲”关键词框，分数变为橙色，各行权重随之更新"],
         ]
         for (const [options, title, sub] of STATES) {
           const cell = el("figure", "cell")
@@ -821,7 +794,7 @@
       const METERS = {
         setup(api) {
           api.rail.append(
-            el("div", "rail-head", `<span>ln</span><span></span><span>rel</span><span class="scale"><i>1</i><i>.5</i><i>0</i></span><span></span>`),
+            el("div", "rail-head", `<span>行</span><span></span><span>相关度</span><span class="scale"><i>1</i><i>.5</i><i>0</i></span><span></span>`),
           )
           api.rows = LINES.map((_, i) => {
             const cells = Array.from({ length: SEGMENTS }, () => "<i></i>").join("")

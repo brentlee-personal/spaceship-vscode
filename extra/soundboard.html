@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <title>text · soundboard · signal × telemetry</title>
+    <title>写作设计 · 音效面板</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>" />
     <style>
       @font-face {
@@ -727,139 +727,127 @@
   </head>
   <body>
     <main>
-      <nav class="experiments" aria-label="experiments">
+      <nav class="experiments" aria-label="实验">
         <p>
-          <b>style</b>
-          <a href="style-1.html">instrument</a>
-          <a href="style-2.html">signal</a>
-          <a href="style-3.html">telemetry</a>
-          <a href="style-4.html">merged</a>
+          <b>样式</b>
+          <a href="style-1.html">仪表</a>
+          <a href="style-2.html">信号</a>
+          <a href="style-3.html">遥测</a>
+          <a href="style-4.html">融合</a>
         </p>
         <p>
-          <b>sound</b>
-          <a href="soundboard.html" aria-current="page">soundboard</a>
+          <b>音效</b>
+          <a href="soundboard.html" aria-current="page">音效面板</a>
         </p>
         <p>
-          <b>knob</b>
-          <a href="knob-states.html">buffer states</a>
+          <b>旋钮</b>
+          <a href="knob-states.html">缓冲区状态</a>
         </p>
         <p>
-          <b>rail</b>
-          <a href="bar-1.html">histogram</a>
-          <a href="bar-2.html">profile</a>
-          <a href="bar-3.html">meters</a>
+          <b>侧栏</b>
+          <a href="bar-1.html">直方图</a>
+          <a href="bar-2.html">强度曲线</a>
+          <a href="bar-3.html">强度表</a>
         </p>
         <p>
-          <b>pointer</b>
-          <a href="pointer-1.html">crosshair</a>
-          <a href="pointer-2.html">ring</a>
-          <a href="pointer-3.html">field</a>
-          <a href="pointer-4.html">steering</a>
-          <a href="pointer-5.html">combined</a>
+          <b>指针</b>
+          <a href="pointer-1.html">十字准星</a>
+          <a href="pointer-2.html">圆环</a>
+          <a href="pointer-3.html">感应区</a>
+          <a href="pointer-4.html">引导</a>
+          <a href="pointer-5.html">组合</a>
         </p>
         <p>
-          <b>tray</b>
-          <a href="tray-1.html">modules</a>
-          <a href="tray-2.html">tmux</a>
-          <a href="tray-3.html">gauges</a>
+          <b>状态栏</b>
+          <a href="tray-1.html">模块</a>
+          <a href="tray-2.html">tmux 状态行</a>
+          <a href="tray-3.html">表盘</a>
         </p>
       </nav>
       <header>
-        <h1>text / soundboard — signal × telemetry</h1>
+        <h1>音效面板</h1>
         <p>
-          Sound follows the same two inks as the picture. Your hand makes clicks: short filtered-noise transients, the friction of the instrument. The model
-          makes tones: small FM blips with a slightly metallic ratio, the audible version of orange. When something settles, it ends on a plain sine. Every
-          pitch comes from one pentatonic scale, so overlapping sounds never clash. ▶ auditions a variant; the dot selects it. Click the dot again to clear it.
-          Every event is optional. Round 2: last round's picks are now option a and preselected. Generation is silent. Revealing words by hand plays a quiet
-          tick. All deletions share one sound, and pin has new confirmation candidates.
+          声音对应画面中的两种墨色。手动操作发出短促的滤波噪声咔嗒声，像仪表摩擦的声音。模型发出短促的 FM
+          音，频率比带来一点金属感，仿佛把橙色变成了声音。状态稳定时，以一个纯正弦音收尾。所有音高都来自同一个五声音阶，叠加时也不会冲突。点按 ▶
+          试听备选音效，点按圆点选中，再点一次取消。每个事件的音效都可关闭。第 2 轮：上一轮选中的音效现为选项
+          a，并已预选。生成过程静音。手动显示词语时会发出轻微的嗒声。所有删除操作共用一个音效，固定操作则有新的确认音效可选。
         </p>
       </header>
 
       <div class="controls">
-        <label>volume <input type="range" id="volume" min="0" max="1" step="0.01" value="0.7" /><output id="volume-out">.70</output></label>
-        <label><input type="checkbox" id="pan" checked />spatial pan</label>
-        <label title="Not exported"><input type="checkbox" id="fallback" checked />pads play “a” when unselected</label>
-        <span id="last">last <b>—</b></span>
+        <label>音量 <input type="range" id="volume" min="0" max="1" step="0.01" value="0.7" /><output id="volume-out">.70</output></label>
+        <label><input type="checkbox" id="pan" checked />空间声像</label>
+        <label title="不导出"><input type="checkbox" id="fallback" checked />未选中时，音效按键播放选项 a</label>
+        <span id="last">上次 <b>—</b></span>
         <span class="spacer"></span>
-        <span><output id="count">0</output> selected</span>
-        <button class="text" id="pick-a" type="button">select all a</button>
-        <button class="text" id="clear" type="button">clear</button>
-        <button class="text primary" id="download" type="button">download selection.txt</button>
+        <span><output id="count">0</output> 已选</span>
+        <button class="text" id="pick-a" type="button">全部选 a</button>
+        <button class="text" id="clear" type="button">清除</button>
+        <button class="text primary" id="download" type="button">下载 selection.txt</button>
       </div>
 
       <section>
-        <h2><b>01</b>grammar</h2>
+        <h2><b>01</b>音效规则</h2>
         <dl class="spec">
-          <dt>hand · ink</dt>
+          <dt>手动 · 墨色</dt>
           <dd>
-            Bandpass-noise clicks, 1–4 kHz, 3–6 ms, sometimes with a sine body. Heard only while your hand moves something: grab, release, detents, steps. They
-            are the haptics.
+            带通噪声咔嗒声，频率为 1–4 kHz，时长为 3–6
+            ms，有时叠加正弦音作为主体。只在手动操作时播放，例如抓取、松开、经过卡位和逐步移动。这些声音提供类似触觉的反馈。
           </dd>
-          <dt>model · hot</dt>
+          <dt>模型 · 橙色</dt>
           <dd>
-            FM blips, ratio 3.01. Heard when the model hands you something: a menu loading or arriving, or a realization score. Orange, made audible. Background
-            generation is silent because it starts and stops too often to be worth hearing.
+            短促的 FM 音，频率比为 3.01。模型返回反馈时播放，例如菜单开始加载、菜单就绪或显示体现程度评分时。这是橙色的声音。后台生成频繁启停，因此保持静音。
           </dd>
-          <dt>reveal · hush</dt>
+          <dt>显词 · 轻响</dt>
           <dd>
-            Revealing and scrubbing words is the most frequent sound, so it is the quietest and plainest: one fixed-pitch tick under 10 ms, slightly higher
-            forward and lower back. It plays at most once per 30 ms and softens as you drag faster. Lines and the column edge have no sound of their own.
+            显示词语和拖动浏览时的音效最常出现，因此也最轻、最简单：一声不到 10 ms 的固定音高嗒声，向前时略高，向后时略低。每 30 ms
+            最多播放一次，拖得越快，声音越轻。行和栏边缘没有单独的音效。
           </dd>
-          <dt>settled · sine</dt>
+          <dt>稳定 · 正弦音</dt>
+          <dd>用一个纯正弦音为状态收尾。固定到页边时的反馈最明显，也是音效面板中唯一有解决感的和弦：可调控件变成已固定的内容。</dd>
+          <dt>删除 · 向外双音</dt>
+          <dd>删除关键词框或续写旋钮都用同一个音效。它呼应创建时的两声短音，向外播放，音高下行，让创建和删除听起来彼此对应。</dd>
+          <dt>暂定 · 气声</dt>
+          <dd>虚线状态（选择中、加载中、新旋钮）使用轻柔的气流噪声。已确认的状态（调节完成、已采用、已固定）使用有明确音高的声音，就像虚线变成实线。</dd>
+          <dt>音高</dt>
           <dd>
-            A plain sine closes a state. The margin pin is the strongest case and the only resolved chord on the board: a live control becoming a stable fact.
+            E 大调五声音阶，范围为 E4 到
+            E7。音高升高表示向前、增多或添加；降低表示向后、减少或删除。评分、强度、角度和词数等数值都映射到音阶上，可以通过音高听出数值大小。
           </dd>
-          <dt>removal · dash out</dt>
+          <dt>时长</dt>
           <dd>
-            One sound for every deletion, whether box or future knob. It mirrors the spawn's two dashes, played outward and falling, so creation and removal are
-            a recognizable pair.
+            沿用动效的时长变量。反馈音效均短于 120 ms，多数短于 30 ms。显示测量值时的音效持续 300 ms。只有固定到页边的音效持续 600
+            ms。指针下触发的声音在一帧内开始播放，不加缓动。
           </dd>
-          <dt>provisional · breath</dt>
-          <dd>
-            Dashed states (choosing, loading, a new knob) use airy noise. Committed states (tuned, taken, pinned) use tones, just as dashed lines turn solid.
-          </dd>
-          <dt>pitch</dt>
-          <dd>
-            E-major pentatonic, E4 to E7. Higher means forward, more, added. Lower means back, less, removed. Values such as score, strength, angle and word
-            count map onto the scale, so the pitch tells you the value.
-          </dd>
-          <dt>time</dt>
-          <dd>
-            Same tokens as motion. Feedback stays under 120 ms and most of it under 30 ms. A measured value arriving takes 300 ms. Only the margin pin lasts 600
-            ms. Sounds under the pointer start within one frame and are never eased.
-          </dd>
-          <dt>space</dt>
-          <dd>Stereo pan follows screen x. The pin sounds where it lands, in the margin.</dd>
-          <dt>loudness</dt>
-          <dd>One-shots on top, continuous textures about 20 dB lower, and the word tick quietest of all. Silence is the default state.</dd>
+          <dt>空间</dt>
+          <dd>立体声声像随屏幕 x 坐标变化。固定音效从页边的落点传来。</dd>
+          <dt>响度</dt>
+          <dd>单次音效最响，持续音效约低 20 dB，词语的嗒声最轻。默认静音。</dd>
         </dl>
       </section>
 
       <section>
-        <h2><b>02</b>playground</h2>
+        <h2><b>02</b>试验台</h2>
         <div style="display: grid; gap: 12px">
           <div class="pads">
             <figure class="cell" style="margin: 0">
               <div class="pad" id="caret-pad">
                 <p class="col" id="caret-col"></p>
-                <button class="knob" id="caret-knob" type="button" aria-label="main knob"></button>
+                <button class="knob" id="caret-knob" type="button" aria-label="主旋钮"></button>
               </div>
               <figcaption>
-                main knob · caret
-                <small
-                  >Drag right to reveal words and left to scrub them back. Line changes and the column edge are silent. Hover the knob, hold it still to spawn,
-                  or double click it to expand or collapse.</small
-                >
+                主旋钮 · 文本光标
+                <small>向右拖动显示文字，向左拖动收回文字。换行和触及栏边时不发声。将指针悬停在旋钮上，保持不动可生成续写旋钮，双击可展开或折叠。</small>
               </figcaption>
             </figure>
             <figure class="cell" style="margin: 0">
               <div class="pad" id="att-pad">
                 <p class="col" id="att-col"></p>
-                <div class="pad-actions"><button class="text" id="att-reset" type="button">restore boxes</button></div>
+                <div class="pad-actions"><button class="text" id="att-reset" type="button">恢复关键词框</button></div>
               </div>
               <figcaption>
-                attention boxes
-                <small>Hover a box, drag it to move its keyword, double click to delete it, or select words to make a new one.</small>
+                关键词框
+                <small>将指针悬停在框上。拖动框可移动关键词，双击可删除框，选中文字可新建关键词框。</small>
               </figcaption>
             </figure>
             <figure class="cell wide" style="margin: 0">
@@ -867,35 +855,30 @@
                 <div class="stage" id="fan-stage"></div>
                 <aside>
                   <fieldset id="fan-mode">
-                    <legend>spawn as</legend>
-                    <label><input type="radio" name="fan-mode" value="choosing" checked />choosing</label>
-                    <label><input type="radio" name="fan-mode" value="scale" />scale</label>
-                    <label><input type="radio" name="fan-mode" value="choice" />choice</label>
-                    <label><input type="radio" name="fan-mode" value="fail" />menu fails</label>
+                    <legend>生成状态</legend>
+                    <label><input type="radio" name="fan-mode" value="choosing" checked />选择中</label>
+                    <label><input type="radio" name="fan-mode" value="scale" />连续量</label>
+                    <label><input type="radio" name="fan-mode" value="choice" />离散选项</label>
+                    <label><input type="radio" name="fan-mode" value="fail" />菜单失效</label>
                   </fieldset>
                   <div class="stage-actions">
-                    <button class="text" id="fan-respawn" type="button">respawn</button>
-                    <button class="text" id="fan-pin" type="button" disabled>pin</button>
+                    <button class="text" id="fan-respawn" type="button">重新生成</button>
+                    <button class="text" id="fan-pin" type="button" disabled>固定</button>
                   </div>
                   <p class="note">
-                    Drag the dashed knob. While choosing, cross sectors and push through the rim to take a dimension. While tuning, angle crosses graduations or
-                    sectors and distance crosses 10% steps. A continuous bed tracks the knob the whole time. Release to start realizing, then pin. Double click
-                    the knob to delete it.
+                    拖动虚线旋钮。选择中可跨越扇区，拖出外圈即可选定维度。调节中，角度可跨越刻度或扇区，距离以 10%
+                    为一档。持续底音全程跟随旋钮。松开后，所选维度开始在文本中体现，随后可固定。双击旋钮可删除。
                   </p>
                 </aside>
               </div>
               <figcaption>
-                future knob · fan hud
-                <small
-                  >Every continuous parameter has its own sound: candidate, graduation, sector, ruler, and the drag bed. Pin plays the confirmation and delete
-                  plays the shared removal sound.</small
-                >
+                续写旋钮 · 扇形调节面板
+                <small>每个连续参数都有专属音效：候选项、刻度、扇区、标尺和拖动底音。固定时播放确认音，删除时播放通用移除音。</small>
               </figcaption>
             </figure>
           </div>
           <p class="note">
-            Pads play your selected variant. If the toggle is on, they play “a” for events you haven't chosen. The event that fires lights up orange in the list
-            below, so you can see which sound belongs to which action.
+            点击音效键可播放所选版本。开启开关后，未选择音效版本的事件会播放“a”版。触发的事件会在下方列表中亮起橙色，方便辨认各动作对应的音效。
           </p>
         </div>
       </section>
@@ -1117,89 +1100,93 @@
 
       const GROUPS = [
         {
-          title: "main knob",
+          title: "主旋钮",
           events: [
             {
               id: "knob.hover",
-              voice: "hand",
-              role: "haptic",
-              trigger: "Pointer enters the main knob. The outer ring appears and sentences re-weigh by influence.",
+              label: "靠近主旋钮",
+              voice: "手形指针",
+              role: "触觉反馈",
+              trigger: "指针移入主旋钮。外环出现，各句按影响力重新加权。",
               defaults: { scores: SCORES },
               variants: [
                 {
                   id: "a",
-                  name: "ring",
-                  recipe: "highpass noise 6.5 kHz, 8 ms, quiet",
+                  name: "圆环",
+                  recipe: "高通噪声，6.5 kHz，8 ms，低音量",
                   play: (p) => noise({ type: "highpass", f: 6500, q: 0.7, d: 0.008, gain: 0.1, ...P(p) }),
                 },
                 {
                   id: "b",
-                  name: "influence chord",
-                  recipe: "one 30 ms sine per sentence, 20 ms apart; pitch and level = influence score",
+                  name: "影响力和弦",
+                  recipe: "每句对应一个 30 ms 的正弦音，间隔 20 ms；音高和音量由影响力评分决定",
                   play: (p) => p.scores.map((s, i) => tone({ f: note(5 + Math.round(s * 9)), d: 0.03, gain: 0.025 + s * 0.05, ...T(p, i * 0.02) })),
                 },
                 {
                   id: "c",
-                  name: "swell",
-                  recipe: "sine E4→G#4, 80 ms rise, 120 ms fall (the 200 ms re-weigh)",
+                  name: "渐强",
+                  recipe: "正弦音 E4 → G#4，80 ms 渐强，120 ms 渐弱（对应 200 ms 的重新加权）",
                   play: (p) => tone({ f: note(0), to: note(2), a: 0.08, d: 0.12, gain: 0.04, ...P(p) }),
                 },
               ],
             },
             {
               id: "knob.grab",
-              voice: "hand",
-              role: "haptic",
-              trigger: "Pointer down on the main knob.",
+              label: "抓住主旋钮",
+              voice: "手形指针",
+              role: "触觉反馈",
+              trigger: "指针在主旋钮上按下。",
               variants: [
                 {
                   id: "a",
-                  name: "latch",
-                  recipe: "two noise clicks 2.2 → 3.2 kHz, 12 ms apart",
+                  name: "卡扣",
+                  recipe: "两下噪声咔哒音，2.2 → 3.2 kHz，间隔 12 ms",
                   play: (p) => [click({ f: 2200, gain: 0.35, ...P(p) }), click({ f: 3200, gain: 0.25, ...T(p, 0.012) })],
                 },
                 {
                   id: "b",
-                  name: "pip",
-                  recipe: "4 kHz click + sine E6 25 ms",
+                  name: "哔",
+                  recipe: "4 kHz 咔哒音 + 25 ms 的 E6 正弦音",
                   play: (p) => [click({ f: 4000, gain: 0.15, ...P(p) }), tone({ f: note(10), d: 0.025, gain: 0.1, ...P(p) })],
                 },
                 {
                   id: "c",
-                  name: "thock",
-                  recipe: "sine 170→95 Hz 50 ms + 1.8 kHz click",
+                  name: "咚",
+                  recipe: "50 ms 的正弦音 170 → 95 Hz + 1.8 kHz 咔哒音",
                   play: (p) => [tone({ f: 170, to: 95, d: 0.05, gain: 0.3, ...P(p) }), click({ f: 1800, gain: 0.2, ...P(p) })],
                 },
               ],
             },
             {
               id: "knob.release",
-              voice: "hand",
-              role: "haptic",
-              trigger: "Pointer up after a drag. The knob lets go.",
+              label: "松开主旋钮",
+              voice: "手形指针",
+              role: "触觉反馈",
+              trigger: "拖动后松开指针，旋钮随即释放。",
               variants: [
                 {
                   id: "a",
-                  name: "latch back",
-                  recipe: "two noise clicks 3.2 → 2.2 kHz, 12 ms apart",
+                  name: "卡扣回弹",
+                  recipe: "两下噪声咔哒音，3.2 → 2.2 kHz，间隔 12 ms",
                   play: (p) => [click({ f: 3200, gain: 0.25, ...P(p) }), click({ f: 2200, gain: 0.3, ...T(p, 0.012) })],
                 },
                 {
                   id: "b",
-                  name: "low pip",
-                  recipe: "3 kHz click + sine G#5 30 ms",
+                  name: "低哔声",
+                  recipe: "3 kHz 咔哒音 + 30 ms 的 G#5 正弦音",
                   play: (p) => [click({ f: 3000, gain: 0.1, ...P(p) }), tone({ f: note(7), d: 0.03, gain: 0.08, ...P(p) })],
                 },
-                { id: "c", name: "soft thock", recipe: "sine 130→80 Hz 40 ms", play: (p) => tone({ f: 130, to: 80, d: 0.04, gain: 0.2, ...P(p) }) },
+                { id: "c", name: "轻咚", recipe: "40 ms 的正弦音，130 → 80 Hz", play: (p) => tone({ f: 130, to: 80, d: 0.04, gain: 0.2, ...P(p) }) },
               ],
             },
             {
               id: "knob.word",
-              voice: "hand",
-              role: "haptic",
+              label: "逐词拖动",
+              voice: "手形指针",
+              role: "触觉反馈",
               continuous: true,
               trigger:
-                "While dragging, the caret crosses a word: forward reveals it, back scrubs it away. This is the most frequent sound in the app, so every option is quiet, pitch-stable and under 10 ms, and it gets softer as you drag faster. At most one plays per 30 ms. Vertical steps and the column edge make no sound.",
+                "拖动时，文本光标每越过一个词，向前就显示它，向后就收回它。这是应用中最常听到的音效，因此每种方案都音量低、音高稳定，且短于 10 ms。拖得越快，声音越轻。每 30 ms 最多播放一次。上下移动或碰到栏边缘时不发声。",
               defaults: { dir: 1, speed: 0.3 },
               demo: (fire) => {
                 let t = 0
@@ -1210,42 +1197,43 @@
               variants: [
                 {
                   id: "a",
-                  name: "hush tick",
-                  recipe: "bandpass noise, Q 2, 3 ms, very quiet; 2.4 kHz forward, 1.8 kHz back; up to −6 dB softer at full drag speed",
+                  name: "微响",
+                  recipe: "带通噪声，Q 值 2，3 ms，音量极低；向前 2.4 kHz，向后 1.8 kHz；拖动速度达到上限时，最多衰减 −6 dB",
                   play: (p) => noise({ f: p.dir > 0 ? 2400 : 1800, q: 2, d: 0.003, gain: 0.1 * wordDamp(p), ...P(p) }),
                 },
                 {
                   id: "b",
-                  name: "felt",
-                  recipe: "lowpass noise 5 ms, like a fingertip on paper; 1.2 kHz forward, 800 Hz back; softer when fast",
+                  name: "毡感",
+                  recipe: "5 ms 的低通噪声，像指尖轻触纸面；向前 1.2 kHz，向后 800 Hz；拖得越快，声音越轻",
                   play: (p) => noise({ type: "lowpass", f: p.dir > 0 ? 1200 : 800, q: 0.7, d: 0.005, gain: 0.12 * wordDamp(p), ...P(p) }),
                 },
                 {
                   id: "c",
-                  name: "pip",
-                  recipe: "plain sine 8 ms, barely there; E6 forward, B5 back (a fourth down); softer when fast",
+                  name: "哔",
+                  recipe: "8 ms 的纯正弦音，几乎听不见；向前 E6，向后 B5（低四度）；拖得越快，声音越轻",
                   play: (p) => tone({ f: p.dir > 0 ? note(10) : note(8), a: 0.001, d: 0.008, gain: 0.02 * wordDamp(p), ...P(p) }),
                 },
                 {
                   id: "d",
-                  name: "whisper",
-                  recipe: "the model's FM voice at minimum: fixed pitch, index 0.4, 8 ms; E7 forward, B6 back; softer when fast",
+                  name: "低语",
+                  recipe: "模型的 FM 音色降至最低音量：音高固定，调制指数 0.4，8 ms；向前 E7，向后 B6；拖得越快，声音越轻",
                   play: (p) => fm({ f: p.dir > 0 ? note(15) : note(13), index: 0.4, d: 0.008, gain: 0.012 * wordDamp(p), ...P(p) }),
                 },
               ],
             },
             {
               id: "hold.sweep",
-              voice: "hand",
-              role: "state",
+              label: "长按蓄力",
+              voice: "手形指针",
+              role: "状态",
               trigger:
-                "A press stays still for 100 ms and the 250 ms orange sweep fills the knob. Options a, c and d build to a punch exactly when the sweep completes and the knob spawns (with hold.spawn). If the pointer moves before that, the whole sound, punch included, is cut off.",
+                "按住不动 100 ms 后，橙色进度在 250 ms 内扫满旋钮。方案 a、c 和 d 逐步蓄势，在进度扫满、旋钮出现的瞬间发出重音（与 hold.spawn 同时播放）。如果指针提前移动，整段音效立即中断，重音也不会播放。",
               variants: [
                 {
                   id: "a",
-                  name: "climb + thump",
+                  name: "爬升 + 轻咚",
                   recipe:
-                    "5 soft sine pips climbing E5 → E6, speeding up and swelling gently, then a quiet 110→60 Hz thump with a faint click at the peak; 20% reverb. A lead-in to the menu, kept under hold.spawn",
+                    "5 声轻柔的正弦哔声从 E5 升至 E6，逐渐加快并轻柔渐强；到顶点时响起一声低音量的 110 → 60 Hz 闷响，伴随一声细微的咔哒音；混响 20%。用作菜单出现的前奏，音量低于 hold.spawn",
                   play: (p) => [
                     ...[5, 7, 8, 9, 10].map((n, i) =>
                       tone({ f: note(n), a: 0.003, d: 0.02, gain: 0.015 + i * 0.008, wet: 0.15, ...T(p, 0.22 * Math.sqrt(i / 5)) }),
@@ -1256,8 +1244,8 @@
                 },
                 {
                   id: "b",
-                  name: "ratchet",
-                  recipe: "7 clicks speeding up over 250 ms, 1.8 → 3.6 kHz, growing louder",
+                  name: "棘轮",
+                  recipe: "7 下咔哒音，在 250 ms 内逐渐加快，频率从 1.8 升至 3.6 kHz，音量渐强",
                   play: (p) =>
                     Array.from({ length: 7 }, (_, i) =>
                       click({ f: 1800 * 2 ** (i / 6), d: 0.003, gain: 0.12 + i * 0.03, ...T(p, 0.25 * Math.sqrt(i / 7)) }),
@@ -1265,9 +1253,8 @@
                 },
                 {
                   id: "c",
-                  name: "swell + thump",
-                  recipe:
-                    "bandpass noise swells 400 Hz → 3 kHz over 250 ms (crescendo), then a 150→55 Hz kick + 2.4 kHz click at the peak; 35% reverb on the hit",
+                  name: "渐强 + 闷响",
+                  recipe: "带通噪声在 250 ms 内从 400 Hz 扫至 3 kHz，音量渐强；到顶点时响起 150 → 55 Hz 的底鼓声和 2.4 kHz 的咔哒音；这一击加 35% 混响",
                   play: (p) => [
                     noise({ f: 400, to: 3000, q: 3, a: 0.25, d: 0.015, gain: 0.22, wet: 0.15, ...P(p) }),
                     tone({ f: 150, to: 55, glide: 0.06, d: 0.09, gain: 0.45, wet: 0.35, ...T(p, 0.25) }),
@@ -1276,9 +1263,8 @@
                 },
                 {
                   id: "d",
-                  name: "rise + stab",
-                  recipe:
-                    "triangle E5 → E6 grows over 250 ms, then a sine stab E6 + B6 with a 90 Hz body at the peak; 40% reverb, the tail rings past the spawn",
+                  name: "上扬 + 短促重音",
+                  recipe: "三角波在 250 ms 内从 E5 升至 E6，音量渐强；到顶点时响起 E6 + B6 的短促正弦重音，以 90 Hz 低频打底；混响 40%，余音延续到旋钮出现之后",
                   play: (p) => [
                     tone({ f: note(5), to: note(10), glide: 0.25, type: "triangle", a: 0.25, d: 0.015, gain: 0.07, wet: 0.2, ...P(p) }),
                     tone({ f: note(10), a: 0.002, d: 0.14, gain: 0.09, wet: 0.4, ...T(p, 0.25) }),
@@ -1290,14 +1276,15 @@
             },
             {
               id: "hold.spawn",
-              voice: "hand",
-              role: "attention",
-              trigger: "The sweep completes and a dashed future knob appears under the pointer. The removal sound mirrors this one.",
+              label: "拉出续写旋钮",
+              voice: "手形指针",
+              role: "注意力",
+              trigger: "进度扫满后，指针下方出现一个虚线轮廓的续写旋钮。移除时的音效与出现时的音效互为镜像。",
               variants: [
                 {
                   id: "a",
-                  name: "dash dash",
-                  recipe: "two airy ticks 45 ms apart (dashed = provisional), sine G#6 on the second",
+                  name: "虚线双响",
+                  recipe: "两下带气声的轻响，间隔 45 ms（虚线表示暂定）；第二下叠加 G#6 正弦音",
                   play: (p) => [
                     noise({ type: "highpass", f: 5000, d: 0.006, gain: 0.18, ...P(p) }),
                     noise({ type: "highpass", f: 5000, d: 0.006, gain: 0.18, ...T(p, 0.045) }),
@@ -1306,14 +1293,14 @@
                 },
                 {
                   id: "b",
-                  name: "pop",
-                  recipe: "sine E7→E6 50 ms + 3.5 kHz click",
+                  name: "啵",
+                  recipe: "正弦波 E7→E6，50 ms + 3.5 kHz 咔哒声",
                   play: (p) => [tone({ f: note(15), to: note(10), d: 0.05, gain: 0.12, ...P(p) }), click({ f: 3500, gain: 0.2, ...P(p) })],
                 },
                 {
                   id: "c",
-                  name: "bloom",
-                  recipe: "sine E6 + E7, 120 ms tails, 20 ms apart",
+                  name: "绽放",
+                  recipe: "正弦波 E6 + E7，各带 120 ms 尾音，间隔 20 ms",
                   play: (p) => [
                     tone({ f: note(10), a: 0.01, d: 0.12, gain: 0.07, ...P(p) }),
                     tone({ f: note(15), a: 0.01, d: 0.12, gain: 0.04, ...T(p, 0.02) }),
@@ -1323,21 +1310,22 @@
             },
             {
               id: "knob.expand",
-              voice: "hand",
-              role: "attention",
-              trigger: "Double click the knob to reveal attention boxes around keywords.",
+              label: "展开关键词框",
+              voice: "手形指针",
+              role: "注意力",
+              trigger: "双击旋钮，在关键词周围显示关键词框。",
               defaults: { count: 4 },
               variants: [
                 {
                   id: "a",
-                  name: "cascade",
-                  recipe: "one rising sine per box, 45 ms apart",
+                  name: "层叠",
+                  recipe: "每个框播放一声上扬的正弦波音，间隔 45 ms",
                   play: (p) => Array.from({ length: p.count }, (_, i) => tone({ f: note(8 + i * 2), d: 0.03, gain: 0.07, ...T(p, i * 0.045) })),
                 },
                 {
                   id: "b",
-                  name: "shimmer",
-                  recipe: "highpass air 7 kHz + sines E6, G#6, 250 ms",
+                  name: "闪烁",
+                  recipe: "经 7 kHz 高通滤波的气流声 + 正弦波 E6、G#6，250 ms",
                   play: (p) => [
                     noise({ type: "highpass", f: 7000, a: 0.04, d: 0.22, gain: 0.06, ...P(p) }),
                     tone({ f: note(10), a: 0.01, d: 0.25, gain: 0.04, ...P(p) }),
@@ -1346,35 +1334,36 @@
                 },
                 {
                   id: "c",
-                  name: "layers",
-                  recipe: "one click per box, each heavier, like overlapping shades",
+                  name: "叠层",
+                  recipe: "每个框一声咔哒，逐声加重，像层层叠起的阴影",
                   play: (p) => Array.from({ length: p.count }, (_, i) => click({ f: 2000, gain: 0.1 + i * 0.08, ...T(p, i * 0.05) })).flat(),
                 },
               ],
             },
             {
               id: "knob.collapse",
-              voice: "hand",
-              role: "attention",
-              trigger: "Double click again to detach every box and future knob.",
+              label: "收起附属控件",
+              voice: "手形指针",
+              role: "注意力",
+              trigger: "再次双击，解除所有关键词框和续写旋钮的挂接。",
               defaults: { count: 4 },
               variants: [
                 {
                   id: "a",
-                  name: "descend",
-                  recipe: "sines G#6, C#6, E5, 35 ms apart",
+                  name: "下行",
+                  recipe: "正弦波 G#6、C#6、E5，间隔 35 ms",
                   play: (p) => [12, 9, 5].map((n, i) => tone({ f: note(n), d: 0.03, gain: 0.07, ...T(p, i * 0.035) })),
                 },
                 {
                   id: "b",
-                  name: "remove × n",
-                  recipe: "the selected removal sound once per detached item, 50 ms apart, so a bulk removal sounds like many single ones",
+                  name: "移除 × n",
+                  recipe: "每解除一项挂接，就播放一次选定的移除音效，间隔 50 ms，让批量移除听起来像逐项移除",
                   play: (p) => Array.from({ length: p.count }, (_, i) => removeVariant().play({ ...T(p, i * 0.05), amp: (p.amp ?? 1) * (1 - i * 0.12) })),
                 },
                 {
                   id: "c",
-                  name: "descend + dash",
-                  recipe: "descend from a, closed by the removal sound's two dashes",
+                  name: "下行 + 短音",
+                  recipe: "沿用 a 的下行音效，以移除音效的两声短音收尾",
                   play: (p) => [...[12, 9, 5].map((n, i) => tone({ f: note(n), d: 0.03, gain: 0.07, ...T(p, i * 0.035) })), removeVariant().play(T(p, 0.12))],
                 },
               ],
@@ -1382,69 +1371,71 @@
           ],
         },
         {
-          title: "model",
+          title: "模型",
           events: [
             {
               id: "menu.loading",
-              voice: "model",
-              role: "state",
+              label: "菜单加载",
+              voice: "模型",
+              role: "状态",
               continuous: true,
-              trigger:
-                "A new future knob is waiting for its dimension menu. The dashed ring fills orange over about 700 ms. The sound stops when the menu arrives.",
+              trigger: "新的续写旋钮正在等待维度菜单。虚线环在约 700 ms 内逐渐填满橙色。菜单出现时，声音停止。",
               defaults: { dur: 0.7 },
               variants: [
                 {
                   id: "a",
-                  name: "warble",
-                  recipe: "sine 1.3 kHz, 14 Hz square vibrato ±180 Hz, very quiet",
+                  name: "颤音",
+                  recipe: "1.3 kHz 正弦波，14 Hz 方波颤音，频偏 ±180 Hz，音量极低",
                   play: (p) => warble({ f: 1320, rate: 14, depth: 180, d: p.dur, gain: 0.02, ...P(p) }),
                 },
                 {
                   id: "b",
-                  name: "scan",
-                  recipe: "FM ticks at 12 Hz, alternating E6 / G#6, very quiet",
+                  name: "扫描",
+                  recipe: "以 12 Hz 播放 FM 滴答声，E6 和 G#6 交替，音量极低",
                   play: (p) =>
                     Array.from({ length: Math.floor(p.dur * 12) }, (_, i) => fm({ f: note(i % 2 ? 12 : 10), d: 0.012, gain: 0.02, ...T(p, i / 12) })),
                 },
                 {
                   id: "c",
-                  name: "breath riser",
-                  recipe: "bandpass noise 800 Hz → 3.2 kHz, Q 10, over the load",
+                  name: "上扬气流声",
+                  recipe: "加载期间，带通噪声从 800 Hz 扫至 3.2 kHz，Q 值为 10",
                   play: (p) => noise({ f: 800, to: 3200, q: 10, a: p.dur, d: 0.03, gain: 0.12, ...P(p) }),
                 },
               ],
             },
             {
               id: "menu.ready",
-              voice: "model",
-              role: "attention",
-              trigger: "The menu arrives and dimension names appear around the rim.",
+              label: "菜单就绪",
+              voice: "模型",
+              role: "注意力",
+              trigger: "菜单出现，维度名称沿外缘排列。",
               variants: [
-                { id: "a", name: "ping", recipe: "FM E7, index 2, 60 ms", play: (p) => fm({ f: note(15), index: 2, d: 0.06, gain: 0.07, ...P(p) }) },
+                { id: "a", name: "叮", recipe: "FM E7，调制指数 2，60 ms", play: (p) => fm({ f: note(15), index: 2, d: 0.06, gain: 0.07, ...P(p) }) },
                 {
                   id: "b",
-                  name: "two up",
-                  recipe: "FM G#6 then B6, 40 ms apart",
+                  name: "两声上行",
+                  recipe: "FM 先播 G#6，再播 B6，间隔 40 ms",
                   play: (p) => [fm({ f: note(12), d: 0.03, ...P(p) }), fm({ f: note(13), d: 0.04, ...T(p, 0.04) })],
                 },
                 {
                   id: "c",
-                  name: "latch",
-                  recipe: "3 kHz click + FM E6",
+                  name: "卡扣",
+                  recipe: "3 kHz 咔哒声 + FM E6",
                   play: (p) => [click({ f: 3000, gain: 0.15, ...P(p) }), fm({ f: note(10), d: 0.03, gain: 0.07, ...P(p) })],
                 },
               ],
             },
             {
               id: "menu.failed",
-              voice: "model",
-              role: "attention",
-              trigger: "No menu came back and the future knob is removed.",
+              label: "菜单加载失败",
+              voice: "模型",
+              role: "注意力",
+              trigger: "未返回菜单，续写旋钮被移除。",
               variants: [
                 {
                   id: "a",
-                  name: "buzz",
-                  recipe: "square 196 Hz 50 ms, twice",
+                  name: "嗡鸣",
+                  recipe: "196 Hz 方波，50 ms，播放两次",
                   play: (p) => [
                     tone({ f: 196, type: "square", d: 0.05, gain: 0.025, ...P(p) }),
                     tone({ f: 196, type: "square", d: 0.05, gain: 0.025, ...T(p, 0.08) }),
@@ -1452,37 +1443,38 @@
                 },
                 {
                   id: "b",
-                  name: "fall",
-                  recipe: "FM G#5 then G#4",
+                  name: "下落",
+                  recipe: "FM 先播 G#5，再播 G#4",
                   play: (p) => [fm({ f: note(7), d: 0.04, ...P(p) }), fm({ f: note(2), d: 0.08, ...T(p, 0.07) })],
                 },
               ],
             },
             {
               id: "realize.update",
-              voice: "model",
-              role: "state",
+              label: "更新体现程度",
+              voice: "模型",
+              role: "状态",
               continuous: true,
-              trigger: "A realization score arrives for the sentence under the knob, and the fill moves over 300 ms. Pitch tells you the score.",
+              trigger: "收到旋钮下方句子的体现程度评分后，填充量在 300 ms 内更新。音高表示分数。",
               defaults: { score: 0.6 },
               demo: (fire) => [0.1, 0.25, 0.4, 0.52, 0.63, 0.71].forEach((score, i) => fire({ score, t: i * 0.45 })),
               variants: [
                 {
                   id: "a",
-                  name: "score blip",
-                  recipe: "FM 40 ms; pitch = score across two octaves",
+                  name: "评分提示音",
+                  recipe: "FM，40 ms；分数映射到两个八度内的音高",
                   play: (p) => fm({ f: note(5 + Math.round(p.score * 10)), d: 0.04, gain: 0.06, ...P(p) }),
                 },
                 {
                   id: "b",
-                  name: "tick + pitch",
-                  recipe: "2.6 kHz click + short FM at the score pitch",
+                  name: "滴答声 + 音高提示",
+                  recipe: "2.6 kHz 咔哒声 + 一声与分数对应的短 FM 音",
                   play: (p) => [click({ f: 2600, gain: 0.12, ...P(p) }), fm({ f: note(5 + Math.round(p.score * 10)), d: 0.015, gain: 0.04, ...P(p) })],
                 },
                 {
                   id: "c",
-                  name: "fill glide",
-                  recipe: "FM glides from E5 to the score pitch over 300 ms, matching the fill",
+                  name: "填充滑音",
+                  recipe: "FM 在 300 ms 内从 E5 滑到分数对应的音高，与填充进度同步",
                   play: (p) => fm({ f: note(5), to: note(5 + Math.round(p.score * 10)), glide: SETTLE, a: 0.01, d: SETTLE, gain: 0.04, index: 0.6, ...P(p) }),
                 },
               ],
@@ -1490,42 +1482,44 @@
           ],
         },
         {
-          title: "future knob",
+          title: "续写旋钮",
           events: [
             {
               id: "fan.candidate",
-              voice: "hand",
-              role: "haptic",
+              label: "指向候选项",
+              voice: "手形指针",
+              role: "触觉反馈",
               continuous: true,
-              trigger: "While choosing, the knob crosses into another dimension's sector.",
+              trigger: "选择中，旋钮转入另一个维度的扇区。",
               defaults: { index: 2 },
               demo: (fire) => [0, 1, 2, 3, 4, 3, 2].forEach((index, i) => fire({ index, t: i * 0.14 })),
               variants: [
                 {
                   id: "a",
-                  name: "named pitch",
-                  recipe: "faint click + sine; each sector has its own pitch, so names become learnable",
+                  name: "名称音高",
+                  recipe: "轻微咔哒声 + 正弦音；每个扇区都有独特的音高，听熟后就能辨认对应的名称",
                   play: (p) => [click({ f: 2400, d: 0.003, gain: 0.12, ...P(p) }), tone({ f: note(5 + p.index * 2), d: 0.02, gain: 0.06, ...P(p) })],
                 },
-                { id: "b", name: "detent", recipe: "2.6 kHz click 5 ms", play: (p) => click({ f: 2600, d: 0.005, gain: 0.3, ...P(p) }) },
+                { id: "b", name: "卡点", recipe: "2.6 kHz 咔哒声，持续 5 ms", play: (p) => click({ f: 2600, d: 0.005, gain: 0.3, ...P(p) }) },
                 {
                   id: "c",
-                  name: "breath",
-                  recipe: "narrow noise band at the sector pitch, 30 ms (dashed = breathy)",
+                  name: "气息声",
+                  recipe: "以扇区音高为中心的窄带噪声，持续 30 ms（虚线 = 带气息感）",
                   play: (p) => noise({ f: note(10 + p.index * 2), q: 14, d: 0.03, gain: 0.6, ...P(p) }),
                 },
               ],
             },
             {
               id: "fan.take",
-              voice: "hand",
-              role: "attention",
-              trigger: "The knob is pushed through the rim, the dimension is taken, and the ring turns solid.",
+              label: "选定调节项",
+              voice: "手形指针",
+              role: "注意力",
+              trigger: "将旋钮推过边沿即可选定维度，圆环随即变为实线。",
               variants: [
                 {
                   id: "a",
-                  name: "lock",
-                  recipe: "latch clicks, then sines E6 → C#7",
+                  name: "锁定",
+                  recipe: "先是锁扣的咔哒声，再依次播放 E6 → C#7 的正弦音",
                   play: (p) => [
                     click({ f: 1800, gain: 0.3, ...P(p) }),
                     click({ f: 3000, gain: 0.2, ...T(p, 0.01) }),
@@ -1535,14 +1529,14 @@
                 },
                 {
                   id: "b",
-                  name: "thunk",
-                  recipe: "sine 180→120 Hz 60 ms + 2.4 kHz click",
+                  name: "闷响",
+                  recipe: "180 → 120 Hz 的正弦滑音，持续 60 ms，叠加 2.4 kHz 咔哒声",
                   play: (p) => [tone({ f: 180, to: 120, d: 0.06, gain: 0.3, ...P(p) }), click({ f: 2400, gain: 0.25, ...P(p) })],
                 },
                 {
                   id: "c",
-                  name: "breath → tone",
-                  recipe: "airy tick turns into sines E6 + E7 (dashed → solid)",
+                  name: "气息声 → 音调",
+                  recipe: "带气息的轻响转为 E6 + E7 的正弦音（虚线 → 实线）",
                   play: (p) => [
                     noise({ type: "highpass", f: 5000, d: 0.006, gain: 0.15, ...P(p) }),
                     tone({ f: note(10), a: 0.003, d: 0.1, gain: 0.09, ...P(p) }),
@@ -1553,10 +1547,11 @@
             },
             {
               id: "fan.graduation",
-              voice: "hand",
-              role: "haptic",
+              label: "越过刻度",
+              voice: "手形指针",
+              role: "触觉反馈",
               continuous: true,
-              trigger: "While tuning a scale, the angle crosses one of 40 graduations. Every 10th is a major one.",
+              trigger: "在刻度上调节时，角度每越过一格，就经过 40 道刻度线中的一道。每 10 道有一道主刻度线。",
               defaults: { index: 10, major: true },
               demo: (fire) => {
                 for (let i = 0; i <= 40; i++) fire({ index: i, major: i % 10 === 0, t: i * 0.025 })
@@ -1564,8 +1559,8 @@
               variants: [
                 {
                   id: "a",
-                  name: "pitched ruler",
-                  recipe: "sine 12 ms; pitch sweeps 330 → 1320 Hz across the fan, so the pitch shows the position",
+                  name: "音高标尺",
+                  recipe: "正弦音持续 12 ms；音高在扇形菜单上从 330 Hz 升至 1320 Hz，用来指示位置",
                   play: (p) => [
                     tone({ f: 330 * 2 ** ((p.index / 40) * 2), d: 0.012, gain: p.major ? 0.07 : 0.03, ...P(p) }),
                     p.major && click({ f: 2400, gain: 0.2, ...P(p) }),
@@ -1573,8 +1568,8 @@
                 },
                 {
                   id: "b",
-                  name: "detent",
-                  recipe: "minor 3.4 kHz click 3 ms; major 2.4 kHz click + sine E6",
+                  name: "卡点",
+                  recipe: "次刻度：3.4 kHz 咔哒声，持续 3 ms；主刻度：2.4 kHz 咔哒声 + E6 正弦音",
                   play: (p) => [
                     click({ f: p.major ? 2400 : 3400, d: p.major ? 0.005 : 0.003, gain: p.major ? 0.3 : 0.1, ...P(p) }),
                     p.major && tone({ f: note(10), d: 0.015, gain: 0.05, ...P(p) }),
@@ -1582,8 +1577,8 @@
                 },
                 {
                   id: "c",
-                  name: "majors only",
-                  recipe: "silent on minor ticks; majors = click + sine climbing E5 → E7",
+                  name: "仅主刻度",
+                  recipe: "次刻度无声；主刻度播放咔哒声 + 从 E5 升至 E7 的正弦音",
                   play: (p) =>
                     p.major
                       ? [click({ f: 2400, gain: 0.3, ...P(p) }), tone({ f: note(5 + Math.round(p.index / 10) * 2), d: 0.02, gain: 0.06, ...P(p) })]
@@ -1593,33 +1588,35 @@
             },
             {
               id: "fan.sector",
-              voice: "hand",
-              role: "haptic",
+              label: "切换扇区",
+              voice: "手形指针",
+              role: "触觉反馈",
               continuous: true,
-              trigger: "While tuning a choice, the angle crosses into another option's sector (the 3px orange rim).",
+              trigger: "调节选项时，角度越过 3px 宽的橙色边沿，进入另一个选项的扇区。",
               defaults: { index: 1 },
               demo: (fire) => [0, 1, 2, 1].forEach((index, i) => fire({ index, t: i * 0.25 })),
               variants: [
                 {
                   id: "a",
-                  name: "notch + pitch",
-                  recipe: "1.8 kHz click + sine; each option has its own pitch",
+                  name: "卡点 + 音高",
+                  recipe: "1.8 kHz 咔哒声 + 正弦音；每个选项都有独特的音高",
                   play: (p) => [click({ f: 1800, gain: 0.3, ...P(p) }), tone({ f: note(5 + p.index * 3), d: 0.04, gain: 0.07, ...P(p) })],
                 },
                 {
                   id: "b",
-                  name: "heavy notch",
-                  recipe: "1.2 kHz click + sine 200 Hz 20 ms",
+                  name: "重卡点",
+                  recipe: "1.2 kHz 咔哒声 + 持续 20 ms 的 200 Hz 正弦音",
                   play: (p) => [click({ f: 1200, gain: 0.4, ...P(p) }), tone({ f: 200, d: 0.02, gain: 0.2, ...P(p) })],
                 },
               ],
             },
             {
               id: "fan.ruler",
-              voice: "hand",
-              role: "haptic",
+              label: "越过强度刻度",
+              voice: "手形指针",
+              role: "触觉反馈",
               continuous: true,
-              trigger: "Distance crosses a 10% strength step, one of the ticks on the link.",
+              trigger: "拖动距离越过一个 10% 的强度档位，对应连线上的一道刻度。",
               defaults: { step: 5, dir: 1 },
               demo: (fire) => {
                 let t = 0
@@ -1630,8 +1627,8 @@
               variants: [
                 {
                   id: "a",
-                  name: "weight",
-                  recipe: "2 kHz click; level climbs with strength; 100% adds a 110 Hz body",
+                  name: "分量感",
+                  recipe: "2 kHz 咔哒声；音量随强度增加；达到 100% 时叠加 110 Hz 低音",
                   play: (p) => [
                     click({ f: 2000, d: 0.004, gain: 0.06 + p.step * 0.03, ...P(p) }),
                     p.step === 10 && tone({ f: 110, d: 0.04, gain: 0.25, ...P(p) }),
@@ -1639,8 +1636,8 @@
                 },
                 {
                   id: "b",
-                  name: "rising",
-                  recipe: "click + sine; pitch climbs with strength, 50% and 100% held longer",
+                  name: "音高上升",
+                  recipe: "咔哒声 + 正弦音；音高随强度上升，在 50% 和 100% 时持续更久",
                   play: (p) => [
                     click({ f: 2800, gain: 0.1, ...P(p) }),
                     tone({ f: note(5 + p.step), d: p.step % 5 ? 0.012 : 0.03, gain: p.step % 5 ? 0.04 : 0.07, ...P(p) }),
@@ -1648,8 +1645,8 @@
                 },
                 {
                   id: "c",
-                  name: "halves only",
-                  recipe: "silent except at 50% and 100%",
+                  name: "仅半档和满档",
+                  recipe: "仅在 50% 和 100% 时发声",
                   play: (p) =>
                     p.step % 5 === 0
                       ? [click({ f: 2000, gain: 0.3, ...P(p) }), tone({ f: note(p.step === 10 ? 15 : 10), d: 0.02, gain: 0.06, ...P(p) })]
@@ -1659,11 +1656,12 @@
             },
             {
               id: "fan.bed",
-              voice: "hand",
-              role: "haptic",
+              label: "调节底音",
+              voice: "手形指针",
+              role: "触觉反馈",
               continuous: true,
               bed: true,
-              trigger: "Plays for the whole drag of a future knob. Its color follows angle (position) and distance (strength), and its level follows speed.",
+              trigger: "拖动续写旋钮时全程播放。音色随角度（位置）和距离（强度）变化，音量随拖动速度变化。",
               demo: (fire) => {
                 const b = fire({})
                 const t0 = performance.now()
@@ -1683,8 +1681,8 @@
               variants: [
                 {
                   id: "a",
-                  name: "pulse train",
-                  recipe: "click train at 5–30 Hz by strength, 1.2–3.6 kHz by angle, louder with speed (a geiger counter)",
+                  name: "脉冲列",
+                  recipe: "连续咔哒声：重复频率随强度在 5–30 Hz 之间变化，音频频率随角度在 1.2–3.6 kHz 之间变化，拖动越快声音越响（类似盖革计数器）",
                   play: () =>
                     bed(() => {
                       let state = { position: 0.5, strength: 0.5, speed: 0, pan: 0 }
@@ -1707,8 +1705,8 @@
                 },
                 {
                   id: "b",
-                  name: "friction",
-                  recipe: "looped noise; band 500–3500 Hz by angle, Q tightens with strength, level = speed (silent at rest)",
+                  name: "摩擦声",
+                  recipe: "循环噪声；频带随角度在 500–3500 Hz 之间变化，强度越高，Q 值越高、频带越窄；音量取决于拖动速度（静止时无声）",
                   play: () =>
                     bed((c) => {
                       const s = loopedNoise(c)
@@ -1736,8 +1734,8 @@
                 },
                 {
                   id: "c",
-                  name: "theremin",
-                  recipe: "sine 330–1320 Hz by angle, lowpass opens with strength, faint hum that swells with speed",
+                  name: "特雷门琴",
+                  recipe: "正弦音随角度在 330–1320 Hz 之间变化；强度越高，低通滤波器的截止频率越高；拖动越快，轻微的嗡鸣声越响",
                   play: () =>
                     bed((c) => {
                       const o = c.createOscillator()
@@ -1768,14 +1766,15 @@
             },
             {
               id: "fan.release",
-              voice: "hand",
-              role: "state",
-              trigger: "Release while tuning. The control is committed and realization starts, so the hand passes control to the model.",
+              label: "松开调节旋钮",
+              voice: "手形指针",
+              role: "状态",
+              trigger: "调节中松手即确认设置，模型接手并开始在续写中体现该设置。",
               variants: [
                 {
                   id: "a",
-                  name: "hand-off",
-                  recipe: "latch clicks down, then FM E6 (hand → model)",
+                  name: "交接",
+                  recipe: "卡扣咔哒扣下，随后播放 FM E6（手动 → 模型）",
                   play: (p) => [
                     click({ f: 3000, gain: 0.2, ...P(p) }),
                     click({ f: 2000, gain: 0.25, ...T(p, 0.012) }),
@@ -1784,23 +1783,24 @@
                 },
                 {
                   id: "b",
-                  name: "sine → fm",
-                  recipe: "sine E6, then FM E7 at 50 ms",
+                  name: "正弦波 → FM",
+                  recipe: "正弦波 E6，50 ms 后播放 FM E7",
                   play: (p) => [tone({ f: note(10), d: 0.03, gain: 0.08, ...P(p) }), fm({ f: note(15), d: 0.03, gain: 0.05, ...T(p, 0.05) })],
                 },
               ],
             },
             {
               id: "future.pin",
-              voice: "settled",
-              role: "attention",
+              label: "固定续写旋钮",
+              voice: "已就位",
+              role: "注意力",
               trigger:
-                "The control is realized and the knob travels 600 ms to its margin pin. The 600 ms trip itself is silent; the sound is only the moment it settles, timed to the landing and panned to the margin. It is the only resolved chord on the board, a live control becoming a stable fact.",
+                "控件在文本中得到体现，旋钮用 600 ms 移到页边的固定点。移动全程无声，只在旋钮落定的瞬间发声，声像偏向页边。这是音效面板上唯一一个有解决感的和弦，标志着可调的控件变成了已确定的事实。",
               variants: [
                 {
                   id: "a",
-                  name: "resolve",
-                  recipe: "sine B6, then E7 70 ms later (a fourth up, resolved), 300 ms tail",
+                  name: "解决",
+                  recipe: "正弦波 B6，70 ms 后接 E7（上行四度，形成解决），尾音 300 ms",
                   play: (p) => [
                     tone({ f: note(13), a: 0.003, d: 0.1, gain: 0.06, ...landing(p) }),
                     tone({ f: note(15), a: 0.003, d: SETTLE, gain: 0.07, ...landing(p, 0.07) }),
@@ -1808,8 +1808,8 @@
                 },
                 {
                   id: "b",
-                  name: "stabilize",
-                  recipe: "latch click; sine E6 whose last bit of wobble (±30 Hz) dies within 80 ms, with B6 a fifth above; 400 ms tails",
+                  name: "稳定",
+                  recipe: "卡扣咔哒一声；正弦波 E6 残余的频率波动（±30 Hz）在 80 ms 内消失，同时叠加上方五度音 B6；尾音均为 400 ms",
                   play: (p) => {
                     const c = ac()
                     const at = landing(p)
@@ -1834,8 +1834,8 @@
                 },
                 {
                   id: "c",
-                  name: "lock-in",
-                  recipe: "latch clicks 1.8 → 3 kHz, then a quick rising E6-G#6-B6 arpeggio of sines, 40 ms apart, 300 ms tails",
+                  name: "锁定",
+                  recipe: "卡扣声从 1.8 kHz 升至 3 kHz，随后是快速上行的正弦波琶音 E6-G#6-B6，音符间隔 40 ms，尾音均为 300 ms",
                   play: (p) => [
                     click({ f: 1800, gain: 0.25, ...landing(p) }),
                     click({ f: 3000, gain: 0.18, ...landing(p, 0.01) }),
@@ -1844,8 +1844,8 @@
                 },
                 {
                   id: "d",
-                  name: "anchor",
-                  recipe: "110 Hz body + 2 kHz click, with a held sine octave E6/E7, 400 ms (grounded)",
+                  name: "锚定",
+                  recipe: "110 Hz 主体声 + 2 kHz 咔哒声，叠加持续 400 ms 的正弦波八度音 E6/E7（沉稳）",
                   play: (p) => [
                     tone({ f: 110, d: 0.06, gain: 0.3, ...landing(p) }),
                     click({ f: 2000, gain: 0.22, ...landing(p) }),
@@ -1858,49 +1858,52 @@
           ],
         },
         {
-          title: "attention boxes",
+          title: "关键词框",
           events: [
             {
               id: "box.hover",
-              voice: "hand",
-              role: "haptic",
-              trigger: "The pointer moves onto a box. Its keyword turns orange and the other boxes recede.",
+              label: "靠近关键词框",
+              voice: "手形指针",
+              role: "触觉反馈",
+              trigger: "指针移入关键词框时，框内的关键词变为橙色，其他关键词框淡出焦点。",
               variants: [
                 {
                   id: "a",
-                  name: "air",
-                  recipe: "highpass noise 7 kHz, 6 ms",
+                  name: "气声",
+                  recipe: "7 kHz 高通噪声，6 ms",
                   play: (p) => noise({ type: "highpass", f: 7000, q: 0.7, d: 0.006, gain: 0.08, ...P(p) }),
                 },
-                { id: "b", name: "glint", recipe: "sine E7, 12 ms, very quiet", play: (p) => tone({ f: note(15), d: 0.012, gain: 0.025, ...P(p) }) },
+                { id: "b", name: "闪音", recipe: "正弦波 E7，12 ms，音量极低", play: (p) => tone({ f: note(15), d: 0.012, gain: 0.025, ...P(p) }) },
               ],
             },
             {
               id: "box.grab",
-              voice: "hand",
-              role: "haptic",
-              trigger: "Pointer down on a box to start moving its keyword.",
+              label: "抓住关键词框",
+              voice: "手形指针",
+              role: "触觉反馈",
+              trigger: "在关键词框上按下指针，开始移动关键词。",
               variants: [
                 {
                   id: "a",
-                  name: "latch",
-                  recipe: "clicks 2 → 2.8 kHz, 12 ms apart",
+                  name: "卡扣",
+                  recipe: "两声咔哒，2 kHz → 2.8 kHz，间隔 12 ms",
                   play: (p) => [click({ f: 2000, gain: 0.3, ...P(p) }), click({ f: 2800, gain: 0.2, ...T(p, 0.012) })],
                 },
                 {
                   id: "b",
-                  name: "thock",
-                  recipe: "sine 200→120 Hz 40 ms + click",
+                  name: "咚",
+                  recipe: "正弦波 200 Hz → 120 Hz，40 ms + 咔哒声",
                   play: (p) => [tone({ f: 200, to: 120, d: 0.04, gain: 0.25, ...P(p) }), click({ f: 2200, gain: 0.15, ...P(p) })],
                 },
               ],
             },
             {
               id: "box.hop",
-              voice: "hand",
-              role: "haptic",
+              label: "切换关键词",
+              voice: "手形指针",
+              role: "触觉反馈",
               continuous: true,
-              trigger: "While dragging a box, the keyword jumps to the word under the pointer.",
+              trigger: "拖动关键词框时，关键词会跳到指针下方的词上。",
               defaults: { dir: 1, index: 4 },
               demo: (fire) => {
                 let t = 0
@@ -1908,57 +1911,59 @@
                 for (let i = 0; i < 3; i++) (fire({ dir: -1, index: 7 - i, t }), (t += 0.12))
               },
               variants: [
-                { id: "a", name: "detent", recipe: "2.8 kHz click 4 ms", play: (p) => click({ f: 2800, d: 0.004, gain: 0.25, ...P(p) }) },
+                { id: "a", name: "卡点", recipe: "2.8 kHz 咔哒声，4 ms", play: (p) => click({ f: 2800, d: 0.004, gain: 0.25, ...P(p) }) },
                 {
                   id: "b",
-                  name: "word pitch",
-                  recipe: "click + sine; pitch follows the word index",
+                  name: "词位音高",
+                  recipe: "咔哒声 + 正弦波；音高随词序变化",
                   play: (p) => [click({ f: 2400, gain: 0.1, ...P(p) }), tone({ f: note(5 + (p.index % 10)), d: 0.015, gain: 0.05, ...P(p) })],
                 },
                 {
                   id: "c",
-                  name: "slide",
-                  recipe: "narrow noise 20 ms; 2.4 kHz forward, 1.8 kHz back",
+                  name: "滑动",
+                  recipe: "窄带噪声，20 ms；向前为 2.4 kHz，向后为 1.8 kHz",
                   play: (p) => noise({ f: p.dir > 0 ? 2400 : 1800, q: 10, d: 0.02, gain: 0.4, ...P(p) }),
                 },
               ],
             },
             {
               id: "box.drop",
-              voice: "hand",
-              role: "haptic",
-              trigger: "Release a box. The keyword settles where it is.",
+              label: "放下关键词框",
+              voice: "手形指针",
+              role: "触觉反馈",
+              trigger: "松开关键词框，关键词就固定在当前位置。",
               variants: [
                 {
                   id: "a",
-                  name: "latch back",
-                  recipe: "clicks 2.8 → 2 kHz",
+                  name: "卡扣回弹",
+                  recipe: "两声咔哒，2.8 kHz → 2 kHz",
                   play: (p) => [click({ f: 2800, gain: 0.2, ...P(p) }), click({ f: 2000, gain: 0.25, ...T(p, 0.012) })],
                 },
                 {
                   id: "b",
-                  name: "seat",
-                  recipe: "sine 220 Hz 40 ms + click",
+                  name: "落位",
+                  recipe: "220 Hz 正弦波，40 ms + 咔哒声",
                   play: (p) => [tone({ f: 220, d: 0.04, gain: 0.15, ...P(p) }), click({ f: 2000, gain: 0.15, ...P(p) })],
                 },
                 {
                   id: "c",
-                  name: "settle",
-                  recipe: "click + sine E5, 200 ms tail",
+                  name: "落定",
+                  recipe: "咔哒声 + 正弦波 E5，尾音 200 ms",
                   play: (p) => [click({ f: 2200, gain: 0.2, ...P(p) }), tone({ f: note(5), a: 0.01, d: 0.2, gain: 0.04, ...P(p) })],
                 },
               ],
             },
             {
               id: "box.create",
-              voice: "hand",
-              role: "attention",
-              trigger: "A text selection becomes a new box.",
+              label: "创建关键词框",
+              voice: "手形指针",
+              role: "注意力",
+              trigger: "选中的文本会变成新的关键词框。",
               variants: [
                 {
                   id: "a",
-                  name: "stamp",
-                  recipe: "click, then sines E6 → C#7",
+                  name: "盖印",
+                  recipe: "咔哒一声，随后播放正弦波 E6 → C#7",
                   play: (p) => [
                     click({ f: 2400, gain: 0.2, ...P(p) }),
                     tone({ f: note(10), d: 0.03, gain: 0.07, ...T(p, 0.01) }),
@@ -1967,8 +1972,8 @@
                 },
                 {
                   id: "b",
-                  name: "swish",
-                  recipe: "bandpass noise 1 → 3 kHz 100 ms, click at the end",
+                  name: "掠声",
+                  recipe: "带通噪声 1 kHz → 3 kHz，100 ms，末尾一声咔哒",
                   play: (p) => [noise({ f: 1000, to: 3000, q: 2, d: 0.1, gain: 0.15, ...P(p) }), click({ f: 3000, gain: 0.2, ...T(p, 0.1) })],
                 },
               ],
@@ -1976,19 +1981,20 @@
           ],
         },
         {
-          title: "removal",
+          title: "移除",
           events: [
             {
               id: "remove",
-              voice: "hand",
-              role: "attention",
+              label: "移除控件",
+              voice: "手形指针",
+              role: "注意力",
               trigger:
-                "One sound for every deletion: double clicking a box, double clicking a future knob, and (optionally, via collapse b/c) detaching everything. It mirrors hold.spawn's two dashes, played outward and falling.",
+                "各种移除操作共用一个音效：双击关键词框、双击续写旋钮，以及通过收起操作的 b / c 音效移除所有附属控件（可选）。它与拉出旋钮时的两段短音相呼应，但声像向外移，音高下行。",
               variants: [
                 {
                   id: "a",
-                  name: "dash out",
-                  recipe: "two airy highpass ticks, 5 → 3.5 kHz, 40 ms apart, the second quieter",
+                  name: "向外短音",
+                  recipe: "两声轻透的高通滴答声，5 → 3.5 kHz，间隔 40 ms，第二声更轻",
                   play: (p) => [
                     noise({ type: "highpass", f: 5000, d: 0.006, gain: 0.18, ...P(p) }),
                     noise({ type: "highpass", f: 3500, d: 0.006, gain: 0.12, ...T(p, 0.04) }),
@@ -1996,8 +2002,8 @@
                 },
                 {
                   id: "b",
-                  name: "dash out + fall",
-                  recipe: "spawn played backwards: G#6 sine falls to G#5 under the first dash, then the second dash, quieter",
+                  name: "冲出并下落",
+                  recipe: "倒放生成音效：第一次冲刺时，正弦音从 G#6 滑落到 G#5；随后是第二次冲刺，声音更轻",
                   play: (p) => [
                     noise({ type: "highpass", f: 5000, d: 0.006, gain: 0.16, ...P(p) }),
                     tone({ f: note(12), to: note(7), d: 0.04, gain: 0.05, ...P(p) }),
@@ -2006,8 +2012,8 @@
                 },
                 {
                   id: "c",
-                  name: "dash in reverse",
-                  recipe: "two airy ticks with reversed envelopes (8 ms swell, hard cut), 5 → 3.5 kHz, like being drawn away",
+                  name: "倒放冲刺",
+                  recipe: "两声轻透的滴答声，包络反转（8 ms 渐强，随后骤停），5 → 3.5 kHz，像被抽走一样",
                   play: (p) => [
                     noise({ type: "highpass", f: 5000, a: 0.008, d: 0.002, gain: 0.16, ...P(p) }),
                     noise({ type: "highpass", f: 3500, a: 0.008, d: 0.002, gain: 0.1, ...T(p, 0.04) }),
@@ -2015,8 +2021,8 @@
                 },
                 {
                   id: "d",
-                  name: "single dash",
-                  recipe: "one airy tick at 4 kHz, 8 ms, the smallest possible removal",
+                  name: "单次冲刺",
+                  recipe: "一声轻透的滴答声，4 kHz，8 ms，表示最小幅度的移除",
                   play: (p) => noise({ type: "highpass", f: 4000, d: 0.008, gain: 0.18, ...P(p) }),
                 },
               ],
@@ -2056,17 +2062,17 @@
           const row = document.createElement("div")
           row.className = "event"
           row.dataset.id = ev.id
-          const tags = [ev.voice, ev.role, ev.continuous && "continuous"].filter(Boolean)
+          const tags = [ev.voice, ev.role, ev.continuous && "持续音"].filter(Boolean)
           row.innerHTML = `
             <div class="ev-head">
-              <b>${ev.id} <i></i></b>
+              <b>${ev.label} <i></i></b>
               <p>${ev.trigger}</p>
               <div class="tags">${tags.map((t) => `<span>${t}</span>`).join("")}</div>
             </div>
             <div class="variants">${ev.variants
               .map(
                 (v) => `<div class="variant" data-v="${v.id}">
-                  <button class="pick" type="button" aria-label="select ${ev.id} ${v.id}"></button>
+                  <button class="pick" type="button" aria-label="选择${ev.label}的 ${v.id} 方案"></button>
                   <button class="play" type="button"><span><span class="vid">▶ ${v.id}</span> · ${v.name}</span><small>${v.recipe}</small></button>
                 </div>`,
               )
@@ -2103,7 +2109,7 @@
         const row = $(`.event[data-id="${id}"]`)
         const chip = row && $(`.variant[data-v="${vid}"]`, row)
         const last = $("#last")
-        last.innerHTML = `last <b>${id} · ${vid}</b>`
+        last.innerHTML = `上次播放 <b>${EVENTS[id].label} · ${vid}</b>`
         for (const el of [row, chip, last]) {
           if (!el) continue
           el.classList.remove("is-firing", "is-playing")
@@ -2190,14 +2196,15 @@
 
       /* ---------------------------------------------------------------- pad: caret */
 
-      const CARET_TEXT =
-        "The lighthouse keeper counted the ships twice. Fog had come in early that evening, and the radio was silent. She lit the lamp by hand, the way her father had taught her, and waited for the horn."
+      import { lighthouseSentences } from "./lighthouse.js"
       const caretPad = $("#caret-pad")
       const caretCol = $("#caret-col")
       const caretKnob = $("#caret-knob")
-      caretCol.innerHTML = CARET_TEXT.split(" ")
+      caretCol.innerHTML = lighthouseSentences
+        .slice(0, 3)
+        .flat()
         .map((w) => `<span class="w">${w}</span>`)
-        .join(" ")
+        .join("")
       const caretWords = [...caretCol.children]
 
       function caretGeometry() {
@@ -2327,12 +2334,12 @@
 
       /* ---------------------------------------------------------------- pad: attention */
 
-      const ATT_TEXT = "Somewhere past the breakwater, an engine idled and then cut out, and the beam swept the water once, and then again."
+      const attTokens = [...lighthouseSentences[5], ...lighthouseSentences[9]]
       const attPad = $("#att-pad")
       const attCol = $("#att-col")
-      const attTokens = ATT_TEXT.split(" ")
+
       attCol.innerHTML = attTokens
-        .map((w, i) => `<span class="w" data-i="${i}">${w}</span>${i < attTokens.length - 1 ? `<span class="sp" data-i="${i}"> </span>` : ""}`)
+        .map((w, i) => `<span class="w" data-i="${i}">${w}</span>${i < attTokens.length - 1 ? `<span class="sp" data-i="${i}"></span>` : ""}`)
         .join("")
       const attWords = [...attCol.querySelectorAll(".w")]
       const attSpaces = [...attCol.querySelectorAll(".sp")]
@@ -2462,11 +2469,11 @@
       const LABEL_GAP = 12
       const GRADUATIONS = 40
       const MENU = [
-        { name: "tension", kind: "scale", low: "calm", high: "tense" },
-        { name: "turn", kind: "choice", options: ["resolve", "suspend", "twist"] },
-        { name: "pace", kind: "scale", low: "lingering", high: "brisk" },
-        { name: "voice", kind: "choice", options: ["action", "dialogue", "thought"] },
-        { name: "mood", kind: "scale", low: "dark", high: "light" },
+        { name: "张力", kind: "scale", low: "平静", high: "紧张" },
+        { name: "转折", kind: "choice", options: ["揭晓", "留白", "反转"] },
+        { name: "节奏", kind: "scale", low: "舒缓", high: "明快" },
+        { name: "表达", kind: "choice", options: ["动作", "对话", "思绪"] },
+        { name: "氛围", kind: "scale", low: "阴郁", high: "轻快" },
       ]
       const svg = (tag, attrs = {}, parent) => {
         const node = document.createElementNS(NS, tag)
@@ -2537,7 +2544,7 @@
           const names = s.menu?.map((d) => d.name) ?? []
           for (let i = 0; i <= names.length; i++) majors.push(-SWING + sectorOf(names.length) * i)
           names.forEach((name, i) => labelAt(g, s.c, -SWING + sectorOf(names.length) * (i + 0.5), labelR, name, i === s.candidate))
-          readout = !s.menu ? "loading dimensions…" : s.candidate !== undefined ? previewOf(s.menu[s.candidate]) : "drag through the rim to choose"
+          readout = !s.menu ? "正在加载调节项…" : s.candidate !== undefined ? previewOf(s.menu[s.candidate]) : "拖过外圈选定"
         } else if (s.dim.kind === "scale") {
           for (let i = 0; i <= GRADUATIONS; i++) (i % 10 === 0 ? majors : ticks).push(-SWING + (i / GRADUATIONS) * 2 * SWING)
           for (let i = 0; i <= GRADUATIONS; i += 10) {
@@ -2641,7 +2648,7 @@
         } else {
           const value =
             fan.dim.kind === "scale" ? (fan.position < 0.5 ? fan.dim.low : fan.dim.high) : fan.dim.options[indexAt(fan.dim.options.length, fan.position)]
-          const realized = fan.realized === undefined ? "" : ` · ${Math.round(fan.realized * 100)}% realized`
+          const realized = fan.realized === undefined ? "" : ` · ${Math.round(fan.realized * 100)}% 已体现`
           fanFuture.style.setProperty("--fill", fan.realized ?? fan.strength)
           fanFuture.toggleAttribute("data-tracking", fan.realized !== undefined && !fan.pinned)
           fanLabel.innerHTML = `${fan.dim.name} → ${value} <b>${Math.round(fan.strength * 100)}%${realized}</b>`

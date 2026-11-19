@@ -1,6 +1,6 @@
 import type { Lead } from "./attention.ts"
 import type { Control } from "./dimension.ts"
-import { countWords, firstWords } from "./words.ts"
+import { countCharacters, firstCharacters } from "./words.ts"
 
 export type GenerationTrigger = "buffer low" | "steering changed"
 
@@ -8,7 +8,7 @@ export type GenerationTrigger = "buffer low" | "steering changed"
 export type GenerationOutcome = "busy" | "aborted" | "done"
 
 /** What leads a continuation: key phrases from the text, and dimensions tuned for what comes next. Either may be empty. */
-export type Steering = { leads: Lead[]; controls: Control[] }
+export type Steering = { direction: string; leads: Lead[]; controls: Control[] }
 
 export type TextSource = {
   /** May rewrite the text before completion starts, e.g. to a full known opening. */
@@ -43,6 +43,7 @@ export function createTextStream({ expand, complete }: TextSource, onChange: () 
     generate,
     truncate,
     regenerate,
+    replace,
     activity,
     streaming,
   }
@@ -80,16 +81,16 @@ export function createTextStream({ expand, complete }: TextSource, onChange: () 
     const controller = (active = new AbortController())
     const { signal } = controller
     const generationId = ++id
-    const expanded = expand?.(text) ?? text
+    const expanded = steering.direction ? text : (expand?.(text) ?? text)
     if (expanded !== text) {
       text = expanded
-      openingWords = countWords(text)
+      openingWords = countCharacters(text)
       onChange()
     }
     const prefix = text
     const started: Timing = { startedAt: performance.now(), words: 0 }
     timing = started
-    console.log(`generation ${generationId} start by ${trigger} after ${countWords(prefix)} words`)
+    console.log(`generation ${generationId} start by ${trigger} after ${countCharacters(prefix)} words`)
 
     try {
       for await (const chunk of complete(prefix, steering, signal)) {
@@ -98,13 +99,13 @@ export function createTextStream({ expand, complete }: TextSource, onChange: () 
         if (started.firstChunkAt === undefined) {
           started.firstChunkAt = now
           release()
-        } else started.words += countWords(chunk)
+        } else started.words += countCharacters(chunk)
         started.lastChunkAt = now
         text += chunk
         onChange()
       }
       if (signal.aborted) return "aborted"
-      console.log(`generation ${generationId} done with ${countWords(text) - countWords(prefix)} words`)
+      console.log(`generation ${generationId} done with ${countCharacters(text) - countCharacters(prefix)} words`)
       return "done"
     } catch (error) {
       if (!signal.aborted) throw error
@@ -130,13 +131,20 @@ export function createTextStream({ expand, complete }: TextSource, onChange: () 
     return generate(trigger, steering)
   }
 
+  function replace(manuscript: string) {
+    cutAfter(0)
+    text = manuscript
+    timing = undefined
+    release()
+  }
+
   function cutAfter(count: number) {
     if (active) {
       active.abort()
       active = undefined
       console.log(`generation ${id} cancel`)
     }
-    text = firstWords(text, count)
+    text = firstCharacters(text, count)
     if (count === 0) openingWords = 0
   }
 }

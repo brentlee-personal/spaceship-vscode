@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <title>text · style 03 · telemetry</title>
+    <title>写作设计 · 样式 03 · 遥测</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>" />
     <style>
       @font-face {
@@ -803,261 +803,257 @@
   </head>
   <body>
     <main>
-      <nav class="experiments" aria-label="experiments">
+      <nav class="experiments" aria-label="实验">
         <p>
-          <b>style</b>
-          <a href="style-1.html">instrument</a>
-          <a href="style-2.html">signal</a>
-          <a href="style-3.html" aria-current="page">telemetry</a>
-          <a href="style-4.html">merged</a>
+          <b>样式</b>
+          <a href="style-1.html">仪表</a>
+          <a href="style-2.html">信号</a>
+          <a href="style-3.html" aria-current="page">遥测</a>
+          <a href="style-4.html">融合</a>
         </p>
         <p>
-          <b>sound</b>
-          <a href="soundboard.html">soundboard</a>
+          <b>音效</b>
+          <a href="soundboard.html">音效面板</a>
         </p>
         <p>
-          <b>knob</b>
-          <a href="knob-states.html">buffer states</a>
+          <b>旋钮</b>
+          <a href="knob-states.html">缓冲区状态</a>
         </p>
         <p>
-          <b>rail</b>
-          <a href="bar-1.html">histogram</a>
-          <a href="bar-2.html">profile</a>
-          <a href="bar-3.html">meters</a>
+          <b>侧栏</b>
+          <a href="bar-1.html">直方图</a>
+          <a href="bar-2.html">强度曲线</a>
+          <a href="bar-3.html">强度表</a>
         </p>
         <p>
-          <b>pointer</b>
-          <a href="pointer-1.html">crosshair</a>
-          <a href="pointer-2.html">ring</a>
-          <a href="pointer-3.html">field</a>
-          <a href="pointer-4.html">steering</a>
-          <a href="pointer-5.html">combined</a>
+          <b>指针</b>
+          <a href="pointer-1.html">十字准星</a>
+          <a href="pointer-2.html">圆环</a>
+          <a href="pointer-3.html">感应区</a>
+          <a href="pointer-4.html">引导</a>
+          <a href="pointer-5.html">组合</a>
         </p>
         <p>
-          <b>tray</b>
-          <a href="tray-1.html">modules</a>
-          <a href="tray-2.html">tmux</a>
-          <a href="tray-3.html">gauges</a>
+          <b>状态栏</b>
+          <a href="tray-1.html">模块</a>
+          <a href="tray-2.html">tmux 状态行</a>
+          <a href="tray-3.html">表盘</a>
         </p>
       </nav>
       <header>
-        <h1>text / style 03 — telemetry</h1>
+        <h1>样式 03 · 遥测</h1>
         <p>
-          Denser and more quantitative. White is the user; <em class="sys">cyan is the machine</em>: tokens arriving, a menu loading, a control being realized.
-          Attention is drawn as a bar under each word whose height is its weight, so the spread around a keyword reads as a spectrum, not a blur. Influence
-          prints its number. A status line reports what the model is doing right now.
+          信息更密集，也更注重数值。白色代表用户；
+          <em class="sys">青色代表系统</em
+          >：词元正在传入、菜单正在加载、控件设置正在文本中体现。每个词下方用条形标示注意力，条形越高，权重越大。这样，关键词周围的权重分布像频谱一样清晰，不会糊成一片。影响力直接显示数值。状态栏显示模型当前在做什么。
         </p>
       </header>
 
       <section>
-        <h2><b>01</b>tokens</h2>
+        <h2><b>01</b>设计参数</h2>
         <div style="display: grid; gap: 24px">
           <div class="ramp">
-            <div><i style="background: var(--ink)"></i>ink<span>1.00 · text, active</span></div>
-            <div><i style="background: var(--ink-2)"></i>ink-2<span>.64 · labels, links</span></div>
-            <div><i style="background: var(--ink-3)"></i>ink-3<span>.40 · meta, ticks</span></div>
-            <div><i style="background: var(--ink-4)"></i>ink-4<span>.22 · borders</span></div>
-            <div><i style="background: var(--ink-5)"></i>ink-5<span>.10 · rules, rings</span></div>
-            <div><i style="background: linear-gradient(var(--ink-3), var(--ink-3)) 0 100% / 100% 5px no-repeat"></i>bar 1–5px<span>attention weight</span></div>
-            <div><i style="background: var(--bg)"></i>bg<span>#000 · backdrop .92</span></div>
-            <div><i style="background: var(--sys)"></i>sys<span>#00e0ff · machine activity only</span></div>
+            <div><i style="background: var(--ink)"></i>墨色<span>1.00 · 文本、活动项</span></div>
+            <div><i style="background: var(--ink-2)"></i>墨色-2<span>.64 · 标签、连线</span></div>
+            <div><i style="background: var(--ink-3)"></i>墨色-3<span>.40 · 元信息、刻度线</span></div>
+            <div><i style="background: var(--ink-4)"></i>墨色-4<span>.22 · 边框</span></div>
+            <div><i style="background: var(--ink-5)"></i>墨色-5<span>.10 · 分隔线、圆环</span></div>
+            <div><i style="background: linear-gradient(var(--ink-3), var(--ink-3)) 0 100% / 100% 5px no-repeat"></i>条形高度 1–5px<span>注意力权重</span></div>
+            <div><i style="background: var(--bg)"></i>背景<span>#000 · 背景遮罩 .92</span></div>
+            <div><i style="background: var(--sys)"></i>系统<span>#00e0ff · 仅表示系统活动</span></div>
           </div>
           <dl class="specimen">
             <dt>11 / 18</dt>
-            <dd>The lighthouse keeper counted the ships twice.</dd>
-            <dd>body, story column</dd>
+            <dd>守塔人把海上的船数了两遍。</dd>
+            <dd>正文、故事栏</dd>
             <dt>10 / 14</dt>
-            <dd style="font-size: var(--fs-s)">tension → tense · 0.72 · 64%</dd>
-            <dd>labels, readouts, HUD</dd>
+            <dd style="font-size: var(--fs-s)">张力 → 紧张 · 0.72 · 64%</dd>
+            <dd>标签、读数、浮层面板</dd>
             <dt>9</dt>
             <dd style="font-size: var(--fs-xs); color: var(--ink-3)">25 50 75</dd>
-            <dd>graduation numerals</dd>
-            <dt>wght</dt>
+            <dd>刻度数字</dd>
+            <dt>字重</dt>
             <dd>
               <span style="font-weight: 200">200</span> <span style="font-weight: 350">350</span> <span style="font-weight: 500">500</span>
               <span style="font-weight: 650">650</span>
               <span style="font-weight: 800">800</span>
             </dd>
-            <dd>influence 0 → 1</dd>
+            <dd>影响力 0 → 1</dd>
           </dl>
           <dl class="specimen strokes">
             <dt>1px</dt>
             <dd>
               <svg><line x1="0" y1="6" x2="100%" y2="6" stroke="currentColor" stroke-width="1" /></svg>
             </dd>
-            <dd>links, rims, rings</dd>
+            <dd>连线、外边缘、圆环</dd>
             <dt>1px 3·3</dt>
             <dd>
               <svg><line x1="0" y1="6" x2="100%" y2="6" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" /></svg>
             </dd>
-            <dd>provisional: future, choosing</dd>
+            <dd>临时状态：续写，选择中</dd>
             <dt>1.5px</dt>
             <dd>
               <svg><line x1="0" y1="6" x2="100%" y2="6" stroke="currentColor" stroke-width="1.5" /></svg>
             </dd>
-            <dd>keyword, hot link</dd>
+            <dd>关键词、高亮连线</dd>
             <dt>3px</dt>
             <dd>
               <svg><line x1="0" y1="6" x2="100%" y2="6" stroke="currentColor" stroke-width="3" /></svg>
             </dd>
-            <dd>selected sector only</dd>
+            <dd>仅选中的扇区</dd>
           </dl>
         </div>
       </section>
 
       <section>
-        <h2><b>02</b>composition</h2>
+        <h2><b>02</b>组合示例</h2>
         <div style="display: grid; gap: 12px">
           <div class="scene" id="scene">
             <p class="column" id="scene-column">
-              <span style="--influence: 0.15">The lighthouse keeper counted the ships twice. </span
-              ><span style="--influence: 0.92" class="pinned-sentence" data-pin>Fog had come in early that evening, and the radio was silent. </span
+              <span style="--influence: 0.15">守塔人把海上的船数了两遍。</span
+              ><span style="--influence: 0.92" class="pinned-sentence" data-pin>那天傍晚，雾来得很早，无线电里一片寂静。</span
               ><span style="--influence: 0.4"
-                >She lit the lamp by hand,
-                <span class="att" data-i="0"
-                  ><span class="s2">the way </span><span class="s4">her </span><u class="s5" data-k="0">father</u><span class="s4"> had </span
-                  ><span class="s2">taught her</span></span
-                >, and waited for the horn. </span
-              ><span style="--influence: 0.08">Nothing answered. </span
+                >她伸手点灯，<span class="att" data-i="0"
+                  ><span class="s2">用的</span><span class="s4">正是</span><u class="s5" data-k="0">父亲</u><span class="s4">当年</span
+                  ><span class="s2">教给她的办法</span></span
+                >，然后等着雾号响起。</span
+              ><span style="--influence: 0.08">没有任何回应。</span
               ><span style="--influence: 0.7" data-under
-                >Somewhere past the
-                <span class="att" data-i="1"><span class="s3">breakwater, an </span><u class="s5" data-k="1">engine</u><span class="s3"> idled</span></span> and
-                then cut out<span class="stream"></span><i class="caret"></i
+                >远处，<span class="att" data-i="1"
+                  ><span class="s3">防波堤外的一台</span><u class="s5" data-k="1">引擎</u><span class="s3">空转了一阵</span></span
+                >，随后熄火了<span class="stream"></span><i class="caret"></i
               ></span>
             </p>
             <svg class="overlay" aria-hidden="true"><g id="scene-links"></g></svg>
             <p class="status" id="status" aria-live="off"></p>
-            <button class="knob" id="scene-main" type="button" aria-label="main knob"></button>
-            <button class="knob future" data-tuned id="scene-future" type="button" style="--fill: 0.64" aria-label="future knob">
-              <span>tension → tense <b>64%</b></span>
+            <button class="knob" id="scene-main" type="button" aria-label="主旋钮"></button>
+            <button class="knob future" data-tuned id="scene-future" type="button" style="--fill: 0.64" aria-label="续写旋钮">
+              <span>紧张感 → 紧张 <b>64%</b></span>
             </button>
-            <button class="knob future" data-pinned data-side="left" id="scene-pin" type="button" style="--fill: 0.81" aria-label="pinned knob">
-              <span>mood → dark <b>81% realized</b></span>
+            <button class="knob future" data-pinned data-side="left" id="scene-pin" type="button" style="--fill: 0.81" aria-label="已固定的旋钮">
+              <span>氛围 → 阴郁 <b>体现程度 81%</b></span>
             </button>
           </div>
           <p class="note">
-            Tokens stream in cyan and settle to white over 1.2s; the main knob's cyan quadrant turns while the model writes. Hover the main knob: sentences
-            re-weigh and print their influence score. Hover an attention box: the others recede.
+            词元以青色逐个出现，并在 1.2s
+            内渐变为白色；模型写作时，主旋钮上的青色四分之一扇区会转动。悬停在主旋钮上：句子按影响力调整字重，并显示影响力评分。悬停在关键词框上：其余关键词框淡出。
           </p>
         </div>
       </section>
 
       <section>
-        <h2><b>03</b>main knob</h2>
+        <h2><b>03</b>主旋钮</h2>
         <div class="grid">
           <div class="cell">
             <figure><button class="knob" type="button"></button></figure>
-            <figcaption>idle<small>ring + 2px pip marks the exact caret</small></figcaption>
+            <figcaption>空闲<small>圆环和 2px 小点标出插入光标的确切位置</small></figcaption>
           </div>
           <div class="cell">
             <figure><button class="knob is-hover" type="button"></button></figure>
-            <figcaption>hover<small>outer hairline at ink-3, 120ms</small></figcaption>
+            <figcaption>悬停<small>外侧极细描边：ink-3，120ms</small></figcaption>
           </div>
           <div class="cell">
             <figure>
-              <button class="knob is-drag" type="button"><span>52 words</span></button>
+              <button class="knob is-drag" type="button"><span>52 个词</span></button>
             </figure>
-            <figcaption>drag<small>solid fill, reticle ticks, word count</small></figcaption>
+            <figcaption>拖动<small>实色填充、准星刻度、词数</small></figcaption>
           </div>
           <div class="cell">
             <figure><button class="knob is-holding" type="button"></button></figure>
-            <figcaption>hold → spawn<small>fill sweeps 250ms, then spawns</small></figcaption>
+            <figcaption>长按 → 生成<small>填充扫过 250ms 后生成</small></figcaption>
           </div>
           <div class="cell">
             <figure><button class="knob is-generating" type="button"></button></figure>
-            <figcaption>generating<small>cyan quadrant: the model is writing</small></figcaption>
+            <figcaption>生成中<small>青色扇区：模型正在写作</small></figcaption>
           </div>
           <div class="cell">
             <figure><button class="knob" data-dimmed type="button"></button></figure>
-            <figcaption>dimmed<small>another control owns focus · .30</small></figcaption>
+            <figcaption>已淡化<small>焦点在另一控件上 · .30</small></figcaption>
           </div>
         </div>
       </section>
 
       <section>
-        <h2><b>04</b>future knob</h2>
+        <h2><b>04</b>续写旋钮</h2>
         <div class="grid" style="--cell: 200px">
           <div class="cell">
             <figure>
               <button class="knob future is-loading" type="button"><span>…</span></button>
             </figure>
-            <figcaption>spawned<small>cyan fill = menu loading</small></figcaption>
+            <figcaption>已生成<small>青色填充 = 菜单加载中</small></figcaption>
           </div>
           <div class="cell">
             <figure>
-              <button class="knob future" style="--fill: 1" type="button"><span>pace?</span></button>
+              <button class="knob future" style="--fill: 1" type="button"><span>节奏？</span></button>
             </figure>
-            <figcaption>candidate<small>menu ready, name under the pointer</small></figcaption>
+            <figcaption>候选项<small>菜单就绪，名称位于指针下方</small></figcaption>
           </div>
           <div class="cell">
             <figure>
               <button class="knob future" data-tuned style="--fill: 0.18" type="button">
-                <span>pace → brisk <b>18%</b></span>
+                <span>节奏 → 轻快 <b>18%</b></span>
               </button>
             </figure>
-            <figcaption>tuned, weak<small>solid ring, fill = strength</small></figcaption>
+            <figcaption>已调节，弱<small>实线环，填充量表示强度</small></figcaption>
           </div>
           <div class="cell">
             <figure>
               <button class="knob future" data-tuned style="--fill: 0.86" type="button">
-                <span>turn → twist <b>86%</b></span>
+                <span>转折 → 反转 <b>86%</b></span>
               </button>
             </figure>
-            <figcaption>tuned, strong<small>same mark, more ink</small></figcaption>
+            <figcaption>已调节，强<small>标记不变，墨色加深</small></figcaption>
           </div>
           <div class="cell">
             <figure>
               <button class="knob future is-realizing" data-tuned type="button">
-                <span>mood → dark <b>realizing</b></span>
+                <span>氛围 → 阴郁 <b>体现中</b></span>
               </button>
             </figure>
-            <figcaption>tracking<small>cyan fill = measured by the model</small></figcaption>
+            <figcaption>跟踪中<small>青色填充 = 由模型测量</small></figcaption>
           </div>
           <div class="cell">
             <figure>
               <button class="knob future" data-pinned style="--fill: 0.81" type="button">
-                <span>mood → dark <b>81% realized</b></span>
+                <span>氛围 → 阴郁 <b>体现程度 81%</b></span>
               </button>
             </figure>
-            <figcaption>pinned<small>realized score stays cyan</small></figcaption>
+            <figcaption>已固定<small>体现程度评分保持青色</small></figcaption>
           </div>
           <div class="cell">
             <figure>
               <button class="knob future" data-tuned data-dimmed style="--fill: 0.5" type="button">
-                <span>voice → thought <b>50%</b></span>
+                <span>叙述声音 → 内心想法 <b>50%</b></span>
               </button>
             </figure>
-            <figcaption>dimmed<small>sibling under the pointer</small></figcaption>
+            <figcaption>已淡化<small>同级选项位于指针下方</small></figcaption>
           </div>
         </div>
       </section>
 
       <section>
-        <h2><b>05</b>fan hud</h2>
+        <h2><b>05</b>扇形调节面板</h2>
         <div style="display: grid; gap: 24px">
           <div class="live">
             <div class="stage" id="live-stage" style="--stage-h: 380px"></div>
             <aside>
               <fieldset id="live-mode">
-                <legend>start as</legend>
-                <label><input type="radio" name="mode" value="choosing" checked />choosing</label>
-                <label><input type="radio" name="mode" value="scale" />scale</label>
-                <label><input type="radio" name="mode" value="choice" />choice</label>
+                <legend>初始设为</legend>
+                <label><input type="radio" name="mode" value="choosing" checked />选择中</label>
+                <label><input type="radio" name="mode" value="scale" />连续量</label>
+                <label><input type="radio" name="mode" value="choice" />离散选项</label>
               </fieldset>
               <dl class="readouts" id="live-readouts"></dl>
               <div>
-                strength
+                强度
                 <div class="bar" id="live-strength"><i></i></div>
               </div>
               <div>
-                realized
+                体现程度
                 <div class="bar" id="live-realized"><i></i></div>
               </div>
-              <button class="text" id="live-reset" type="button">respawn</button>
-              <p class="note">
-                Drag the dashed knob. Angle picks the value, distance sets strength; the link is a ruler in 10% steps. While choosing, carry a name through the
-                rim to take it. Release to start realizing.
-              </p>
+              <button class="text" id="live-reset" type="button">重新生成</button>
+              <p class="note">拖动虚线旋钮。角度选值，距离设定强度；连线就是刻度尺，每格 10%。选择中，将名称拖过外缘即可选定。松开后开始体现。</p>
             </aside>
           </div>
           <div class="grid snapshots" id="snapshots"></div>
@@ -1065,39 +1061,37 @@
       </section>
 
       <section>
-        <h2><b>06</b>text marks</h2>
+        <h2><b>06</b>文本标记</h2>
         <div class="grid" style="--cell: 260px">
           <div class="cell">
             <figure>
-              <p>
-                <span class="s1">quiet </span><span class="s2">harbor </span><span class="s3">with </span><span class="s4">no </span><u class="s5">lights</u>
-              </p>
+              <p><span class="s1">寂静的</span><span class="s2">港湾</span><span class="s3">里</span><span class="s4">没有</span><u class="s5">灯光</u></p>
             </figure>
-            <figcaption>attention bars<small>1–5px under each word; height = weight</small></figcaption>
+            <figcaption>注意力条<small>每个词下方有 1–5px 高的条形标记，高度代表权重</small></figcaption>
           </div>
           <div class="cell">
             <figure>
-              <p>the <u>engine</u> idled</p>
+              <p>那台<u>引擎</u>空转了一阵</p>
             </figure>
-            <figcaption>keyword<small>full-ink 5px bar; the link starts here</small></figcaption>
+            <figcaption>关键词<small>5px 实色条，连线从这里开始</small></figcaption>
           </div>
           <div class="cell">
             <figure>
-              <p>and then cut out<span class="fresh-demo"> once, and again</span></p>
+              <p>，随后熄火了<span class="fresh-demo"> 一次，又一次</span></p>
             </figure>
-            <figcaption>streaming tail<small>new tokens cyan → white over 1.2s</small></figcaption>
+            <figcaption>流式输出末尾<small>新词元在 1.2s 内由青色变为白色</small></figcaption>
           </div>
           <div class="cell">
             <figure>
-              <p>and <span class="selected-run">waited for the horn</span>.</p>
+              <p>她<span class="selected-run">等着雾号响起</span>。</p>
             </figure>
-            <figcaption>selection<small>shade-4, becomes a box on release</small></figcaption>
+            <figcaption>选区<small>shade-4 底色，松开后变为关键词框</small></figcaption>
           </div>
           <div class="cell">
             <figure>
-              <p><span class="pinned-sentence">Fog had come in early.</span></p>
+              <p><span class="pinned-sentence">雾早早就漫了过来。</span></p>
             </figure>
-            <figcaption>pinned sentence<small>dashed hairline at ink-2</small></figcaption>
+            <figcaption>已固定的句子<small>采用 ink-2 的极细虚线</small></figcaption>
           </div>
           <div class="cell">
             <figure>
@@ -1106,28 +1100,28 @@
                 <span style="font-weight: 560">0.6</span> <span style="font-weight: 680">0.8</span> <span style="font-weight: 800">1.0</span>
               </p>
             </figure>
-            <figcaption>influence<small>weight, plus the score in superscript</small></figcaption>
+            <figcaption>影响力<small>权重，另以上标显示分数</small></figcaption>
           </div>
           <div class="cell">
-            <figure><p style="opacity: 0.3">Nothing answered.</p></figure>
-            <figcaption>dimmed<small>.30 · outside the active scope</small></figcaption>
+            <figure><p style="opacity: 0.3">没有任何回应。</p></figure>
+            <figcaption>已淡化<small>.30 · 当前作用范围外</small></figcaption>
           </div>
         </div>
       </section>
 
       <section>
-        <h2><b>07</b>motion</h2>
+        <h2><b>07</b>动效</h2>
         <dl class="spec">
-          <dt>120ms linear</dt>
-          <dd>hover rings, link emphasis, dimming. Must feel instantaneous; never eased.</dd>
+          <dt>120ms 线性过渡</dt>
+          <dd>悬停环、连线高亮和淡化都要感觉像是即时变化，绝不使用缓动。</dd>
           <dt>200ms</dt>
-          <dd>font-weight re-weighing on influence.</dd>
+          <dd>按影响力调整 font-weight。</dd>
           <dt>300ms</dt>
-          <dd>--fill when a measured value arrives (strength release, realization score).</dd>
-          <dt>600ms out-expo</dt>
-          <dd>a knob travelling to its margin pin. The only long motion; it explains where the knob went.</dd>
+          <dd>测量值返回时更新 --fill（松手后的强度值、体现程度评分）。</dd>
+          <dt>600ms · 指数缓出（out-expo）</dt>
+          <dd>旋钮移到页边的固定点。这是唯一耗时较长的动效，目的是让你看清旋钮去了哪里。</dd>
           <dt>0ms</dt>
-          <dd>anything under the pointer during drag: knob, link, rim marker, readout. Direct manipulation is never animated.</dd>
+          <dd>拖动时指针下方的任何元素：旋钮、连线、边缘标记、读数。直接操作一律不加动画。</dd>
         </dl>
       </section>
     </main>
@@ -1140,11 +1134,11 @@
       const GRADUATIONS = 40
       const SCALE_NUMERALS = true
       const MENU = [
-        { name: "tension", kind: "scale", low: "calm", high: "tense" },
-        { name: "turn", kind: "choice", options: ["resolve", "suspend", "twist"] },
-        { name: "pace", kind: "scale", low: "lingering", high: "brisk" },
-        { name: "voice", kind: "choice", options: ["action", "dialogue", "thought"] },
-        { name: "mood", kind: "scale", low: "dark", high: "light" },
+        { name: "张力", kind: "scale", low: "平静", high: "紧张" },
+        { name: "转折", kind: "choice", options: ["揭晓", "留白", "反转"] },
+        { name: "节奏", kind: "scale", low: "舒缓", high: "明快" },
+        { name: "表达", kind: "choice", options: ["动作", "对话", "思绪"] },
+        { name: "氛围", kind: "scale", low: "阴郁", high: "轻快" },
       ]
 
       const svg = (tag, attrs = {}, parent) => {
@@ -1212,8 +1206,7 @@
         }
 
         const rimPath = svg("path", { class: "rim", d: arcPath(s.c, rim, -SWING, SWING) }, g)
-        const position = clamp01((s.swing + SWING) / (2 * SWING))
-        const strength = clamp01((s.dist - minD) / RANGE)
+        const { position, strength } = s
 
         const ticks = []
         const majors = []
@@ -1225,7 +1218,7 @@
           const names = s.menu?.map((d) => d.name) ?? []
           for (let i = 0; i <= names.length; i++) majors.push(-SWING + sectorOf(names.length) * i)
           names.forEach((name, i) => labelAt(g, s.c, -SWING + sectorOf(names.length) * (i + 0.5), labelR, name, i === s.candidate))
-          readout = !s.menu ? "loading dimensions…" : s.candidate !== undefined ? previewOf(s.menu[s.candidate]) : "drag through the rim to choose"
+          readout = !s.menu ? "正在加载调节项…" : s.candidate !== undefined ? previewOf(s.menu[s.candidate]) : "拖过外圈选定"
         } else if (s.dim.kind === "scale") {
           for (let i = 0; i <= GRADUATIONS; i++) (i % 10 === 0 ? majors : ticks).push(-SWING + (i / GRADUATIONS) * 2 * SWING)
           if (SCALE_NUMERALS)
@@ -1278,7 +1271,6 @@
           })
         } else text.textContent = readout
         if (s.phase === "choosing" && !s.menu) text.dataset.sys = ""
-        return { position, strength }
       }
 
       function createStage(stage, initial, { interactive = false, onUpdate } = {}) {
@@ -1305,11 +1297,11 @@
           future.toggleAttribute("data-tuned", tuned)
           future.classList.toggle("is-loading-menu", state.phase === "choosing" && !state.menu)
           future.dataset.side = Math.sin(state.swing) < 0 ? "left" : "right"
+          state.position = clamp01((state.swing + SWING) / (2 * SWING))
+          state.strength = clamp01((state.dist - state.mainR - state.futR) / RANGE)
           if (hud) {
             overlay.style.display = ""
-            const { position, strength } = renderHud(g, state)
-            state.position = position
-            state.strength = strength
+            renderHud(g, state)
           } else {
             overlay.style.display = "none"
           }
@@ -1324,7 +1316,7 @@
                   ? state.dim.low
                   : state.dim.high
                 : state.dim.options[indexAt(state.dim.options.length, state.position)]
-            const realized = state.realized === undefined ? "" : ` · ${Math.round(state.realized * 100)}% realized`
+            const realized = state.realized === undefined ? "" : ` · ${Math.round(state.realized * 100)}% 已体现`
             future.style.setProperty("--fill", state.realized ?? state.strength)
             future.toggleAttribute("data-tracking", state.realized !== undefined)
             label.innerHTML = `${state.dim.name} → ${value} <b>${Math.round(state.strength * 100)}%${realized}</b>`
@@ -1431,13 +1423,13 @@
         onUpdate(s) {
           const tuned = s.phase !== "choosing"
           const rows = [
-            ["phase", tuned ? (s.realized === undefined ? "tuning" : "realizing") : "choosing"],
-            ["dimension", tuned ? s.dim.name : s.candidate !== undefined ? `${s.menu[s.candidate].name}?` : "—"],
-            ["value", tuned ? valueOf(s.dim, s.position ?? 0.5) : "—"],
-            ["angle", `${((s.swing * 180) / Math.PI).toFixed(1)}°`],
-            ["distance", `${Math.round(s.dist)}px`],
-            ["strength", tuned ? `${Math.round((s.strength ?? 0) * 100)}%` : "—"],
-            ["realized", s.realized === undefined ? "—" : `${Math.round(s.realized * 100)}%`],
+            ["阶段", tuned ? (s.realized === undefined ? "调节中" : "评估中") : "选择中"],
+            ["调节项", tuned ? s.dim.name : s.candidate !== undefined ? `${s.menu[s.candidate].name}?` : "—"],
+            ["取值", tuned ? valueOf(s.dim, s.position ?? 0.5) : "—"],
+            ["角度", `${((s.swing * 180) / Math.PI).toFixed(1)}°`],
+            ["距离", `${Math.round(s.dist)}px`],
+            ["强度", tuned ? `${Math.round((s.strength ?? 0) * 100)}%` : "—"],
+            ["体现程度", s.realized === undefined ? "—" : `${Math.round(s.realized * 100)}%`],
           ]
           readouts.innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")
           strengthBar.style.setProperty("--v", tuned ? (s.strength ?? 0) : 0)
@@ -1450,10 +1442,10 @@
       document.querySelector("#live-reset").addEventListener("click", () => live.reset(presets[modeOf()]))
 
       const snapshots = [
-        [{ phase: "choosing", swing: 0.1, dist: 60 }, "choosing · loading", "cyan readout: the model is fetching"],
-        [{ phase: "choosing", menu: MENU, candidate: 2, swing: 0.05, dist: 130 }, "choosing · candidate", "outlined name = taken at the rim"],
-        [{ phase: "tuning", dim: MENU[0], swing: 0.55, dist: 140 }, "tuning · scale", "40 graduations, numerals at quarters"],
-        [{ phase: "tuning", dim: MENU[3], swing: -0.5, dist: 90 }, "tuning · choice", "selected sector 3px, outlined label"],
+        [{ phase: "choosing", swing: 0.1, dist: 60 }, "选择中 · 加载", "青色读数表示模型正在获取选项"],
+        [{ phase: "choosing", menu: MENU, candidate: 2, swing: 0.05, dist: 130 }, "选择中 · 候选项", "带边框的选项将在拖过外圈时选定"],
+        [{ phase: "tuning", dim: MENU[0], swing: 0.55, dist: 140 }, "调节中 · 连续量", "40 格刻度，每四分之一圈标出数值"],
+        [{ phase: "tuning", dim: MENU[3], swing: -0.5, dist: 90 }, "调节中 · 选项", "选中扇区线宽 3px，标签带边框"],
       ]
       const grid = document.querySelector("#snapshots")
       for (const [state, title, sub] of snapshots) {
@@ -1537,23 +1529,23 @@
         if (influence) span.dataset.inf = Number(influence).toFixed(2).replace(/^0/, "")
       }
 
-      const TAIL = " The beam swept the water once, and then again.".split(/(?= )/)
+      const TAIL = ["灯光", "扫过", "水面，", "一遍，", "又一遍。"]
       const streamed = scene.querySelector(".stream")
       const status = document.querySelector("#status")
       const firstTokenMs = 140 + Math.round(Math.random() * 40)
       let next = 0
 
       function showStatus(isStreaming) {
-        const words = column.textContent.trim().split(/\s+/).length
+        const words = column.textContent.replace(/\s+/g, "").length
         const rate = isStreaming ? `${36 + Math.round(Math.random() * 10)} tok/s` : "—"
         status.innerHTML = [
-          `<span data-live="${isStreaming}">${isStreaming ? "streaming" : "idle"}</span>`,
-          `<span>rate <b>${rate}</b></span>`,
-          `<span>ttft <b>${firstTokenMs}ms</b></span>`,
-          `<span>words <b>${words}</b></span>`,
-          `<span>boxes <b>${scene.querySelectorAll(".att").length}</b></span>`,
-          `<span>steering <b>1</b></span>`,
-          `<span>pinned <b>1</b></span>`,
+          `<span data-live="${isStreaming}">${isStreaming ? "生成中" : "空闲"}</span>`,
+          `<span>速率 <b>${rate}</b></span>`,
+          `<span>首词延迟 <b>${firstTokenMs}ms</b></span>`,
+          `<span>字数 <b>${words}</b></span>`,
+          `<span>关键词框 <b>${scene.querySelectorAll(".att").length}</b></span>`,
+          `<span>引导 <b>1</b></span>`,
+          `<span>固定 <b>1</b></span>`,
         ].join("")
       }
 

@@ -1,7 +1,17 @@
-export function countWords(text: string) {
-  return text.match(/\S+/g)?.length ?? 0
+const characters = new Intl.Segmenter("zh-CN", { granularity: "grapheme" })
+
+/** Count visible characters so a Chinese sentence can be scrubbed without spaces. */
+export function countCharacters(text: string) {
+  let count = 0
+  for (const { segment } of characters.segment(text)) if (segment.trim()) count++
+  return count
 }
 
-export function firstWords(text: string, count: number) {
-  return text.match(new RegExp(`^(?:\\s*\\S+){${count}}`))?.[0] ?? ""
+/** Preserve whitespace inside the original prefix and never split a grapheme. */
+export function firstCharacters(text: string, count: number) {
+  if (count <= 0) return ""
+  for (const { segment, index } of characters.segment(text)) {
+    if (segment.trim() && --count === 0) return text.slice(0, index + segment.length)
+  }
+  return text
 }

@@ -1,3 +1,21 @@
+# Spaceship 中文写作台 · VS Code 扩展
+
+在资源管理器中选择稿件，或在编辑器里选中一段正文，用多个旋钮引导下一段写作。**写回编辑器** 使用 VS Code 的原生编辑、撤销与保存。界面和 18 个设计样例随扩展一起安装。
+
+[下载安装包](https://github.com/brentlee-personal/spaceship-vscode/releases/latest) · [使用与连接配置](extension/README.md) · [社区参考与采纳记录](docs/community-intake.md)
+
+在 VS Code 中运行 `Extensions: Install from VSIX...` 选择下载的安装包，然后运行 **Spaceship: 打开写作台**。
+
+本地构建需要 Node.js 24 和 npm。在仓库根目录执行 `npm ci` 和 `npm run package:extension`，VSIX 会生成在 `extension/`。浏览器开发入口为 `npm run dev`。
+
+## 参与维护 · Maintainers welcome
+
+欢迎一起维护跨平台安装、无障碍操作、文件编辑与多语言写作体验。请在[贡献指南](CONTRIBUTING.md)和 [help wanted 任务](https://github.com/brentlee-personal/spaceship-vscode/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22help%20wanted%22) 中认领工作。
+
+Spaceship is an independent, MIT-licensed VS Code adaptation of Chuanqi Sun’s Spaceship IDE. Open a Markdown file from Explorer, steer a continuation along multiple dimensions, then apply it to the source selection as a native undoable edit. A local model gateway is optional. We welcome writers, extension developers, documentation contributors and co-maintainers.
+
+以下是原作者的项目介绍。
+
 # 🕹️ Spaceship IDE
 
 Steer your ideas in realtime, space pilot style!

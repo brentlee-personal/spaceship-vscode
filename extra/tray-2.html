@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <title>text · tray 2 · tmux status line</title>
+    <title>写作设计 · 状态栏 02 · tmux 状态行</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>" />
     <style>
       @font-face {
@@ -253,82 +253,76 @@
   </head>
   <body>
     <main>
-      <nav class="experiments" aria-label="experiments">
+      <nav class="experiments" aria-label="实验">
         <p>
-          <b>style</b>
-          <a href="style-1.html">instrument</a>
-          <a href="style-2.html">signal</a>
-          <a href="style-3.html">telemetry</a>
-          <a href="style-4.html">merged</a>
+          <b>样式</b>
+          <a href="style-1.html">仪表</a>
+          <a href="style-2.html">信号</a>
+          <a href="style-3.html">遥测</a>
+          <a href="style-4.html">融合</a>
         </p>
         <p>
-          <b>sound</b>
-          <a href="soundboard.html">soundboard</a>
+          <b>音效</b>
+          <a href="soundboard.html">音效面板</a>
         </p>
         <p>
-          <b>knob</b>
-          <a href="knob-states.html">buffer states</a>
+          <b>旋钮</b>
+          <a href="knob-states.html">缓冲区状态</a>
         </p>
         <p>
-          <b>rail</b>
-          <a href="bar-1.html">histogram</a>
-          <a href="bar-2.html">profile</a>
-          <a href="bar-3.html">meters</a>
+          <b>侧栏</b>
+          <a href="bar-1.html">直方图</a>
+          <a href="bar-2.html">强度曲线</a>
+          <a href="bar-3.html">强度表</a>
         </p>
         <p>
-          <b>pointer</b>
-          <a href="pointer-1.html">crosshair</a>
-          <a href="pointer-2.html">ring</a>
-          <a href="pointer-3.html">field</a>
-          <a href="pointer-4.html">steering</a>
-          <a href="pointer-5.html">combined</a>
+          <b>指针</b>
+          <a href="pointer-1.html">十字准星</a>
+          <a href="pointer-2.html">圆环</a>
+          <a href="pointer-3.html">感应区</a>
+          <a href="pointer-4.html">引导</a>
+          <a href="pointer-5.html">组合</a>
         </p>
         <p>
-          <b>tray</b>
-          <a href="tray-1.html">modules</a>
-          <a href="tray-2.html" aria-current="page">tmux</a>
-          <a href="tray-3.html">gauges</a>
+          <b>状态栏</b>
+          <a href="tray-1.html">模块</a>
+          <a href="tray-2.html" aria-current="page">tmux 状态行</a>
+          <a href="tray-3.html">表盘</a>
         </p>
       </nav>
       <header>
-        <h1>text / tray 2 — tmux status line</h1>
+        <h1>状态栏 02 · tmux 状态行</h1>
         <p>
-          Borrowed from tmux and vim statuslines: a solid mode block on the left, a dense run of one-letter keys, a toggle on the right, all on a 14px band with
-          no border. The idea is to remove what only matters while text is arriving. Rate and first chunk live inside the orange <b>STREAM</b> block and
-          disappear with it; idle shows a white <b>IDLE</b> block and nothing else about the model. Labels shrink to the single letter a tmux user would bind.
+          借鉴 tmux 和 vim 的状态行：左侧是实色模式块，中间紧排一串单字母键，右侧是开关，全部放在一条高 14px
+          的无边框横条上。这样，不输出文本时就能隐藏仅在输出期间有用的信息。速率和首段延迟放在橙色 <b>输出</b> 块内，随色块一同消失；空闲时只显示白色
+          <b>空闲</b> 块，不显示其他模型信息。标签缩成 tmux 用户会绑定的单字母键。
         </p>
       </header>
 
       <section>
-        <h2><b>01</b>live</h2>
+        <h2><b>01</b>实时</h2>
         <div class="stack">
           <figure>
-            <figcaption>proposal <small>· 9px / 14px band, simulated stream</small></figcaption>
+            <figcaption>提案 <small>· 字号 9px / 条高 14px，模拟流式输出</small></figcaption>
             <div class="screen">
-              <p>
-                She leaned on the rail and listened for oars, for voices, for anything at all. Gulls had gone quiet hours ago; even the bell buoy hung still in
-                the slack tide.
-              </p>
+              <p>她倚着栏杆，侧耳听着，想听见划桨声、人声，什么声音都好。海鸥几小时前就不叫了，潮水也静了，连带铃的浮标都一动不动。</p>
               <footer class="tray" id="live"></footer>
             </div>
           </figure>
           <figure>
-            <figcaption>current <small>· 10px / 31px strip</small></figcaption>
+            <figcaption>当前 <small>· 10px 字号 / 31px 高状态栏</small></figcaption>
             <div class="screen">
-              <p>
-                She leaned on the rail and listened for oars, for voices, for anything at all. Gulls had gone quiet hours ago; even the bell buoy hung still in
-                the slack tide.
-              </p>
+              <p>她倚着栏杆，侧耳听着，想听见划桨声、人声，什么声音都好。海鸥几小时前就不叫了，潮水也静了，连带铃的浮标都一动不动。</p>
               <footer class="current">
-                <span class="state">streaming</span>
-                <span>rate<b>12 w/s</b></span>
-                <span>first chunk<b>340ms</b></span>
-                <span>words<b>182</b></span>
-                <span>buffer<b>24</b></span>
-                <span>boxes<b>3</b></span>
-                <span>steering<b>2</b></span>
-                <span>pinned<b>1</b></span>
-                <span>sound<b>on</b></span>
+                <span class="state">输出中</span>
+                <span>速率<b>12 词/秒</b></span>
+                <span>首段<b>340ms</b></span>
+                <span>词数<b>182</b></span>
+                <span>缓冲区<b>24</b></span>
+                <span>关键词框<b>3</b></span>
+                <span>引导<b>2</b></span>
+                <span>已固定<b>1</b></span>
+                <span>音效<b>开</b></span>
               </footer>
             </div>
           </figure>
@@ -336,85 +330,79 @@
       </section>
 
       <section>
-        <h2><b>02</b>states</h2>
+        <h2><b>02</b>状态</h2>
         <div class="stack">
           <figure>
-            <figcaption>idle <small>· the white block alone; rate and first chunk are gone</small></figcaption>
+            <figcaption>空闲 <small>· 只剩白色块，不再显示速率和首段延迟</small></figcaption>
             <footer class="tray">
-              <span class="mode">idle</span>
+              <span class="mode">空闲</span>
               <span class="counts"
-                ><span><kbd>w</kbd>206<span class="ahead">+0</span></span
-                ><span><kbd>b</kbd>3</span><span><kbd>s</kbd>2</span><span><kbd>p</kbd>1</span></span
+                ><span><kbd>词</kbd>206<span class="ahead">+0</span></span
+                ><span><kbd>框</kbd>3</span><span><kbd>调</kbd>2</span><span><kbd>固</kbd>1</span></span
               >
-              <button type="button" aria-pressed="true">♪ on</button>
+              <button type="button" aria-pressed="true">♪ 开</button>
             </footer>
           </figure>
           <figure>
-            <figcaption>streaming, waiting <small>· block turns orange, first chunk not in yet</small></figcaption>
+            <figcaption>输出中，等待首段 <small>· 色块变橙，首段尚未到达</small></figcaption>
             <footer class="tray" data-streaming>
-              <span class="mode">stream<span>…</span></span>
+              <span class="mode">流式输出<span>…</span></span>
               <span class="counts"
-                ><span><kbd>w</kbd>206<span class="ahead">+0</span></span
-                ><span><kbd>b</kbd>3</span><span><kbd>s</kbd>2</span><span><kbd>p</kbd>1</span></span
+                ><span><kbd>词</kbd>206<span class="ahead">+0</span></span
+                ><span><kbd>框</kbd>3</span><span><kbd>调</kbd>2</span><span><kbd>固</kbd>1</span></span
               >
-              <button type="button" aria-pressed="true">♪ on</button>
+              <button type="button" aria-pressed="true">♪ 开</button>
             </footer>
           </figure>
           <figure>
-            <figcaption>streaming <small>· the block carries rate and first chunk while text arrives</small></figcaption>
+            <figcaption>输出中 <small>· 文本输出期间，色块内显示速率和首段延迟</small></figcaption>
             <footer class="tray" data-streaming>
-              <span class="mode">stream<span>12w/s</span><span>340ms</span></span>
+              <span class="mode">流式输出<span>12词/秒</span><span>340ms</span></span>
               <span class="counts"
-                ><span><kbd>w</kbd>182<span class="ahead">+24</span></span
-                ><span><kbd>b</kbd>3</span><span><kbd>s</kbd>2</span><span><kbd>p</kbd>1</span></span
+                ><span><kbd>词</kbd>182<span class="ahead">+24</span></span
+                ><span><kbd>框</kbd>3</span><span><kbd>调</kbd>2</span><span><kbd>固</kbd>1</span></span
               >
-              <button type="button" aria-pressed="true">♪ on</button>
+              <button type="button" aria-pressed="true">♪ 开</button>
             </footer>
           </figure>
           <figure>
-            <figcaption>sound off <small>· the right segment loses its fill</small></figcaption>
+            <figcaption>音效关闭 <small>· 右侧区块取消底色</small></figcaption>
             <footer class="tray">
-              <span class="mode">idle</span>
+              <span class="mode">空闲</span>
               <span class="counts"
-                ><span><kbd>w</kbd>206<span class="ahead">+0</span></span
-                ><span><kbd>b</kbd>3</span><span><kbd>s</kbd>2</span><span><kbd>p</kbd>1</span></span
+                ><span><kbd>词</kbd>206<span class="ahead">+0</span></span
+                ><span><kbd>框</kbd>3</span><span><kbd>调</kbd>2</span><span><kbd>固</kbd>1</span></span
               >
-              <button type="button" aria-pressed="false">♪ off</button>
+              <button type="button" aria-pressed="false">♪ 关</button>
             </footer>
           </figure>
           <figure class="narrow">
-            <figcaption>420px <small>· fits with room to spare</small></figcaption>
+            <figcaption>420px <small>· 放得下，还有余量</small></figcaption>
             <footer class="tray" data-streaming>
-              <span class="mode">stream<span>12w/s</span><span>340ms</span></span>
+              <span class="mode">流式输出<span>12词/秒</span><span>340ms</span></span>
               <span class="counts"
-                ><span><kbd>w</kbd>182<span class="ahead">+24</span></span
-                ><span><kbd>b</kbd>3</span><span><kbd>s</kbd>2</span><span><kbd>p</kbd>1</span></span
+                ><span><kbd>词</kbd>182<span class="ahead">+24</span></span
+                ><span><kbd>框</kbd>3</span><span><kbd>调</kbd>2</span><span><kbd>固</kbd>1</span></span
               >
-              <button type="button" aria-pressed="true">♪ on</button>
+              <button type="button" aria-pressed="true">♪ 开</button>
             </footer>
           </figure>
         </div>
       </section>
 
       <section>
-        <h2><b>03</b>encoding</h2>
+        <h2><b>03</b>视觉编码</h2>
         <dl class="spec">
-          <dt>band</dt>
-          <dd>
-            14px tall (was 31px), 9px type with line-height equal to the band, no border or vertical padding. Background ink-5 so it reads as a band without a
-            rule.
-          </dd>
-          <dt>mode block</dt>
-          <dd>
-            uppercase, tracked +0.06em, solid fill with a 6px powerline wedge. IDLE: white on black. STREAM: orange, followed by rate and first chunk in
-            lowercase (an ellipsis until the first chunk lands).
-          </dd>
-          <dt>removed</dt>
-          <dd>rate and first chunk while idle. They describe the last stream and go stale as soon as it ends.</dd>
-          <dt>w b s p</dt>
-          <dd>words, boxes, steering, pinned. Single-letter keys in ink-3, values in ink. Buffer folds into words as <b>+n</b>, orange while it grows.</dd>
-          <dt>♪ segment</dt>
-          <dd>right-hand wedge, filled ink-4 when on and unfilled when off.</dd>
+          <dt>横条</dt>
+          <dd>高 14px（原为 31px），字号 9px，line-height 与横条等高，无边框和垂直内边距。背景用 ink-5，不加分隔线也能看出横条。</dd>
+          <dt>模式块</dt>
+          <dd>模式名称的字距增加 0.06em，纯色填充，带 6px 的 Powerline 楔形。空闲：黑底白字。生成中：橙色，后跟速率和首段信息（首段到达前显示省略号）。</dd>
+          <dt>已移除</dt>
+          <dd>空闲时不显示速率和首段信息。它们记录的是上一次生成，生成一结束就过时了。</dd>
+          <dt>词 · 框 · 调 · 固</dt>
+          <dd>词数、关键词框、引导、已固定。单字标记用 ink-3，数值用 ink。缓冲词数并入词数，显示为 <b>+n</b>，增长时显示为橙色。</dd>
+          <dt>♪ 区段</dt>
+          <dd>右侧楔形，开启时用 ink-4 填充，关闭时不填充。</dd>
         </dl>
       </section>
     </main>
@@ -465,11 +453,11 @@
       }
 
       function trayHtml({ isGenerating, wordsPerSecond, firstChunkMs, words, buffer, boxes, steering, pinned, isSoundOn }) {
-        const telemetry = firstChunkMs === undefined ? "<span>…</span>" : `<span>${Math.round(wordsPerSecond)}w/s</span><span>${firstChunkMs}ms</span>`
+        const telemetry = firstChunkMs === undefined ? "<span>…</span>" : `<span>${Math.round(wordsPerSecond)}词/秒</span><span>${firstChunkMs}ms</span>`
         return `
-          <span class="mode">${isGenerating ? `stream${telemetry}` : "idle"}</span>
-          <span class="counts"><span><kbd>w</kbd>${words}<span class="ahead">+${buffer}</span></span><span><kbd>b</kbd>${boxes}</span><span><kbd>s</kbd>${steering}</span><span><kbd>p</kbd>${pinned}</span></span>
-          <button type="button" aria-pressed="${isSoundOn}">♪ ${isSoundOn ? "on" : "off"}</button>`
+          <span class="mode">${isGenerating ? `生成中${telemetry}` : "空闲"}</span>
+          <span class="counts"><span><kbd>词</kbd>${words}<span class="ahead">+${buffer}</span></span><span><kbd>框</kbd>${boxes}</span><span><kbd>调</kbd>${steering}</span><span><kbd>固</kbd>${pinned}</span></span>
+          <button type="button" aria-pressed="${isSoundOn}">♪ ${isSoundOn ? "开" : "关"}</button>`
       }
     </script>
   </body>

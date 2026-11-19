@@ -1,7 +1,7 @@
 import { sentenceSpans, type Span } from "./segments.ts"
-import { countWords, firstWords } from "./words.ts"
+import { countCharacters, firstCharacters } from "./words.ts"
 
-const SENTENCE_END = /[.!?…]["'”’)\]]*$/
+const SENTENCE_END = /[。！？.!?…]["'”’」』）)\]]*$/
 
 /**
  * The text as laid out up to the main knob, and what is generated past it.
@@ -13,7 +13,7 @@ export type StoryLayout = { content: string; text: string; combined: string; sen
 /** `lines` are the lines shown up to the knob; `fullText` is everything generated so far, which may reach past the knob. */
 export function storyLayoutOf(lines: string[], fullText: string): StoryLayout {
   const text = lines.join(" ")
-  const upcoming = fullText.slice(firstWords(fullText, countWords(text)).length).replace(/\s+/g, " ")
+  const upcoming = fullText.slice(firstCharacters(fullText, countCharacters(text)).length).replace(/\s+/g, " ")
   const combined = text + upcoming
   return { content: lines.join("\n"), text, combined, sentences: sentenceSpans(combined) }
 }

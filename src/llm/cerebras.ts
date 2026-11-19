@@ -1,12 +1,11 @@
+import { localChatUrl, localModel } from "./local-flight.ts"
+
 const API_URL = "https://api.cerebras.ai/v1/chat/completions"
 const MODEL = "gpt-oss-120b"
 
 export const KEY_STORAGE = "cerebras-api-key"
 
-export const storedApiKey = () => localStorage.getItem(KEY_STORAGE)?.trim()
-
 export type CompletionRequest = {
-  apiKey: string
   system: string
   user: string
   temperature: number
@@ -14,23 +13,27 @@ export type CompletionRequest = {
   signal: AbortSignal
 }
 
-export async function* streamCompletion({ apiKey, system, user, temperature, maxCompletionTokens, signal }: CompletionRequest) {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    signal,
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({
-      model: MODEL,
-      stream: true,
-      reasoning_effort: "low",
-      temperature,
-      max_completion_tokens: maxCompletionTokens,
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: user },
-      ],
-    }),
+export async function* streamCompletion({ system, user, temperature, maxCompletionTokens, signal }: CompletionRequest) {
+  const headers: Record<string, string> = { "Content-Type": "application/json" }
+  if (!localModel) {
+    const key = localStorage.getItem(KEY_STORAGE)?.trim()
+    if (!key) throw new Error("save an API key first")
+    headers.Authorization = `Bearer ${key}`
+  }
+  const payload = JSON.stringify({
+    model: localModel || MODEL,
+    stream: true,
+    reasoning_effort: "low",
+    temperature,
+    max_completion_tokens: maxCompletionTokens,
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: user },
+    ],
   })
+  const response = window.spaceshipEditor
+    ? await window.spaceshipEditor.request("chat", payload, signal)
+    : await fetch(localModel ? localChatUrl : API_URL, { method: "POST", signal, headers, body: payload })
 
   if (!response.ok) throw new Error(`${response.status} ${await response.text()}`)
   if (!response.body) throw new Error("no response body")

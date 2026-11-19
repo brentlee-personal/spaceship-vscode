@@ -1,0 +1,8 @@
+**/*
+!package.json
+!README.md
+!LICENSE
+!extension.cjs
+!model.cjs
+!web/**
+!media/**

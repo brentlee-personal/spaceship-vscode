@@ -1,32 +1,16 @@
-import { storedApiKey, streamCompletion } from "../llm/cerebras.ts"
+import { streamCompletion } from "../llm/cerebras.ts"
 import type { AttentionBox, AttentionSource } from "./attention.ts"
 import { wordSpans } from "./segments.ts"
 
 const MAX_BOXES = 3
 
-const SYSTEM_PROMPT = `
-The user message is the start of a story, cut off where the reader is. Pick the key phrases already in it that the very next words depend on most: the main influences on what comes right after the cut.
-
-- Pick 1 to 3 phrases: 1 when a single phrase drives what comes next, more only when several do.
-- Each phrase is an exact, unbroken copy of 2 to 8 consecutive words from the story. Do not skip, change, add or predict words.
-- In every phrase, wrap the single word that matters most in [brackets].
-- Output one phrase per line and nothing else.
-
-EXAMPLE
-User: Mara had locked the kitchen an hour ago. Now the alarm went off, but it was not the one on her phone. She lay still and
-Assistant:
-locked the [kitchen] an hour ago
-it was [not] the one on her phone
-She lay [still] and
-`.trim()
+const SYSTEM_PROMPT = `从给出的正文里选一至三个会影响下一句的关键短语。每个短语逐字摘自原文，包含二至八个词，每行一个。
+用半角方括号标记其中最重要的一个词。例如“她把[车票]攥在手里”。只输出这些短语。`
 
 export const liveAttention: AttentionSource = async function* (text, signal) {
-  const apiKey = storedApiKey()
-  if (!apiKey) throw new Error("save an API key first")
-
   const textWords = wordsOf(text)
   const yielded = new Set<number>()
-  const deltas = streamCompletion({ apiKey, system: SYSTEM_PROMPT, user: text, temperature: 0.3, maxCompletionTokens: 1000, signal })
+  const deltas = streamCompletion({ system: SYSTEM_PROMPT, user: text, temperature: 0.3, maxCompletionTokens: 1000, signal })
 
   for await (const line of linesOf(deltas)) {
     const box = boxFromLine(line, textWords)

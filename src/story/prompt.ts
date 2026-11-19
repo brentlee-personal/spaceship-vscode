@@ -1,19 +1,7 @@
-export const STORY_MAX_WORDS = 400
-
-export const STORY_SYSTEM_PROMPT = `Continue the story. The user message is its opening, which may stop mid-sentence.
-
-- Output only the words that come next. Do not repeat the opening.
-- Your first word directly follows the opening's last word.
-- Plain text only. No title, markdown or commentary.
-- At most ${STORY_MAX_WORDS} words. End on a complete sentence.
-
-EXAMPLE
-User: The alarm went off, but
-Assistant:
-it was not the one on her phone. Mara lay still and listened.`
-
 export const STORY_REQUEST = {
-  system: STORY_SYSTEM_PROMPT,
+  system: `你与作者合写简体中文故事。「已有正文」是已经写下的内容，紧接它的最后一个字续写；如果停在半句话中，先接完这句话。如果没有正文，就按作者给的方向起笔。
+「作者的续写方向」优先。在接下来一到两句里让要求发生，通过人物行动、对白或具体细节把它写出来。一次性的情节要求已经发生时，继续推进其后果。保持前文的人物、视角和已经发生的事实。关键词决定写什么，方括号标出重点；每个旋钮独立指定一个写作维度、目标和影响强度。把所有目标同时写进同一段：强影响贯穿全段，中等影响清晰可辨，弱影响用局部细节点到为止。0% 的维度自由发挥，不要把数值或旋钮名称写进正文。
+只输出新写的正文，不复述已有内容，不解释指令，不加标题。用自然的中文标点，写约 150 至 250 字，停在完整的一句话。作者明确指定长度和形式时，按作者要求写。`,
   temperature: 0.9,
   maxCompletionTokens: 2000,
 }

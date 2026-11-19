@@ -1,3 +1,5 @@
+import { bindWritingDialog, type Manuscript } from "./writing-dialog.ts"
+import { localModel } from "../llm/local-flight.ts"
 import { layoutNextLine, prepareWithSegments, type PreparedTextWithSegments } from "@chenglou/pretext"
 import "@fontsource-variable/jetbrains-mono/wght.css"
 import { $ } from "../dom.ts"
@@ -33,7 +35,7 @@ import { showStatus } from "./status-line.ts"
 import { storyLayoutOf, type StoryLayout } from "./story-layout.ts"
 import { domPointAt, textOffsetOf } from "./text-offsets.ts"
 import { createTextStream, type Steering } from "./text-stream.ts"
-import { countWords, firstWords } from "./words.ts"
+import { countCharacters, firstCharacters } from "./words.ts"
 
 const DWELL_MS = 100
 /** Generated words kept ready past the knob: whenever fewer remain, the stream continues the text, appending, never rewriting. */
@@ -64,7 +66,14 @@ await document.fonts.load(style.font)
 const measure = document.createElement("canvas").getContext("2d")!
 measure.font = style.font
 
-const isLive = new URLSearchParams(location.search).get("live") === "true"
+const requestedMode = new URLSearchParams(location.search).get("live")
+const editor = window.spaceshipEditor
+const session = await editor?.ready
+const isLive = session?.live ?? (requestedMode === null ? Boolean(localModel) : requestedMode === "true")
+let initialText = session?.text
+function visibleManuscript() {
+  return initialText ?? firstCharacters(stream.text, shownCount ?? 0)
+}
 const stream = createTextStream(isLive ? liveSource : simulatedSource, render)
 const rail = createLeftRail(railElement)
 const connections = createConnections({ source: isLive ? liveInfluence : simulatedInfluence, onChange: refreshRail })
@@ -119,7 +128,87 @@ let didHold = false
 /** The previous drag point, for how fast the knob moves. */
 let lastDrag: { point: Point; at: number } | undefined
 
-bindModeToggle(modeToggle, $<HTMLDialogElement>("#live-keys"), isLive)
+const writingDialog = $<HTMLDialogElement>("#writing-dialog")
+const writingStatus = $("#writing-status")
+let direction = ""
+let following: object | undefined
+let manualError = false
+
+const openWriting = bindWritingDialog(
+  $<HTMLButtonElement>("#write-story"),
+  writingDialog,
+  () => ({ text: visibleManuscript(), direction, controls: futureKnobs.controls() }),
+  applyManuscript,
+  isLive ? liveDimension : simulatedDimension,
+)
+const tensionPreset = new URLSearchParams(location.search).get("preset") === "tension"
+if (session || isLive || tensionPreset) openWriting(tensionPreset ? "紧张感" : undefined)
+writingDialog.addEventListener("close", scheduleTopUp)
+
+function applyManuscript(draft: Manuscript) {
+  initialText = undefined
+  const previousText = firstCharacters(stream.text, shownCount ?? 0)
+  if (draft.text !== previousText) {
+    attention.collapse()
+    futureKnobs.clear()
+  }
+  direction = draft.direction
+  stream.replace(draft.text)
+  const submission = (following = {})
+  manualError = false
+  isFutureStale = false
+  isRegenerationHeld = false
+  retryAt = 0
+  writingStatus.textContent = "正在续写…"
+  render()
+  futureKnobs.setControls(draft.controls, story)
+  isFutureStale = false
+  stream.generate("steering changed", steering()).then(
+    (result) => {
+      if (following !== submission) return
+      following = undefined
+      if (result === "done" && stream.text === draft.text) {
+        manualError = true
+        writingStatus.textContent = "未收到续写，请打开写作框重试。"
+      } else {
+        writingStatus.textContent = "可拖动旋钮选位置，也可继续改写。"
+      }
+      restCount = shownCount ?? 0
+      render()
+      restartDwell()
+      scheduleTopUp()
+    },
+    () => {
+      if (following !== submission) return
+      following = undefined
+      manualError = true
+      writingStatus.textContent = "续写失败，正文已保留。请打开写作框重试。"
+    },
+  )
+}
+
+if (editor && session) {
+  document.documentElement.dataset.editor = "vscode"
+  const source = $("#editor-source")
+  source.textContent = session.label
+  for (const button of document.querySelectorAll<HTMLButtonElement>("[data-file-action]")) {
+    button.addEventListener("click", () =>
+      editor.post({
+        type: button.dataset.fileAction === "copy" ? "copy" : "write",
+        text: writingDialog.open ? $<HTMLTextAreaElement>("#manuscript").value : visibleManuscript(),
+      }),
+    )
+  }
+  editor.onEditor((event) => {
+    if (event.action === "written") writingStatus.textContent = "已写回编辑器，可撤销或保存。"
+    if (event.action === "source" && event.label) source.textContent = event.label
+    if (event.action === "tension") {
+      if (writingDialog.open) writingDialog.close()
+      openWriting("紧张感")
+    }
+  })
+}
+bindModeToggle(modeToggle, $<HTMLDialogElement>("#live-keys"), isLive, visibleManuscript)
 startSound()
 showSoundToggle()
 soundToggle.addEventListener("click", () => {
@@ -150,6 +239,8 @@ onPressAndHold(
 // Dragging scrubs at once, forward or back.
 makeDraggable(handle, {
   onDrag: (point) => {
+    if (following) writingStatus.textContent = ""
+    following = undefined
     handle.toggleAttribute("data-dragging", true)
     const before = shownCount
     moveTo(point)
@@ -174,6 +265,10 @@ createPointer({
   pull: pullToward,
 })
 
+if (initialText) {
+  stream.replace(initialText)
+  caret = caretAfterWords(countCharacters(initialText)) ?? caret
+}
 addEventListener("resize", () => moveTo(pointAt(caret, metricsOf())))
 moveTo(pointAt(caret, metricsOf()))
 
@@ -221,20 +316,25 @@ async function revealAttention() {
 }
 
 function render() {
+  if (following) {
+    caret = caretAfterWords(countCharacters(stream.text)) ?? { line: 0, x: 0 }
+    handle.style.translate = centeredAt(pointAt(caret, metricsOf()), handle.offsetWidth)
+  }
   /** Unrounded, unlike `clientWidth`: a line that fills the column exactly measures a hair wider than the rounded width. */
   const lines = layoutLines(prepareWords(), caret, element.getBoundingClientRect().width)
   const text = lines.join(" ")
-  const count = countWords(text)
+  const count = countCharacters(text)
 
   if (count !== shownCount) restartDwell()
   shownCount = count
   scheduleTopUp()
   story = storyLayoutOf(lines, stream.text)
   if (element.textContent !== story.content) element.textContent = story.content
-  connections.update(story)
+  if (!following && initialText === undefined) connections.update(story)
   shownText = text
   attention.update(text)
-  futureKnobs.follow(story)
+  if (following) futureKnobs.layout()
+  else futureKnobs.follow(story)
   report()
 }
 
@@ -249,7 +349,7 @@ function invalidateFuture() {
 /** Shows whether the model is generating and how full the buffer past the knob is, on the knob and in the status line, with what the text holds and is steered by. */
 function report() {
   const activity = stream.activity()
-  const buffer = Math.max(0, countWords(stream.text) - (shownCount ?? 0))
+  const buffer = Math.max(0, countCharacters(stream.text) - (shownCount ?? 0))
   handle.toggleAttribute("data-generating", activity.isGenerating)
   handle.style.setProperty("--buffer", `${Math.min(1, buffer / BUFFER_WORDS)}`)
   showStatus(statusElement, {
@@ -265,6 +365,7 @@ function report() {
 function restartDwell() {
   clearTimeout(dwellTimer)
   const dwell = ++dwellCount
+  if (following || writingDialog.open || initialText !== undefined) return
   dwellTimer = setTimeout(() => {
     if (isFutureStale) regenerateFuture()
     else topUp()
@@ -285,13 +386,15 @@ function afterStreaming(request: () => void) {
 }
 
 function regenerateFuture() {
+  following = undefined
+  writingStatus.textContent = ""
   isFutureStale = false
   restCount = shownCount ?? 0
   stream.regenerate(shownCount ?? 0, "steering changed", steering())
 }
 
 function steering(): Steering {
-  return { leads: attention.leads(), controls: futureKnobs.controls() }
+  return { direction, leads: attention.leads(), controls: futureKnobs.controls() }
 }
 
 /**
@@ -306,8 +409,17 @@ function scheduleTopUp() {
 }
 
 function topUp() {
-  if (isRegenerationHeld || stream.activity().isGenerating || performance.now() < retryAt) return
-  const words = countWords(stream.text)
+  if (
+    initialText !== undefined ||
+    writingDialog.open ||
+    following ||
+    manualError ||
+    isRegenerationHeld ||
+    stream.activity().isGenerating ||
+    performance.now() < retryAt
+  )
+    return
+  const words = countCharacters(stream.text)
   if (words - (shownCount ?? 0) >= BUFFER_WORDS) return
   stream.generate("buffer low", steering()).then(
     (outcome) => outcome === "done" && settleTopUp(words),
@@ -317,7 +429,7 @@ function topUp() {
 
 /** A top-up that added words resets the retry delay; one that added none waits before trying again, longer each time. */
 function settleTopUp(wordsBefore: number) {
-  if (countWords(stream.text) > wordsBefore) {
+  if (countCharacters(stream.text) > wordsBefore) {
     retryMs = RETRY_MS
     retryAt = 0
     return scheduleTopUp()
@@ -329,7 +441,7 @@ function settleTopUp(wordsBefore: number) {
 
 function prepareWords() {
   const text = stream.text
-  if (prepared?.text !== text) prepared = { text, layout: prepareWithSegments(text, style.font) }
+  if (prepared?.text !== text) prepared = { text, layout: prepareWithSegments(text, style.font, { whiteSpace: "pre-wrap" }) }
   return prepared.layout
 }
 
@@ -337,14 +449,14 @@ function prepareWords() {
 function pointerTargets(): PointerTarget[] {
   const leads = attention.leads()
   return [
-    { rects: [handle.getBoundingClientRect()], pad: 5, wake: handle, label: () => `<b>${shownCount ?? 0}</b> words` },
+    { rects: [handle.getBoundingClientRect()], pad: 5, wake: handle, label: () => `<b>${shownCount ?? 0}</b> 字` },
     ...[...document.querySelectorAll<HTMLElement>(".future")].map((knob) => ({ rects: [knob.getBoundingClientRect()], pad: 5 })),
     ...attention.spans().map(({ phrase }, i) => ({
       rects: clientRectsOf(phrase),
       pad: 3,
       label: () => {
         const { relevance: value, isMeasuring } = relevance.relevanceOf(leads[i])
-        return isMeasuring ? "box <b>··</b>" : value === undefined ? "box" : `box <b>${value >= 1 ? "1.0" : value.toFixed(2).replace(/^0/, "")}</b>`
+        return isMeasuring ? "关键词 <b>··</b>" : value === undefined ? "关键词" : `关键词 <b>${value >= 1 ? "1.0" : value.toFixed(2).replace(/^0/, "")}</b>`
       },
     })),
     { rects: [modeToggle.getBoundingClientRect()], pad: TRAY_PAD_PX, isHotOnHover: true, wake: modeToggle },
@@ -417,7 +529,7 @@ function aimAt(x: number, y: number): Aim {
   const lines = layoutLines(prepareWords(), { line: target.line, x: Math.min(target.x, width) }, width)
   const knob = handle.getBoundingClientRect()
   return {
-    gap: countWords(lines.join(" ")) - (shownCount ?? 0),
+    gap: countCharacters(lines.join(" ")) - (shownCount ?? 0),
     tip: tipRect(),
     knob: { x: knob.x + knob.width / 2, y: knob.y + knob.height / 2 },
   }
@@ -434,7 +546,7 @@ function lastWordRect(lines: string[]) {
   const index = lines.findLastIndex((line) => line.trim())
   if (index === -1) return
   const line = lines[index].trimEnd()
-  const word = line.slice(line.lastIndexOf(" ") + 1)
+  const word = line.slice(wordSpans(line).at(-1)?.start ?? Math.max(0, line.length - 1))
   const { left, top } = element.getBoundingClientRect()
   const lineHeight = parseFloat(style.lineHeight)
   const x = left + measure.measureText(line.slice(0, line.length - word.length)).width
@@ -460,8 +572,8 @@ function caretAfterWords(count: number): Caret | undefined {
   for (let line = 0; ; line++) {
     const next = layoutNextLine(layout, width, cursor)
     if (!next) return
-    const words = countWords(next.text)
-    if (seen + words >= count) return { line, x: Math.min(width, measure.measureText(firstWords(next.text, count - seen)).width + 1) }
+    const words = countCharacters(next.text)
+    if (seen + words >= count) return { line, x: Math.min(width, measure.measureText(firstCharacters(next.text, count - seen)).width + 1) }
     seen += words
     cursor = next.end
   }
@@ -472,7 +584,7 @@ function refreshRail() {
   railFrame ??= requestAnimationFrame(() => {
     railFrame = undefined
     const leads = attention.leads()
-    relevance.update(story, leads)
+    if (!following) relevance.update(story, leads)
     const { left, top } = element.getBoundingClientRect()
     railElement.style.translate = `${left + scrollX - railElement.offsetWidth - RAIL_GAP_PX}px ${top + scrollY + parseFloat(style.paddingTop)}px`
     rail.show({
@@ -505,7 +617,7 @@ function soundWordsCrossed(before: number | undefined, point: Point) {
 function showSoundToggle() {
   const isOn = isSoundOn()
   soundToggle.setAttribute("aria-pressed", `${isOn}`)
-  soundToggle.querySelector("b")!.textContent = isOn ? "on" : "off"
+  soundToggle.querySelector("b")!.textContent = isOn ? "开" : "关"
 }
 
 /** Read on every use, since the centered column moves with the window. */

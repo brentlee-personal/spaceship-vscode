@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Spaceship · illustrations</title>
+    <title>Spaceship · 图解</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>" />
     <style>
       @font-face {
@@ -83,77 +83,61 @@
   <body>
     <main>
       <header>
-        <h1>Spaceship, illustrated</h1>
-        <p>Four ideas for steering a text model at 60 FPS, each drawn as a loop. Drag the slider under a figure to scrub it.</p>
+        <h1>Spaceship 图解</h1>
+        <p>四种以 60 FPS 引导文本模型的设计，每种都用循环动画演示。拖动图下方的滑块即可查看各帧。</p>
       </header>
       <figure data-scene="focus-monitor">
-        <svg viewBox="0 0 640 300" role="img" aria-label="The rail of meters beside the text swings to whatever the hand is on"></svg>
-        <input type="range" min="0" step="0.01" aria-label="scrub the focus monitor illustration" />
+        <svg viewBox="0 0 640 300" role="img" aria-label="文本旁的仪表侧栏随当前指向的内容变化"></svg>
+        <input type="range" min="0" step="0.01" aria-label="拖动查看焦点监视器图解" />
         <figcaption>
-          <h2><b>1</b> focus monitor</h2>
+          <h2><b>1</b> 焦点监视器</h2>
           <p>
-            A meter beside every line shows how strongly it connects to what you are on: the sentence at the knob, or a box you hover. Lines that matter
-            brighten, so your eye goes where the model's attention goes.
+            每行旁都有一个仪表，显示该行与当前焦点的关联强度。焦点可以是旋钮所在的句子，也可以是指针悬停的关键词框。关联强的行会变亮，让你的视线跟随模型的注意力。
           </p>
         </figcaption>
       </figure>
       <figure data-scene="attention-lock">
-        <svg viewBox="0 0 640 300" role="img" aria-label="Attention boxes around key phrases bias the text that comes after the knob"></svg>
-        <input type="range" min="0" step="0.01" aria-label="scrub the attention lock illustration" />
+        <svg viewBox="0 0 640 300" role="img" aria-label="框出关键短语，引导旋钮之后的续写"></svg>
+        <input type="range" min="0" step="0.01" aria-label="拖动查看注意力锁定图解" />
         <figcaption>
-          <h2><b>2</b> attention lock</h2>
-          <p>
-            Expanding the knob boxes the phrases the model leans on, each wired to the knob. Drag a box to move its keyword, and the future past the knob is
-            written again around the locked words.
-          </p>
+          <h2><b>2</b> 注意力锁定</h2>
+          <p>展开旋钮后，模型重点依赖的短语会被框出，每个关键词框都用线连到旋钮。拖动关键词框可移动其中的关键词，旋钮之后的文本会围绕锁定的词重新生成。</p>
         </figcaption>
       </figure>
       <figure data-scene="future-steering">
-        <svg
-          viewBox="0 0 640 340"
-          role="img"
-          aria-label="A future knob is pulled out of the main knob, tuned on a fan of dimensions, then pinned once the text fulfills it"
-        ></svg>
-        <input type="range" min="0" step="0.01" aria-label="scrub the future vector steering illustration" />
+        <svg viewBox="0 0 640 340" role="img" aria-label="从主旋钮拉出续写旋钮，在扇形菜单中调节维度，待文本体现设定后固定"></svg>
+        <input type="range" min="0" step="0.01" aria-label="拖动查看续写向量引导图解" />
         <figcaption>
-          <h2><b>3</b> future vector steering</h2>
+          <h2><b>3</b> 续写向量引导</h2>
           <p>
-            Hold the knob to pull out a future knob. Carry it through the fan to pick a dimension; its swing sets the value, its reach the strength. As the text
-            streams in, the knob fills with how surely it is fulfilled, then pins to the sentence that delivered it.
+            按住主旋钮，拉出续写旋钮。在扇形菜单中移动它来选择维度：摆动角度决定数值，拉出距离决定强度。随着文本陆续生成，旋钮按设定的体现程度逐渐填满，最终固定在实现该设定的句子上。
           </p>
         </figcaption>
       </figure>
       <figure data-scene="realtime-regeneration">
-        <svg
-          viewBox="0 0 640 300"
-          role="img"
-          aria-label="Scrubbing back discards the future and a new one streams in, growing a tree of explored futures"
-        ></svg>
-        <input type="range" min="0" step="0.01" aria-label="scrub the realtime re-generation illustration" />
+        <svg viewBox="0 0 640 300" role="img" aria-label="向回拖动会丢弃原有续写并生成新续写，让探索过的版本逐渐长成一棵树"></svg>
+        <input type="range" min="0" step="0.01" aria-label="拖动查看实时重新生成图解" />
         <figcaption>
-          <h2><b>4</b> realtime re-generation</h2>
-          <p>
-            The knob is a playhead over text that is already written ahead. Scrub back and rest: the future past it is thrown away and a new one streams in,
-            fast enough to browse alternatives like frames.
-          </p>
+          <h2><b>4</b> 实时重新生成</h2>
+          <p>旋钮就像播放指针，前方的文本已提前生成。向回拖动并停住，旋钮之后的内容就会被丢弃，新文本随即生成，快到可以像浏览动画帧一样查看不同版本。</p>
         </figcaption>
       </figure>
     </main>
     <script type="module">
-      /** JetBrains Mono advances 0.6em per character, so columns map to x without measuring. */
+      /** The Chinese sample uses full-width characters, so each column advances one em. */
       const FONT_SIZE = 11
-      const CHAR = FONT_SIZE * 0.6
+      const CHAR = FONT_SIZE
       const LINE = 18
       const BASELINE = 13
-      const COLUMNS = 46
+      const COLUMNS = 27
       const FADE = 0.4
 
       const STORY = [
-        "The lighthouse keeper had not slept in three nights. Each evening he climbed the spiral stairs, trimmed the wick, and watched the",
-        "horizon for the ship his daughter had boarded in spring. The radio hissed with static. On the fourth night the barometer fell so fast",
-        "he tapped the glass to be sure. By midnight the storm had swallowed the stars, and waves broke white against the rocks below. Then,",
-        "through the rain, a light answered his own: three short flashes, three long, three short. He ran for the stairs before the last one",
-      ].join(" ")
+        "灯塔守夜人已经三夜没合眼了。每天傍晚，他都沿着螺旋楼梯登上塔顶，剪短灯芯，望向海平线，寻找女儿春天搭乘的那艘船。",
+        "无线电里满是沙沙声。第四夜，气压计的指针落得太快，他以为表坏了，伸手敲了敲玻璃。",
+        "午夜，风暴吞没星光，脚下的浪头撞上礁石，碎成一片白沫。雨幕深处，终于有一束光回应了他的灯：三短、三长、三短。",
+        "他飞奔下楼，最后一下闪光还没有熄灭。",
+      ].join("")
 
       const scenes = {
         "focus-monitor": focusMonitor(),
@@ -213,10 +197,10 @@
       function focusMonitor() {
         const duration = 10
         const doc = layoutDoc(STORY, { left: 262, top: 40 })
-        const tip = doc.text.lastIndexOf("He ran")
+        const tip = doc.text.lastIndexOf("他飞奔")
         const boxes = [
-          { focus: 1, phrase: rangeOf(doc.text, "The lighthouse keeper"), keyword: rangeOf(doc.text, "lighthouse") },
-          { focus: 2, phrase: rangeOf(doc.text, "the storm had swallowed"), keyword: rangeOf(doc.text, "storm") },
+          { focus: 1, phrase: rangeOf(doc.text, "灯塔守夜人"), keyword: rangeOf(doc.text, "灯塔") },
+          { focus: 2, phrase: rangeOf(doc.text, "风暴吞没星光"), keyword: rangeOf(doc.text, "风暴") },
         ]
         /** How strongly each line connects to each focus, in meter steps: the sentence at the knob, then each box. */
         const strengths = [
@@ -225,9 +209,9 @@
           [1, 1, 1, 1, 4, 9, 8, 10, 8, 6, 2, 1],
         ]
         const focuses = [
-          { at: 0, label: "sentence at the knob" },
-          { at: 3.3, label: "box · lighthouse keeper" },
-          { at: 6.6, label: "box · the storm" },
+          { at: 0, label: "旋钮所在句" },
+          { at: 3.3, label: "关键词框 · 守夜人" },
+          { at: 6.6, label: "关键词框 · 风暴" },
         ]
         const knob = doc.point(doc.text.length)
         const rest = { x: knob.x + 70, y: knob.y + 34 }
@@ -250,7 +234,7 @@
           const meters = doc.lines.map((_, line) => meterState(strengths[previous][line] ?? 0, strengths[current][line] ?? 0, t - changedAt))
           const hovered = boxes.find((box) => box.focus === current)
           return [
-            label(92, 22, "focus", focuses[current].label),
+            label(92, 22, "焦点", focuses[current].label),
             meters.map((meter, line) => meterRow(meter, 92, doc.top + line * LINE, line)).join(""),
             boxes.map((box) => boxShade(doc, box.phrase, box === hovered)).join(""),
             current === 0 ? underline(doc, tip, doc.text.length, "var(--hot)") : "",
@@ -265,27 +249,23 @@
 
       function attentionLock() {
         const duration = 11
-        const present =
-          "The lighthouse keeper had not slept in three nights. Each evening he climbed the spiral stairs, trimmed the wick, and watched the horizon for the ship his daughter had boarded in spring. The radio hissed with static. On the fourth night the barometer fell."
-        const before = " The wind began to rise. He checked the radio again: nothing but static, so he poured coffee and waited for dawn."
-        const after =
-          " The lighthouse shook. On the radio, a voice broke through the static: his daughter, calling from the ship, asking him to keep the light burning."
+        const present = "灯塔守夜人已经三夜没合眼。每天傍晚，他爬上螺旋楼梯，剪短灯芯，遥望海平线，寻找女儿春天搭乘的船。无线电里只有杂音。第四夜，气压骤降。"
+        const before = "风起了。他又试了一次无线电，仍是一片沙沙声，于是倒上咖啡，等天亮。"
+        const after = "灯塔摇晃起来。无线电的杂音里传来女儿的声音。她在船上，请他守住灯光。"
         const docBefore = layoutDoc(present + before, { left: 168, top: 46 })
         const docAfter = layoutDoc(present + after, { left: 168, top: 46 })
         const words = wordsOf(present)
-        const wordIndex = (word) => words.findIndex(({ text }) => text === word)
+        const wordIndex = (word) => words.findIndex(({ start, end }) => start <= present.indexOf(word) && present.indexOf(word) < end)
         const boxes = [
-          { at: 1.0, keyword: wordIndex("lighthouse"), before: 1, after: 1 },
-          { at: 1.35, keyword: wordIndex("wick"), before: 2, after: 0 },
-          { at: 1.7, keyword: wordIndex("radio"), before: 1, after: 1 },
+          { at: 1.0, keyword: wordIndex("灯塔"), before: 1, after: 1 },
+          { at: 1.35, keyword: wordIndex("灯芯"), before: 2, after: 0 },
+          { at: 1.7, keyword: wordIndex("无线电"), before: 1, after: 1 },
         ]
-        const echoes = [" lighthouse ", " radio,", " daughter,", " light "].map((word) =>
-          ((range) => [range[0] + 1, range[1] - 1])(rangeOf(docAfter.text, word, present.length)),
-        )
+        const echoes = ["灯塔", "无线电", "女儿", "灯光"].map((word) => rangeOf(docAfter.text, word, present.length))
         const knob = docBefore.point(present.length)
         const rest = { x: knob.x + 60, y: knob.y + 40 }
         const wick = centerOf(docBefore.rects(...spanOf(words[boxes[1].keyword]))[0])
-        const daughter = centerOf(docBefore.rects(...spanOf(words[wordIndex("daughter")]))[0])
+        const daughter = centerOf(docBefore.rects(...spanOf(words[wordIndex("女儿")]))[0])
         const scrubEnd = docAfter.text.length
         const scrub = (t) => Math.round(mix(present.length, scrubEnd, ramp(t, 6.6, 9.6)))
         const cursorPath = [
@@ -300,10 +280,10 @@
           { at: 6.4, point: knob },
         ]
         const steps = [
-          { at: 0.6, label: "expand" },
-          { at: 2.8, label: "drag keyword" },
-          { at: 4.2, label: "future re-biased" },
-          { at: 6.6, label: "scrub" },
+          { at: 0.6, label: "展开" },
+          { at: 2.8, label: "拖动关键词" },
+          { at: 4.2, label: "调整续写方向" },
+          { at: 6.6, label: "展开后文" },
         ]
 
         return { duration, poster: 6.3, render }
@@ -359,17 +339,16 @@
 
       function futureSteering() {
         const duration = 12
-        const present =
-          "The lighthouse keeper had not slept in three nights. Each evening he climbed the spiral stairs and watched the horizon for a ship. Tonight the sea was flat as glass, and"
+        const present = "灯塔守夜人已经三夜没合眼。每天傍晚，他都爬上螺旋楼梯，望向海平线，等待船影。今夜海面平静如镜，"
         const sentences = [
-          { text: " the wind rose to a howl.", confidence: 0.31 },
-          { text: " Something scraped along the hull below, slow and deliberate.", confidence: 0.58 },
-          { text: " Every lamp in the tower guttered at once.", confidence: 0.86 },
+          { text: "风声却渐渐尖厉起来。", confidence: 0.31 },
+          { text: "有什么东西在下方缓缓刮过船身，一下，又一下。", confidence: 0.58 },
+          { text: "塔里的每一盏灯同时闪了闪。", confidence: 0.86 },
         ]
         const doc = layoutDoc(present + sentences.map(({ text }) => text).join(""), { left: 90, top: 40 })
         const ends = sentences.map((_, i) => present.length + sentences.slice(0, i + 1).reduce((sum, { text }) => sum + text.length, 0))
         const knob = doc.point(present.length)
-        const menu = ["focus", "pace", "tone", "tension", "distance"]
+        const menu = ["焦点", "节奏", "语气", "张力", "距离"]
         const menuAngle = (i) => mix(160, 20, i / (menu.length - 1))
         const chosen = 3
         const rim = 150
@@ -380,11 +359,11 @@
           return { angle, distance: out }
         }
         const steps = [
-          { at: 0.5, label: "hold" },
-          { at: 1.3, label: "pick a dimension" },
-          { at: 2.7, label: "swing value · reach strength" },
-          { at: 5.4, label: "track" },
-          { at: 9.2, label: "pin" },
+          { at: 0.5, label: "按住" },
+          { at: 1.3, label: "选择调节项" },
+          { at: 2.7, label: "转动调值，拉远增强" },
+          { at: 5.4, label: "跟踪" },
+          { at: 9.2, label: "固定" },
         ]
 
         return { duration, poster: 3.9, render }
@@ -452,7 +431,7 @@
             isSpawned && pinned < 1 ? link(mainPoint, knobPlace, isTuning ? "var(--ink)" : "var(--ink-4)", 1 - pinned, !isTuning) : "",
             isTuning ? rulerTicks(knob, future) : "",
             isSpawned ? futureKnob(knobPlace, { confidence, isTuning, isHot: isTuning || (t > 5.6 && t < 9.9) }) : "",
-            isSpawned && !isTuning ? knobLabel(knobPlace, `tension: ${setting}`, confidence, pinned) : "",
+            isSpawned && !isTuning ? knobLabel(knobPlace, `张力：${setting}`, confidence, pinned) : "",
             mainKnob(mainPoint, {
               sweep: progress(t, 0.6, 1.1) * (t < 1.1 ? 1 : 0),
               spin: t >= 4.8 && t < 5.5 ? t : undefined,
@@ -495,8 +474,8 @@
             })
             .join("")
           const poles = [
-            { angle: 168, text: "calm", anchor: "end" },
-            { angle: 12, text: "dread", anchor: "start" },
+            { angle: 168, text: "平静", anchor: "end" },
+            { angle: 12, text: "惊惧", anchor: "start" },
           ]
             .map(({ angle, text, anchor }) =>
               ((at) =>
@@ -505,7 +484,7 @@
               ),
             )
             .join("")
-          const readout = `<text x="${center.x}" y="${center.y + rim + 40}" text-anchor="middle" fill="var(--ink-3)">tension: <tspan fill="var(--hot)">${valueWord(value)}</tspan> <tspan fill="var(--ink)">${Math.round(strength * 100)}%</tspan></text>`
+          const readout = `<text x="${center.x}" y="${center.y + rim + 40}" text-anchor="middle" fill="var(--ink-3)">张力：<tspan fill="var(--hot)">${valueWord(value)}</tspan> <tspan fill="var(--ink)">${Math.round(strength * 100)}%</tspan></text>`
           return [
             rings,
             `<path d="${arcPath(center, rim, 160, 20)}" fill="none" stroke="var(--ink)" />`,
@@ -519,25 +498,25 @@
 
       function realtimeRegeneration() {
         const duration = 13
-        const present = "The lighthouse keeper had not slept in three nights. Tonight the sea was flat as glass. He lit the lamp,"
+        const present = "灯塔守夜人已经三夜没合眼。今夜海面平静如镜。他点亮灯，"
         const futures = [
           {
-            text: " sat by the window, and waited. Nothing answered but the rain, steady and patient on the glass.",
-            label: "nothing answered",
+            text: "坐到窗边等待。只有雨点应声，不紧不慢地敲着玻璃。",
+            label: "无人回应",
             streamAt: -1,
             scrub: [0.6, 2.6],
             back: [2.9, 3.5],
           },
           {
-            text: " and far out on the black water a small boat turned, slowly, toward the light.",
-            label: "a small boat",
+            text: "远处漆黑的海面上，一艘小船缓缓转向灯光。",
+            label: "远处的小船",
             streamAt: 3.8,
             scrub: [5.2, 7.2],
             back: [7.5, 8.1],
           },
           {
-            text: " then froze: someone was already standing at the top of the stairs, holding a match.",
-            label: "someone was there",
+            text: "突然僵住了：楼梯顶上已经站着一个人，手里捏着一根火柴。",
+            label: "楼梯顶上的人",
             streamAt: 8.4,
             scrub: [9.8, 11.8],
             back: [99, 99],
@@ -564,10 +543,10 @@
           const isScrubbing = (t >= future.scrub[0] && t < future.scrub[1]) || (t >= future.back[0] && t < future.back[1])
           const isGenerating = t >= future.streamAt && t < future.streamAt + 1.4
           const steps = [
-            { at: 0.6, label: "scrub" },
-            { at: futures[0].back[0], label: "drag back" },
-            { at: futures[1].streamAt, label: "rest · regenerate" },
-            { at: futures[1].scrub[0], label: "scrub the new future" },
+            { at: 0.6, label: "展开后文" },
+            { at: futures[0].back[0], label: "向回拖动" },
+            { at: futures[1].streamAt, label: "松手重新生成" },
+            { at: futures[1].scrub[0], label: "展开新的后文" },
           ]
           return [
             stepLabels(steps, t >= futures[1].back[0] ? t - (futures[1].back[0] - futures[0].back[0]) : t, 40, 24),
@@ -582,7 +561,7 @@
         }
 
         function treeOf(t, current, progressed) {
-          const trunk = `<line x1="${tree.x}" y1="${tree.y}" x2="${tree.x}" y2="${tree.fork.y}" stroke="var(--ink)" /><text x="${tree.x}" y="${tree.y - 16}" fill="var(--ink-3)">futures <tspan fill="var(--ink)">${current + 1}</tspan></text><circle cx="${tree.x}" cy="${tree.y}" r="2.5" fill="var(--ink)" />`
+          const trunk = `<line x1="${tree.x}" y1="${tree.y}" x2="${tree.x}" y2="${tree.fork.y}" stroke="var(--ink)" /><text x="${tree.x}" y="${tree.y - 16}" fill="var(--ink-3)">续写分支 <tspan fill="var(--ink)">${current + 1}</tspan></text><circle cx="${tree.x}" cy="${tree.y}" r="2.5" fill="var(--ink)" />`
           const branches = futures
             .map((future, i) => {
               if (future.streamAt > t) return ""
@@ -609,8 +588,7 @@
         const lines = []
         let start = 0
         while (start < text.length) {
-          let end = Math.min(text.length, start + COLUMNS)
-          if (end < text.length) end = Math.max(start + 1, text.lastIndexOf(" ", end))
+          const end = Math.min(text.length, start + COLUMNS)
           lines.push({ start, end })
           start = text[end] === " " ? end + 1 : end
         }
@@ -764,7 +742,7 @@
       }
 
       function knobLabel({ x, y }, text, confidence, pinned) {
-        return `<text x="${x + 12}" y="${y + 4}" font-size="10" fill="var(--ink)">${text} <tspan fill="var(--hot)">${Math.round(confidence * 100)}%</tspan> <tspan fill="var(--ink-3)">${pinned > 0.5 ? "realized" : ""}</tspan></text>`
+        return `<text x="${x + 12}" y="${y + 4}" font-size="10" fill="var(--ink)">${text} <tspan fill="var(--hot)">${Math.round(confidence * 100)}%</tspan> <tspan fill="var(--ink-3)">${pinned > 0.5 ? "已体现" : ""}</tspan></text>`
       }
 
       /** The page's pointer: hairlines across the whole figure and a dot, orange while pressed. */
@@ -784,14 +762,16 @@
         return steps
           .map((step, i) => {
             const text = `<text x="${x + column * CHAR}" y="${y}" fill="${i === current ? "var(--ink)" : "var(--ink-4)"}">${i === current ? "▸ " : "  "}${step.label}</text>`
-            column += step.label.length + 5
+            column += step.label.length + 3
             return text
           })
           .join("")
       }
 
       function wordsOf(text) {
-        return [...text.matchAll(/[\w'’-]+/g)].map((match) => ({ text: match[0], start: match.index, end: match.index + match[0].length }))
+        return [...new Intl.Segmenter("zh-CN", { granularity: "word" }).segment(text)]
+          .filter(({ isWordLike }) => isWordLike)
+          .map(({ segment, index }) => ({ text: segment, start: index, end: index + segment.length }))
       }
 
       function spanOf({ start, end }) {
@@ -817,7 +797,7 @@
       }
 
       function valueWord(value) {
-        return ["calm", "settled", "uneasy", "tense", "dread"][Math.min(4, Math.floor(value * 5))]
+        return ["平静", "安稳", "不安", "紧张", "惊惧"][Math.min(4, Math.floor(value * 5))]
       }
 
       /** Where a point moving through `path` is at `t`, eased between stops. */

@@ -125,7 +125,17 @@ export function createFutureKnobs({
   let axis = 0
   let story: StoryLayout = { content: "", text: "", combined: "", sentences: [] }
 
-  return { preload, spawn, clear, count: () => knobs.length, pinnedCount: () => knobs.filter((knob) => knob.pinned).length, follow, controls }
+  return {
+    preload,
+    spawn,
+    setControls,
+    layout,
+    clear,
+    count: () => knobs.length,
+    pinnedCount: () => knobs.filter((knob) => knob.pinned).length,
+    follow,
+    controls,
+  }
 
   /** Takes the text as the main knob or the generator changed it: updates each tracking knob's confidence, pins those realized, and removes pinned ones the main knob moved back past. */
   function follow(next: StoryLayout) {
@@ -172,6 +182,18 @@ export function createFutureKnobs({
     const menu = preloaded?.key === key ? preloaded : fetchMenu(key)
     preloaded = undefined
 
+    const knob = createKnob(point, menu.controller)
+    knob.isDragging = true
+    updateAxis()
+    drag(knob, point)
+    knob.element.setPointerCapture(pointerId)
+    sounds.spawn(point.x)
+    knob.sound.loadingTimer = setTimeout(() => (knob.sound.loading = sounds.menuLoading(knob.point.x)), MENU_LOADING_GRACE_MS)
+    startBed(knob)
+    receiveMenu(knob, menu)
+  }
+
+  function createKnob(point: Point, controller: AbortController) {
     const element = template.content.firstElementChild!.cloneNode(true) as HTMLElement
     const knob: FutureKnob = {
       element,
@@ -179,9 +201,9 @@ export function createFutureKnobs({
       point,
       place: { swing: 0, distance: 0 },
       progress: 0,
-      isDragging: true,
+      isDragging: false,
       isHovered: false,
-      controller: menu.controller,
+      controller,
       sound: { hasMoved: true },
     }
     document.body.append(element)
@@ -205,13 +227,35 @@ export function createFutureKnobs({
     onDoubleClick(element, () => remove(knob))
     element.addEventListener("pointerenter", () => ((knob.isHovered = true), layout()))
     element.addEventListener("pointerleave", () => ((knob.isHovered = false), layout()))
+    return knob
+  }
+
+  function setControls(controls: Control[], manuscript: StoryLayout) {
+    story = manuscript
+    const names = new Set(controls.map(({ dimension }) => dimension.name))
+    for (const knob of [...knobs]) {
+      if (knob.dimension && !knob.pinned && !names.has(knob.dimension.name)) remove(knob, { silent: true })
+    }
+    for (const control of controls) setControl(control)
+  }
+
+  function setControl(control: Control) {
+    const main = circleOf(mainKnob)
+    const knob = knobs.find((item) => isSteering(item) && item.dimension?.name === control.dimension.name) ?? createKnob(main.center, new AbortController())
+    unpark(knob)
     updateAxis()
-    drag(knob, point)
-    element.setPointerCapture(pointerId)
-    sounds.spawn(point.x)
-    knob.sound.loadingTimer = setTimeout(() => (knob.sound.loading = sounds.menuLoading(knob.point.x)), MENU_LOADING_GRACE_MS)
-    startBed(knob)
-    receiveMenu(knob, menu)
+    const swing = (control.position * 2 - 1) * SWING_RADIANS
+    const distance = minDistanceOf(knob, main.radius) + control.strength * STRENGTH_RANGE_PX
+    knob.place = { swing, distance }
+    knob.point = { x: main.center.x + Math.sin(axis + swing) * distance, y: main.center.y + Math.cos(axis + swing) * distance }
+    knob.dimension = control.dimension
+    const crowding = knobs.some((other) => other !== knob && !other.pinned && Math.hypot(other.point.x - knob.point.x, other.point.y - knob.point.y) < 48)
+    if (crowding) {
+      knob.parkedAt = main.center.y
+      knob.element.toggleAttribute("data-parked", true)
+    }
+    settle(knob)
+    startTracking(knob)
   }
 
   function clear() {
@@ -504,7 +548,7 @@ export function createFutureKnobs({
 
   /** Reports a change only when what the text generator would see differs from the last report. */
   function settle(knob: FutureKnob) {
-    const setting = knob.dimension && `${valueOf({ dimension: knob.dimension, position: positionOf(knob) })}|${strengthLevelOf(strengthOf(knob))}`
+    const setting = knob.dimension && `${valueOf({ dimension: knob.dimension, position: positionOf(knob) })}|${Math.round(strengthOf(knob) * 100)}`
     if (setting === knob.setting) return
     knob.setting = setting
     onChange()
@@ -527,20 +571,20 @@ export function createFutureKnobs({
     if (!dimension) {
       element.style.setProperty("--fill", `${knob.progress}`)
       labelWith(knob.label, PENDING_VALUE)
-      element.setAttribute("aria-label", `future knob, choosing a dimension, double click to delete`)
+      element.setAttribute("aria-label", `续写旋钮，选择调节项，双击移除`)
       if (!knob.menu) return [{ text: PENDING_VALUE, tone: "live" }]
       return knob.candidate === undefined ? [] : [{ text: previewOf(knob.menu[knob.candidate]) }]
     }
     const strength = strengthOf(knob)
     const value = valueOf({ dimension, position: positionOf(knob) })
     const percent = `${Math.round(strength * 100)}%`
-    const realized = knob.confidence === undefined ? "" : `${Math.round(knob.confidence * 100)}%${knob.pinned ? "" : " realized"}`
+    const realized = knob.confidence === undefined ? "" : `体现 ${Math.round(knob.confidence * 100)}%`
     const isRealizing = knob.tracking !== undefined || knob.pinned !== undefined
     element.style.setProperty("--fill", `${isRealizing ? (knob.confidence ?? 0) : strength}`)
     element.toggleAttribute("data-tracking", knob.tracking !== undefined)
-    labelWith(knob.label, `${dimension.name}: ${value}`, realized)
-    const state = knob.pinned ? "realized and pinned beside its sentence" : `${strengthLevelOf(strength)} influence${realized && `, ${realized}`}`
-    element.setAttribute("aria-label", `future knob, ${dimension.name}: ${value}, ${state}, double click to delete`)
+    labelWith(knob.label, `${dimension.name} → ${value}`, realized ? `强度 ${percent} · ${realized}` : `强度 ${percent}`)
+    const state = knob.pinned ? "已体现在正文中，固定在对应句旁" : `${strengthLevelOf(strength)}影响${realized && `, ${realized}`}`
+    element.setAttribute("aria-label", `续写旋钮，${dimension.name}：${value}，${state}，双击移除`)
     return [{ text: `${dimension.name}:`, tone: "dim" }, { text: value, tone: "live" }, { text: realized ? `${percent} · ${realized}` : percent }]
   }
 

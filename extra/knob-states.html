@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <title>text · main knob · buffer states</title>
+    <title>写作设计 · 主旋钮 · 缓冲状态</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>" />
     <style>
       @font-face {
@@ -303,99 +303,97 @@
   </head>
   <body>
     <main>
-      <nav class="experiments" aria-label="experiments">
+      <nav class="experiments" aria-label="实验">
         <p>
-          <b>style</b>
-          <a href="style-1.html">instrument</a>
-          <a href="style-2.html">signal</a>
-          <a href="style-3.html">telemetry</a>
-          <a href="style-4.html">merged</a>
+          <b>样式</b>
+          <a href="style-1.html">仪表</a>
+          <a href="style-2.html">信号</a>
+          <a href="style-3.html">遥测</a>
+          <a href="style-4.html">融合</a>
         </p>
         <p>
-          <b>sound</b>
-          <a href="soundboard.html">soundboard</a>
+          <b>音效</b>
+          <a href="soundboard.html">音效面板</a>
         </p>
         <p>
-          <b>knob</b>
-          <a href="knob-states.html" aria-current="page">buffer states</a>
+          <b>旋钮</b>
+          <a href="knob-states.html" aria-current="page">缓冲区状态</a>
         </p>
         <p>
-          <b>rail</b>
-          <a href="bar-1.html">histogram</a>
-          <a href="bar-2.html">profile</a>
-          <a href="bar-3.html">meters</a>
+          <b>侧栏</b>
+          <a href="bar-1.html">直方图</a>
+          <a href="bar-2.html">强度曲线</a>
+          <a href="bar-3.html">强度表</a>
         </p>
         <p>
-          <b>pointer</b>
-          <a href="pointer-1.html">crosshair</a>
-          <a href="pointer-2.html">ring</a>
-          <a href="pointer-3.html">field</a>
-          <a href="pointer-4.html">steering</a>
-          <a href="pointer-5.html">combined</a>
+          <b>指针</b>
+          <a href="pointer-1.html">十字准星</a>
+          <a href="pointer-2.html">圆环</a>
+          <a href="pointer-3.html">感应区</a>
+          <a href="pointer-4.html">引导</a>
+          <a href="pointer-5.html">组合</a>
         </p>
         <p>
-          <b>tray</b>
-          <a href="tray-1.html">modules</a>
-          <a href="tray-2.html">tmux</a>
-          <a href="tray-3.html">gauges</a>
+          <b>状态栏</b>
+          <a href="tray-1.html">模块</a>
+          <a href="tray-2.html">tmux 状态行</a>
+          <a href="tray-3.html">表盘</a>
         </p>
       </nav>
       <header>
-        <h1>text / main knob — buffer states</h1>
+        <h1>主旋钮 · 缓冲状态</h1>
         <p>
-          Whether generated words are waiting past the main knob, shown on the knob itself. It uses only marks the page already has: hairlines, the pip, dashes
-          for "not there yet", fills that show an amount, and orange only while something is changing. Each idea must stay readable alongside every existing
-          state: hover ring, generating arc, holding, and the hollow dragging reticle.
+          主旋钮直接显示其后是否已有生成好的文字在等待。只用页面已有的视觉元素：细线、小圆点、表示「尚未就绪」的虚线，以及表示数量的填充；仅在变化时使用橙色。每种方案都必须在现有状态下清晰可辨：悬停圆环、生成弧线、按住状态和拖动时的空心准星。
         </p>
       </header>
 
       <section>
-        <h2><b>00</b>live</h2>
+        <h2><b>00</b>实时</h2>
         <div class="stack">
           <fieldset id="controls">
-            <label>buffer <input type="range" name="buffer" min="0" max="300" value="120" /><output>120 words</output></label>
-            <label><input type="checkbox" name="generating" /> generating</label>
-            <label><input type="checkbox" name="dragging" /> dragging</label>
-            <label><input type="checkbox" name="hover" /> hover</label>
+            <label>缓冲区 <input type="range" name="buffer" min="0" max="300" value="120" /><output>120 词</output></label>
+            <label><input type="checkbox" name="generating" /> 生成中</label>
+            <label><input type="checkbox" name="dragging" /> 拖动中</label>
+            <label><input type="checkbox" name="hover" /> 悬停</label>
           </fieldset>
           <div class="live">
             <figure class="gauge">
               <span class="knob"><i></i></span>
-              <figcaption>01 inner gauge</figcaption>
+              <figcaption>01 内圈仪表</figcaption>
             </figure>
             <figure class="rim">
               <span class="knob"><i></i></span>
-              <figcaption>02 dashed rim</figcaption>
+              <figcaption>02 虚线外圈</figcaption>
             </figure>
             <figure class="lead">
               <span class="knob"><i></i></span>
-              <figcaption>03 lead line</figcaption>
+              <figcaption>03 前导线</figcaption>
             </figure>
           </div>
         </div>
       </section>
 
       <section class="gauge">
-        <h2><b>01</b>inner gauge</h2>
+        <h2><b>01</b>内圈仪表</h2>
         <div class="stack">
           <p class="note">
-            A 2px arc runs clockwise inside the rim from twelve o'clock, as long as the buffer is full. It is the future knobs' conic fill, cut down to a ring
-            so the knob stays hollow. Empty leaves the plain ring. The arc is white at rest and turns orange while the model writes into it.
+            一条 2px 宽的弧线从 12
+            点钟方向沿外圈内侧顺时针延伸，长度随缓冲量增加，缓冲区满时绕满一圈。它沿用续写旋钮的锥形填充，但只保留环形部分，让旋钮中央保持空心。缓冲区为空时只显示普通圆环。静止时弧线为白色，模型正在向缓冲区写入时变为橙色。
           </p>
           <table>
             <thead>
               <tr>
                 <th></th>
-                <th>rest</th>
-                <th>hover</th>
-                <th>generating</th>
-                <th>holding</th>
-                <th>dragging</th>
+                <th>静止</th>
+                <th>悬停</th>
+                <th>生成中</th>
+                <th>按住</th>
+                <th>拖动中</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th>empty <small>0 words</small></th>
+                <th>空 <small>0 词</small></th>
                 <td>
                   <span class="knob" style="--b: 0" data-buffer="empty"><i></i></span>
                 </td>
@@ -413,7 +411,7 @@
                 </td>
               </tr>
               <tr>
-                <th>low <small>60 words</small></th>
+                <th>较少 <small>60 词</small></th>
                 <td>
                   <span class="knob" style="--b: 0.2"><i></i></span>
                 </td>
@@ -431,7 +429,7 @@
                 </td>
               </tr>
               <tr>
-                <th>full <small>300 words</small></th>
+                <th>已满 <small>300 词</small></th>
                 <td>
                   <span class="knob" style="--b: 1"><i></i></span>
                 </td>
@@ -452,40 +450,39 @@
           </table>
           <div class="context">
             <p>
-              The beam swept the water once, and then again<span class="knob" style="--b: 1"><i></i></span>
+              光束扫过水面一次，又扫了一次<span class="knob" style="--b: 1"><i></i></span>
             </p>
             <p>
-              The beam swept the water once, and then again<span class="knob" style="--b: 0" data-buffer="empty"><i></i></span>
+              光束扫过水面一次，又扫了一次<span class="knob" style="--b: 0" data-buffer="empty"><i></i></span>
             </p>
             <p>
-              The beam swept the water once, and then again<span class="knob" style="--b: 0.2" data-generating><i></i></span>
+              光束扫过水面一次，又扫了一次<span class="knob" style="--b: 0.2" data-generating><i></i></span>
             </p>
           </div>
         </div>
       </section>
 
       <section class="rim">
-        <h2><b>02</b>dashed rim</h2>
+        <h2><b>02</b>虚线外圈</h2>
         <div class="stack">
           <p class="note">
-            Binary. While text waits past the knob, the rim is solid. When nothing is left, the rim goes dashed, the same mark this page uses for what is not
-            there yet (future knobs, their links, steering behind the knob). The pip stays solid, so the knob still reads as the caret. Risk: a dashed main knob
-            looks like a 12px future knob, and only its size and the pip set it apart.
+            只有两种状态。旋钮前方还有文本时，外圈为实线；没有剩余文本时，外圈改为虚线。页面也用虚线标记尚未出现的内容（续写旋钮、它们的连线、旋钮后方的引导）。圆点保持实心，因此旋钮仍能被识别为文本插入光标。风险：虚线主旋钮看起来像
+            12px 的续写旋钮，只能靠尺寸和圆点区分。
           </p>
           <table>
             <thead>
               <tr>
                 <th></th>
-                <th>rest</th>
-                <th>hover</th>
-                <th>generating</th>
-                <th>holding</th>
-                <th>dragging</th>
+                <th>静止</th>
+                <th>悬停</th>
+                <th>生成中</th>
+                <th>按住</th>
+                <th>拖动中</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th>empty <small>0 words</small></th>
+                <th>空 <small>0 词</small></th>
                 <td>
                   <span class="knob" style="--b: 0" data-buffer="empty"><i></i></span>
                 </td>
@@ -503,7 +500,7 @@
                 </td>
               </tr>
               <tr>
-                <th>low <small>60 words</small></th>
+                <th>较少 <small>60 词</small></th>
                 <td>
                   <span class="knob" style="--b: 0.2"><i></i></span>
                 </td>
@@ -521,7 +518,7 @@
                 </td>
               </tr>
               <tr>
-                <th>full <small>300 words</small></th>
+                <th>已满 <small>300 词</small></th>
                 <td>
                   <span class="knob" style="--b: 1"><i></i></span>
                 </td>
@@ -542,40 +539,39 @@
           </table>
           <div class="context">
             <p>
-              The beam swept the water once, and then again<span class="knob" style="--b: 1"><i></i></span>
+              光束扫过水面一次，又扫了一次<span class="knob" style="--b: 1"><i></i></span>
             </p>
             <p>
-              The beam swept the water once, and then again<span class="knob" style="--b: 0" data-buffer="empty"><i></i></span>
+              光束扫过水面一次，又扫了一次<span class="knob" style="--b: 0" data-buffer="empty"><i></i></span>
             </p>
             <p>
-              The beam swept the water once, and then again<span class="knob" style="--b: 0.2" data-generating><i></i></span>
+              光束扫过水面一次，又扫了一次<span class="knob" style="--b: 0.2" data-generating><i></i></span>
             </p>
           </div>
         </div>
       </section>
 
       <section class="lead">
-        <h2><b>03</b>lead line</h2>
+        <h2><b>03</b>引导线</h2>
         <div class="stack">
           <p class="note">
-            A hairline leaves the knob's right side, into the text ahead, the same mark as the rail's ruler ticks. Its length shows the buffer: up to 24px for a
-            full 300 words. Empty draws a 7px vertical end stop beside the knob instead, meaning the text ends here. While generating, the line's far end is
-            orange where words are arriving. It is the only idea that shows both empty and how much without touching the knob itself.
+            一条细线从旋钮右侧伸向前方文本，样式与侧栏标尺的刻度相同。线长表示缓冲区内的字数：满 300 字时最长为 24px。缓冲区为空时，改在旋钮旁画一条 7px
+            的竖直终止线，表示文本到此为止。生成时，细线远端有新文字进入的位置显示为橙色。这是唯一一个无需改变旋钮本身，就能同时显示是否为空和剩余字数的方案。
           </p>
           <table>
             <thead>
               <tr>
                 <th></th>
-                <th>rest</th>
-                <th>hover</th>
-                <th>generating</th>
-                <th>holding</th>
-                <th>dragging</th>
+                <th>静止</th>
+                <th>悬停</th>
+                <th>生成中</th>
+                <th>按住</th>
+                <th>拖动中</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th>empty <small>0 words</small></th>
+                <th>空 <small>0 词</small></th>
                 <td>
                   <span class="knob" style="--b: 0" data-buffer="empty"><i></i></span>
                 </td>
@@ -593,7 +589,7 @@
                 </td>
               </tr>
               <tr>
-                <th>low <small>60 words</small></th>
+                <th>较少 <small>60 词</small></th>
                 <td>
                   <span class="knob" style="--b: 0.2"><i></i></span>
                 </td>
@@ -611,7 +607,7 @@
                 </td>
               </tr>
               <tr>
-                <th>full <small>300 words</small></th>
+                <th>已满 <small>300 词</small></th>
                 <td>
                   <span class="knob" style="--b: 1"><i></i></span>
                 </td>
@@ -632,13 +628,13 @@
           </table>
           <div class="context">
             <p>
-              The beam swept the water once, and then again<span class="knob" style="--b: 1"><i></i></span>
+              光束扫过水面一次，又扫了一次<span class="knob" style="--b: 1"><i></i></span>
             </p>
             <p>
-              The beam swept the water once, and then again<span class="knob" style="--b: 0" data-buffer="empty"><i></i></span>
+              光束扫过水面一次，又扫了一次<span class="knob" style="--b: 0" data-buffer="empty"><i></i></span>
             </p>
             <p>
-              The beam swept the water once, and then again<span class="knob" style="--b: 0.2" data-generating><i></i></span>
+              光束扫过水面一次，又扫了一次<span class="knob" style="--b: 0.2" data-generating><i></i></span>
             </p>
           </div>
         </div>
@@ -654,7 +650,7 @@
 
       function show() {
         const { buffer, generating, dragging, hover } = controls.elements
-        controls.querySelector("output").value = `${buffer.value} words`
+        controls.querySelector("output").value = `${buffer.value} 词`
         for (const knob of knobs) {
           knob.style.setProperty("--b", `${buffer.value / BUFFER_WORDS}`)
           knob.toggleAttribute("data-buffer", buffer.valueAsNumber === 0)

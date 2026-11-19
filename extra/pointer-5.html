@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en" data-pointer="custom">
+<html lang="zh-CN" data-pointer="custom">
   <head>
     <meta charset="UTF-8" />
-    <title>text · pointer 5 · crosshair, field, steering</title>
+    <title>写作设计 · 指针 05 · 组合模式</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>" />
     <style>
       @font-face {
@@ -471,129 +471,123 @@
   </head>
   <body>
     <main>
-      <nav class="experiments" aria-label="experiments">
+      <nav class="experiments" aria-label="实验">
         <p>
-          <b>style</b>
-          <a href="style-1.html">instrument</a>
-          <a href="style-2.html">signal</a>
-          <a href="style-3.html">telemetry</a>
-          <a href="style-4.html">merged</a>
+          <b>样式</b>
+          <a href="style-1.html">仪表</a>
+          <a href="style-2.html">信号</a>
+          <a href="style-3.html">遥测</a>
+          <a href="style-4.html">融合</a>
         </p>
         <p>
-          <b>sound</b>
-          <a href="soundboard.html">soundboard</a>
+          <b>音效</b>
+          <a href="soundboard.html">音效面板</a>
         </p>
         <p>
-          <b>knob</b>
-          <a href="knob-states.html">buffer states</a>
+          <b>旋钮</b>
+          <a href="knob-states.html">缓冲区状态</a>
         </p>
         <p>
-          <b>rail</b>
-          <a href="bar-1.html">histogram</a>
-          <a href="bar-2.html">profile</a>
-          <a href="bar-3.html">meters</a>
+          <b>侧栏</b>
+          <a href="bar-1.html">直方图</a>
+          <a href="bar-2.html">强度曲线</a>
+          <a href="bar-3.html">强度表</a>
         </p>
         <p>
-          <b>pointer</b>
-          <a href="pointer-1.html">crosshair</a>
-          <a href="pointer-2.html">ring</a>
-          <a href="pointer-3.html">field</a>
-          <a href="pointer-4.html">steering</a>
-          <a href="pointer-5.html" aria-current="page">combined</a>
+          <b>指针</b>
+          <a href="pointer-1.html">十字准星</a>
+          <a href="pointer-2.html">圆环</a>
+          <a href="pointer-3.html">感应区</a>
+          <a href="pointer-4.html">引导</a>
+          <a href="pointer-5.html" aria-current="page">组合</a>
         </p>
         <p>
-          <b>tray</b>
-          <a href="tray-1.html">modules</a>
-          <a href="tray-2.html">tmux</a>
-          <a href="tray-3.html">gauges</a>
+          <b>状态栏</b>
+          <a href="tray-1.html">模块</a>
+          <a href="tray-2.html">tmux 状态行</a>
+          <a href="tray-3.html">表盘</a>
         </p>
       </nav>
       <header>
-        <h1>text / pointer 5 — crosshair × field × steering</h1>
+        <h1>指针 05 · 组合模式</h1>
         <p>
-          Three layers, each with one job. The crosshair says where the hand is: hairlines edge to edge at its exact position, never snapped. The field brackets
-          are the selection state: whatever the hand could act on frames itself as the hand nears, the nearest strongest and labelled. The steering vector is
-          what the hand is doing: press ahead of the main knob and it is pulled there, while the brackets move to the one thing that matters then, the word
-          where the knob will stop.
+          三层各司其职。十字准线标出手的位置：极细的横竖线贯穿整个区域，精确跟随手，不会吸附到目标。四角框线显示选择状态：手靠近可交互目标时，目标就会加框，最近的框线最醒目，并带有标签。导引向量显示手正在做什么：指向主旋钮之后的文本并按住，旋钮就会被拉过去。这时框线只标出当前最重要的内容：旋钮将停在的那个词。
         </p>
         <div style="display: grid; gap: 8px; align-content: start">
           <div class="switch">
-            pointer
-            <button type="button" data-mode="custom" aria-pressed="true">custom</button>
-            <button type="button" data-mode="os" aria-pressed="false">os</button>
+            指针
+            <button type="button" data-mode="custom" aria-pressed="true">自定义</button>
+            <button type="button" data-mode="os" aria-pressed="false">系统</button>
           </div>
           <div class="switch" id="engage">
-            steer
-            <button type="button" data-engage="press" aria-pressed="true">press to pull</button>
-            <button type="button" data-engage="hover" aria-pressed="false">hover pulls</button>
+            导引
+            <button type="button" data-engage="press" aria-pressed="true">按住牵引</button>
+            <button type="button" data-engage="hover" aria-pressed="false">悬停牵引</button>
           </div>
         </div>
       </header>
 
       <section>
-        <h2><b>01</b>try</h2>
+        <h2><b>01</b>试用</h2>
         <div style="display: grid; gap: 12px">
           <div class="stage" id="stage">
             <p class="col" id="col"></p>
-            <button class="knob" id="knob" type="button" aria-label="main knob"></button>
-            <button class="knob future" id="future" type="button" aria-label="future knob">
-              <span>pace: brisk <b>64%</b></span>
+            <button class="knob" id="knob" type="button" aria-label="主旋钮"></button>
+            <button class="knob future" id="future" type="button" aria-label="续写旋钮">
+              <span>节奏：轻快 <b>64%</b></span>
             </button>
             <div class="tray">
-              <span>idle</span>
-              <span>words<b id="count">0</b></span>
-              <span>boxes<b>1</b></span>
-              <button type="button" data-toggle>sound<b>on</b></button>
+              <span>空闲</span>
+              <span>词数<b id="count">0</b></span>
+              <span>关键词框<b>1</b></span>
+              <button type="button" data-toggle>音效<b>开</b></button>
             </div>
           </div>
           <p class="note">
-            Move toward the text, the shaded box, the knobs and the tray, and watch them frame themselves. Then press ahead of the main knob, anywhere that is
-            not a knob or control, to pull it there; let go to stop. With <b>hover pulls</b>, pointing ahead is enough.
+            将指针移向文字、带底色的关键词框、旋钮和状态栏，观察它们如何自动显示边框。然后在主旋钮前方按住任意一处没有旋钮或控件的位置，将主旋钮拉过去；松开即停。启用
+            <b>悬停牵引</b>后，只需将指针指向前方即可。
           </p>
         </div>
       </section>
 
       <section>
-        <h2><b>02</b>behavior</h2>
+        <h2><b>02</b>行为</h2>
         <dl class="spec">
-          <dt>idle</dt>
-          <dd>hairlines at ink-5 with a 12px gap at the point; no frames.</dd>
-          <dt>approaching targets</dt>
+          <dt>空闲</dt>
+          <dd>细线使用 ink-5，在指针尖端留出 12px 的空隙；不显示边框。</dd>
+          <dt>靠近目标</dt>
           <dd>
-            within 120px each target frames itself with corner brackets, opacity by nearness, and wakes itself (knob ring, box shade, tray control); the nearest
-            is strongest, and labelled close up: <i>box .91</i>, or the knob's word count.
+            进入目标周围 120px
+            范围内时，目标自动显示四角括线并高亮相应部位（旋钮环、关键词框底色、状态栏控件）。越近越不透明，最近的目标最醒目，靠近后显示标签：
+            <i>关键词框 .91</i>，或显示旋钮的词数。
           </dd>
-          <dt>pressing ahead of the knob</dt>
+          <dt>在旋钮前方按住</dt>
           <dd>
-            the vector pulls the knob toward the word under the hand (3 to 40 words/s, slowing as it arrives); the hairlines go soft orange, the vector is
-            orange with a tick per five words to go, and the destination word is framed in orange brackets; every other frame goes quiet.
+            向量将旋钮拉向指针下的词（3–40 词/秒，接近时减速）；细线变为浅橙色，向量显示为橙色，剩余距离每 5 个词标一格。目标词用橙色括线框出，其余边框淡出。
           </dd>
-          <dt>pointing behind the knob</dt>
-          <dd>nothing pulls: the vector is dashed ink-4 and nothing is framed; moving back stays a deliberate drag of the knob.</dd>
-          <dt>dragging a knob</dt>
-          <dd>hairlines and the dragged knob's frame turn orange; other frames go quiet.</dd>
+          <dt>指向旋钮之前的文本</dt>
+          <dd>不产生牵引：向量显示为 ink-4 虚线，不显示边框。要往回移动，仍需手动拖动旋钮。</dd>
+          <dt>拖动旋钮</dt>
+          <dd>细线和被拖动旋钮的边框变为橙色，其余边框淡出。</dd>
         </dl>
       </section>
 
       <section>
-        <h2><b>03</b>principles</h2>
+        <h2><b>03</b>原则</h2>
         <dl class="spec">
-          <dt>never locks</dt>
-          <dd>the pointer is always exactly where the hand is; it never snaps to or reshapes around geometry.</dd>
-          <dt>elements wake by vicinity</dt>
+          <dt>绝不锁定</dt>
+          <dd>指针始终精确跟随手部操作位置，不会吸附到几何图形上，也不会因其轮廓而变形。</dd>
+          <dt>元素靠近时响应</dt>
           <dd>
-            within 120px a target reacts in proportion to nearness (eased): a knob's hover ring fades in, the attention box deepens, a tray control brightens.
-            Full hover state only on touch.
+            在 120px
+            范围内，指针越近，目标响应越明显，过渡采用缓动：旋钮的悬停外环渐显，关键词框底色加深，状态栏控件变亮。只有指针碰到目标时，才进入完整悬停状态。
           </dd>
-          <dt>one nearest</dt>
-          <dd>only the nearest target is pointed to (tick, tether, strongest frame, label); everything else stays quiet.</dd>
-          <dt>orange = live</dt>
-          <dd>only while the hand presses or drags, or the steering vector pulls; while dragging, nothing else wakes.</dd>
-          <dt>latency</dt>
-          <dd>
-            a page-drawn pointer trails the hardware one by about a frame. It is drawn straight from the pointer event, never on a later frame, and only on
-            desktop pointers; touch keeps none.
-          </dd>
+          <dt>只提示最近目标</dt>
+          <dd>只提示最近的目标（刻度、连线、最醒目的边框和标签），其余元素保持不变。</dd>
+          <dt>橙色 = 操作中</dt>
+          <dd>仅在按下、拖动或引导向量产生牵引时显示橙色；拖动期间，其他元素不响应。</dd>
+          <dt>延迟</dt>
+          <dd>页面绘制的指针比硬件指针约慢一帧。它直接根据指针事件绘制，不等下一帧；仅用于桌面端，触屏不显示自定义指针。</dd>
         </dl>
       </section>
     </main>
@@ -603,10 +597,11 @@
 
     <script type="module">
       const $ = (selector) => document.querySelector(selector)
-      const TEXT =
-        "The lighthouse keeper counted the ships twice. Fog had come in early that evening, and the radio was silent. She lit the lamp by hand, the way her father had taught her, and waited for the horn. Nothing answered. Somewhere past the breakwater, an engine idled and then cut out. She leaned on the rail and listened for oars, for voices, for anything at all."
+      import { lighthouseSentences } from "./lighthouse.js"
+      const tokens = lighthouseSentences.slice(0, 7).flat()
+      const father = tokens.indexOf("父亲")
       /** The attention box: words `first` to `last`, keyword `keyword`, relevance `score`. */
-      const BOX = { first: 22, last: 27, keyword: 25, score: 0.91 }
+      const BOX = { first: father - 2, last: father + 3, keyword: father, score: 0.91 }
       /** Elements react within this distance of the hand: not at all at its edge, fully when touched. */
       const RANGE_PX = 120
 
@@ -614,9 +609,9 @@
       const col = $("#col")
       const knob = $("#knob")
       const future = $("#future")
-      col.innerHTML = TEXT.split(" ")
+      col.innerHTML = tokens
         .map((word, i) => `<span class="w${i === BOX.keyword ? " kw" : ""}"${i >= BOX.first && i <= BOX.last ? " data-box" : ""} data-i="${i}">${word}</span>`)
-        .join(" ")
+        .join("")
       const words = [...col.querySelectorAll(".w")]
       let shown = 30
 
@@ -666,7 +661,7 @@
       for (const button of document.querySelectorAll(".tray button[data-toggle]"))
         button.addEventListener("click", () => {
           const value = button.querySelector("b")
-          value.textContent = value.textContent === "on" ? "off" : "on"
+          value.textContent = value.textContent === "开" ? "关" : "开"
         })
 
       /** The box's words as one rectangle per line, so a box that wraps is never treated as a block across the column. */
@@ -684,9 +679,9 @@
       /** Everything the hand can act on, each with its boxes, the element that shows its nearness, and a label for when it is nearest. */
       function targets() {
         return [
-          { kind: "knob", element: knob, rects: [knob.getBoundingClientRect()], label: () => `<b>${shown}</b> words` },
+          { kind: "knob", element: knob, rects: [knob.getBoundingClientRect()], label: () => `<b>${shown}</b> 词` },
           { kind: "future", element: future, rects: [future.getBoundingClientRect()], label: () => "" },
-          { kind: "box", element: col, variable: "--box-near", rects: boxLineRects(), label: () => `box <b>.${Math.round(BOX.score * 100)}</b>` },
+          { kind: "box", element: col, variable: "--box-near", rects: boxLineRects(), label: () => `关键词 <b>.${Math.round(BOX.score * 100)}</b>` },
           ...[...document.querySelectorAll(".tray button")].map((element) => ({
             kind: "button",
             element,
@@ -923,7 +918,7 @@
           const end = words[Math.max(0, Math.min(words.length, target) - 1)].getBoundingClientRect()
           // the word the knob will stop after, framed like a selected target
           Object.assign(destination.style, { translate: `${end.left - 3}px ${end.top - 3}px`, width: `${end.width + 6}px`, height: `${end.height + 6}px` })
-          readout.innerHTML = state === "pulling" ? `<b>+${gap}</b> words · ${Math.round(rate)} w/s` : "behind the knob"
+          readout.innerHTML = state === "pulling" ? `<b>+${gap}</b> 词 · ${Math.round(rate)} 词/秒` : "在旋钮后方"
           readout.style.translate = `${to.x + 12}px ${to.y + 10}px`
         }
       }

@@ -31,3 +31,7 @@ token-usage.log
 
 # written by scripts/capture
 .capture
+
+# Packaged VS Code extension
+extension/media/
+*.vsix

@@ -1,8 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <title>Spaceship</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spaceship · 中文写作台</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕹️</text></svg>" />
     <style>
       @property --fill {
@@ -33,8 +34,8 @@
         --stroke: 1.5px;
         --selected-stroke: 3px;
         --dash: 3 3;
-        --text-size: 11px;
-        --line: 18px;
+        --text-size: 15px;
+        --line: 25px;
         /* Read by the HUD to measure its labels. */
         --hud-size: 10px;
         --hud-line: 14px;
@@ -70,7 +71,7 @@
         padding-bottom: var(--tray-height);
       }
       #text {
-        width: clamp(30ch, 100% - 2 * (var(--margin) + var(--rail-width)), 64ch);
+        width: min(66ch, calc(100% - 52px));
         margin-inline: auto;
         padding-block: var(--padding);
         white-space: pre;
@@ -85,6 +86,136 @@
         }
       }
       /* Left rail: a ruler row per line with each box's bracket, its keyword's rank and relevance to the tip, and a meter of the line's connection to the focus. */
+      html:not([data-editor]) .editor-only {
+        display: none !important;
+      }
+      html[data-editor] #writing-bar {
+        flex-wrap: wrap;
+      }
+      #writing-bar [data-file-action] {
+        font: inherit;
+        cursor: pointer;
+      }
+      #editor-source {
+        overflow-wrap: anywhere;
+      }
+      #writing-bar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        width: min(66ch, calc(100% - 32px));
+        margin: 24px auto 0;
+        color: var(--ink-2);
+        font-size: 13px;
+      }
+      #write-story,
+      #writing-dialog button {
+        font: inherit;
+        padding: 6px 12px;
+        color: var(--ink);
+        background: var(--bg);
+        border: 1px solid var(--ink-3);
+        cursor: pointer;
+      }
+      #writing-dialog {
+        box-sizing: border-box;
+        width: min(520px, calc(100% - 32px));
+        max-height: 90dvh;
+        padding: clamp(16px, 4vw, 28px);
+        border: 1px solid var(--ink-3);
+        background: #101010;
+        color: var(--ink);
+        font:
+          14px/1.6 system-ui,
+          sans-serif;
+      }
+      #writing-dialog::backdrop {
+        background: rgb(0 0 0 / 72%);
+      }
+      #writing-dialog form {
+        display: grid;
+        gap: 8px;
+      }
+      #writing-dialog h1 {
+        font-size: 20px;
+        margin: 0 0 8px;
+      }
+      #writing-dialog p {
+        margin: 0;
+        color: var(--ink-2);
+      }
+      #writing-dialog label {
+        margin-top: 4px;
+      }
+      #writing-dialog textarea {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 8px 10px;
+        font: inherit;
+        color: var(--ink);
+        background: var(--bg);
+        border: 1px solid var(--ink-3);
+        resize: vertical;
+      }
+      #writing-dialog select {
+        font: inherit;
+        padding: 4px 6px;
+        max-width: 100%;
+      }
+      #writing-knobs {
+        margin: 0;
+        min-width: 0;
+        border: 1px solid var(--ink-4);
+        padding: 8px;
+      }
+      .knob-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px 8px;
+        margin-bottom: 8px;
+      }
+      #dimension-suggestions:not(:empty) {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .knob-row input {
+        width: 6em;
+        vertical-align: middle;
+        accent-color: var(--hot);
+      }
+      .knob-row output {
+        min-width: 4ch;
+        font-variant-numeric: tabular-nums;
+      }
+      #writing-dialog textarea:focus {
+        outline: 1px solid var(--hot);
+      }
+      #writing-dialog .actions {
+        display: flex;
+        justify-content: end;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      #writing-dialog button[type="submit"] {
+        background: var(--hot);
+        color: #000;
+        border-color: var(--hot);
+      }
+      @media (max-width: 660px) {
+        #tray [data-field="boxes"],
+        #tray [data-field="steering"],
+        #tray [data-field="pinned"] {
+          display: none;
+        }
+        #tray {
+          overflow-x: auto;
+          justify-content: start;
+        }
+      }
       #rail {
         position: absolute;
         top: 0;
@@ -849,6 +980,51 @@
     </style>
   </head>
   <body>
+    <header id="writing-bar">
+      <button id="write-story" type="button" aria-haspopup="dialog">编辑正文与方向</button>
+      <button class="editor-only" type="button" data-file-action="write">写回编辑器</button>
+      <button class="editor-only" type="button" data-file-action="copy">另存为…</button>
+      <span id="writing-status" role="status"></span>
+    </header>
+    <dialog id="writing-dialog" aria-labelledby="writing-title">
+      <form>
+        <h1 id="writing-title">写下一段</h1>
+        <p id="editor-source" class="editor-only"></p>
+        <label for="manuscript">故事正文</label>
+        <textarea id="manuscript" name="manuscript" rows="5" placeholder="写下开头，或粘贴一段想接着写的文字。" autofocus></textarea>
+        <label for="direction">续写方向</label>
+        <textarea id="direction" name="direction" rows="3" placeholder="例如：让修钟师傅认出敲门的暗号。用对话揭开谜底。"></textarea>
+        <fieldset id="writing-knobs">
+          <legend>写作旋钮</legend>
+          <div id="knob-rows"></div>
+          <button type="button" id="add-knob">添加维度</button>
+          <button type="button" id="suggest-dimensions">推荐维度</button>
+          <div id="dimension-suggestions" aria-live="polite"></div>
+        </fieldset>
+        <template id="writing-knob-row">
+          <div class="knob-row">
+            <label
+              >维度
+              <select name="dimension">
+                <option value="">请选择</option>
+              </select></label
+            >
+            <label
+              >目标
+              <select name="target" disabled></select
+            ></label>
+            <label>强度 <input type="range" name="strength" aria-label="影响强度" min="0" max="100" value="64" disabled /></label>
+            <output>64%</output><button type="button" data-remove>移除</button>
+          </div>
+        </template>
+        <p>正文和方向可以只写一栏。下次打开时，可以修改已展开的正文，也可以只换方向。</p>
+        <div class="actions">
+          <button class="editor-only" type="button" data-file-action="write">写回编辑器</button
+          ><button class="editor-only" type="button" data-file-action="copy">另存为…</button
+          ><button type="button" command="close" commandfor="writing-dialog">返回画布</button><button type="submit">续写下一段</button>
+        </div>
+      </form>
+    </dialog>
     <div id="rail" aria-hidden="true"></div>
     <div id="text"></div>
     <svg id="links" aria-hidden="true">
@@ -858,28 +1034,23 @@
       <path id="future-links" />
       <path id="future-tuned-link" />
     </svg>
-    <button
-      id="pointer"
-      class="knob"
-      type="button"
-      aria-label="drag to scrub the text forward or back, double click to expand attention highlights or remove everything attached, double click and hold to open the fan menu"
-    ></button>
+    <button id="pointer" class="knob" type="button" aria-label="拖动以展开或收回正文；双击切换关键词；双击并按住打开写作旋钮"></button>
     <template id="future-knob">
-      <button class="knob future" type="button" aria-label="future knob, …, double click to delete"><span>…</span></button>
+      <button class="knob future" type="button" aria-label="续写旋钮，双击移除"><span>…</span></button>
     </template>
     <div id="cursor" aria-hidden="true"></div>
     <footer id="tray">
-      <button id="mode-toggle" type="button" aria-pressed="false" aria-label="flight mode">mode<b>sim</b></button>
+      <button id="mode-toggle" type="button" aria-pressed="false" aria-label="切换写作模式">模式<b>模拟</b></button>
       <output id="status" aria-live="off"></output>
-      <button id="sound-toggle" type="button" aria-pressed="true" aria-label="sound">♪<b>on</b></button>
-      <a id="extra-link" href="extra/style-1.html">extra</a>
+      <button id="sound-toggle" type="button" aria-pressed="true" aria-label="切换音效">音效<b>开</b></button>
+      <a id="extra-link" href="extra/style-1.html">设计样例</a>
     </footer>
     <dialog id="live-keys" aria-labelledby="live-keys-title" aria-describedby="live-keys-note" closedby="closerequest">
       <form method="dialog" autocomplete="off">
-        <h2 id="live-keys-title">launch</h2>
-        <p id="live-keys-note">Lift off from the simulator to call the real API with your own keys, kept in this browser's local storage.</p>
+        <h2 id="live-keys-title">启用实时写作</h2>
+        <p id="live-keys-note">输入 Cerebras 和 Gemini 的 API 密钥以启用实时写作。密钥保存在当前浏览器。</p>
         <label
-          >cerebras
+          >Cerebras
           <input
             name="cerebras"
             type="text"
@@ -895,7 +1066,7 @@
             autofocus
         /></label>
         <label
-          >gemini
+          >Gemini
           <input
             name="gemini"
             type="text"
@@ -910,8 +1081,8 @@
             data-form-type="other"
         /></label>
         <p class="actions">
-          <button type="button" command="close" commandfor="live-keys">abort</button>
-          <button value="live">launch</button>
+          <button type="button" command="close" commandfor="live-keys">取消</button>
+          <button value="live">启用</button>
         </p>
       </form>
     </dialog>
