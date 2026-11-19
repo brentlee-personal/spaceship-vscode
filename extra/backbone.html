@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Backbone Workbench</title>
+  </head>
+  <body>
+    <main>
+      <h1>Backbone Workbench</h1>
+      <p>Shape an outline you can write from. No model setup or prose generation.</p>
+      <label>Work title <input id="title" value="Working outline" /></label>
+      <nav aria-label="Outline actions">
+        <button id="add">Add block</button><button id="undo-remove" disabled>Undo remove</button> <button id="check">Run outline check</button
+        ><button id="export">Export Markdown copy</button>
+      </nav>
+      <p>
+        Inputs and outputs are exact named concepts, separated by commas. Dependencies and conflicts use block IDs. Reading order is the list order; links are
+        separate. Move up/down swaps sibling subtrees intact. Fix invalid outline levels before moving blocks. A block with descendants cannot be removed:
+        remove its children first or explicitly revise their levels.
+      </p>
+      <p>Session-only draft: export a Markdown copy and save it before closing this panel. Reopening does not restore your outline.</p>
+      <p id="status" role="status">Add a block to begin.</p>
+      <section aria-label="Check results">
+        <h2>Outline check</h2>
+        <ul id="findings"></ul>
+      </section>
+      <section aria-label="Reading order">
+        <h2>Reading order</h2>
+        <ol id="outline"></ol>
+      </section>
+    </main>
+    <script type="module" src="../src/backbone/main.ts"></script>
+  </body>
+</html>

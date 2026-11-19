@@ -2,6 +2,14 @@
 
 Write in VS Code with independent steering controls. This is an adaptation of [Chuanqi Sun’s Spaceship IDE](https://github.com/chuanqisun/spaceship), not a Chinese-only edition. The interface defaults to English; live writing supports Chinese and other languages through your chosen model.
 
+## Refine a backbone (0.3.0)
+
+Run **Spaceship: Open Backbone Workbench** to build an outline you can write from, without a model or an open manuscript. Add named blocks with their purpose, what changes for the reader, hierarchy, named inputs/outputs, dependencies and conflicts. Run the local outline check and click a finding to edit its block. Move up/down keeps sibling subtrees intact; parent removal and undo are guarded against unintended reparenting.
+
+**Export Markdown copy** opens a new unsaved Markdown document. Save it normally; your existing manuscript is not overwritten. A usable outline is a complete outcome, with no generated prose required.
+
+**Session-only editing:** export and save before closing the panel. This version does not reopen a saved outline for structured editing, persist a backbone project across sessions, or generate/fill backbone blocks with a model. Markdown export is readable text, not a re-importable project. The existing Writing Desk and progressive context loading below remain separate and unchanged.
+
 ## Start writing
 
 1. Run **Spaceship: Open Writing Desk**. Right-click a Markdown/text file to **Open File in Writing Desk**, or select text and choose **Continue from Selection**. Right-click a folder to create a **New Markdown Draft**.

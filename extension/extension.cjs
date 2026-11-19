@@ -186,6 +186,7 @@ function activate(context) {
     const range = useSelection ? editor.selection : new Range(doc.positionAt(0), doc.positionAt(doc.getText().length))
     openPanel({ doc, range, selected: useSelection, column: editor?.viewColumn ?? ViewColumn.One, version: doc.version, snapshot: doc.getText() })
   }
+  command("backbone", () => require("./backbone.cjs").openBackbone(vscode, context))
   command("open", () => open(undefined, true))
   command("openFile", (uri) => open(uri))
   command("fromSelection", () => open(undefined, true))

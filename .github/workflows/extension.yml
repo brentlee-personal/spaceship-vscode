@@ -18,7 +18,18 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run package:extension
+      - name: Real VS Code Extension Host smoke
+        run: xvfb-run -a npm run test:extension-host
+        timeout-minutes: 5
+      - name: Isolated same-job installed VSIX smoke
+        run: xvfb-run -a npm run test:installed-extension
+        timeout-minutes: 5
       - uses: actions/upload-artifact@v4
         with:
           name: spaceship-writer-vsix
           path: extension/*.vsix
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installed-vsix-evidence
+          path: test-evidence/installed-vsix.json
+          if-no-files-found: error
